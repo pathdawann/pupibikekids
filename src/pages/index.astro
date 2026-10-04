@@ -1,17 +1,280 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+  <!-- Menú de Navegación -->
+  <nav class="bg-black text-white p-4 border-b-4 border-lime-400 fixed w-full z-50">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <h1 class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6">PUPI <span class="text-cyan-400">BIKE</span></h1>
+      </div>
+      <ul class="hidden md:flex space-x-6 items-center">
+        <li><a href="#niveles" class="font-bold hover:text-cyan-400 transition italic uppercase">Niveles</a></li>
+        <li><a href="#equipo" class="font-bold hover:text-lime-400 transition italic uppercase">Nuestro Equipo</a></li>
+        <li><a href="/registro" class="bg-lime-400 text-black px-6 py-2 font-black italic uppercase tracking-wide hover:bg-lime-300 transition transform hover:scale-105 shadow-[4px_4px_0px_#00d2ff] border-2 border-transparent">¡Inscríbete!</a></li>
+      </ul>
+    </div>
+  </nav>
+
+ <!-- Hero Section -->
+<header class="bg-zinc-950 pt-32 pb-24 lg:min-h-[95vh] flex items-center justify-center text-center relative overflow-hidden">
+  
+  <!-- 1. LA IMAGEN DE FONDO -->
+  <!-- CAMBIA 'fondo-hero.jpg' por el nombre real de tu imagen -->
+  <div class="absolute inset-0 bg-[url('/fondo-hero.jpg')] bg-cover bg-center opacity-30"></div>
+
+  <!-- 2. LAS LUCES / FILTROS (Se mantienen intactos sobre la imagen) -->
+  <div class="absolute top-0 left-0 w-80 h-80 bg-blue-700 rounded-full mix-blend-screen filter blur-[120px] opacity-40 z-10"></div>
+  <div class="absolute bottom-0 right-0 w-80 h-80 bg-lime-500 rounded-full mix-blend-screen filter blur-[120px] opacity-20 z-10"></div>
+
+  <!-- 3. EL CONTENIDO DE TEXTO Y BOTONES -->
+  <div class="container mx-auto px-4 relative z-20 w-full">
+    <h3 class="text-lime-400 font-black text-2xl md:text-4xl italic uppercase tracking-widest mb-4 transform -skew-x-12 drop-shadow-md">Regreso a Clases</h3>
+    <h2 class="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 uppercase italic tracking-tighter leading-tight">Formando a los futuros <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-cyan-400 to-lime-400">campeones del MTB</span></h2>
+    <p class="text-xl lg:text-2xl text-zinc-300 mb-8 max-w-3xl mx-auto font-medium bg-black/50 p-4 rounded-xl border border-zinc-800 backdrop-blur-sm">Temporada 2026-2027. Enseñamos técnica, disciplina y pasión por el ciclismo para niños y jóvenes en un ambiente seguro y extremo.</p>
+    
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-8 mt-12">
+       <a href="/registro" class="bg-blue-600 text-white text-2xl font-black italic uppercase px-10 py-5 shadow-[6px_6px_0px_#a3e635] hover:translate-y-1 hover:shadow-[2px_2px_0px_#a3e635] transition-all transform -skew-x-6 border-2 border-transparent">Únete a la Academia</a>
+       <a href="https://wa.me/584248781128" target="_blank" class="text-white font-black italic text-3xl flex items-center gap-2 hover:text-lime-400 transition drop-shadow-lg">
+         <span class="text-lime-400 text-5xl">✆</span> 58 424-8781128
+       </a>
+    </div>
+  </div>
+</header>
+
+  <!-- NUEVA SECCIÓN: Niveles -->
+  <section id="niveles" class="py-24 bg-zinc-900 border-t border-zinc-800 relative">
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-black uppercase italic text-white transform -skew-x-6 drop-shadow-md">Nuestros <span class="text-pink-500">Niveles</span></h2>
+        <p class="text-zinc-400 mt-4 font-bold italic text-lg">El plan perfecto para cada etapa de su desarrollo deportivo.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+        <!-- Nivel 1 -->
+        <div class="bg-zinc-950 p-8 border-2 border-cyan-400 transform -skew-x-2 shadow-[8px_8px_0px_#00d2ff] hover:-translate-y-2 transition-transform">
+          <h3 class="text-2xl font-black italic uppercase text-cyan-400 mb-4 tracking-wider">Principiante</h3>
+          <ul class="text-zinc-300 font-medium space-y-3 mb-6">
+            <li>✓ Dominio de rueditas y equilibrio.</li>
+            <li>✓ Fundamentos de seguridad y frenado.</li>
+            <li>✓ Juegos y adaptación a la bicicleta.</li>
+          </ul>
+          <div class="bg-zinc-900 p-3 text-sm font-bold italic text-center border border-zinc-800 text-white">Ideal para los más pequeños</div>
+        </div>
+
+        <!-- Nivel 2 -->
+        <div class="bg-zinc-950 p-8 border-2 border-lime-400 transform -skew-x-2 shadow-[8px_8px_0px_#a3e635] hover:-translate-y-2 transition-transform md:-mt-4">
+          <h3 class="text-2xl font-black italic uppercase text-lime-400 mb-4 tracking-wider">Intermedio</h3>
+          <ul class="text-zinc-300 font-medium space-y-3 mb-6">
+            <li>✓ Iniciación al Mountain Bike (MTB).</li>
+            <li>✓ Postura y superación de obstáculos.</li>
+            <li>✓ Rutas guiadas de resistencia media.</li>
+          </ul>
+          <div class="bg-zinc-900 p-3 text-sm font-bold italic text-center border border-zinc-800 text-white">Desarrollo de resistencia y técnica</div>
+        </div>
+
+        <!-- Nivel 3 -->
+        <div class="bg-zinc-950 p-8 border-2 border-pink-500 transform -skew-x-2 shadow-[8px_8px_0px_#db2777] hover:-translate-y-2 transition-transform">
+          <h3 class="text-2xl font-black italic uppercase text-pink-500 mb-4 tracking-wider">Avanzado</h3>
+          <ul class="text-zinc-300 font-medium space-y-3 mb-6">
+            <li>✓ Preparación física para competencia.</li>
+            <li>✓ Técnicas avanzadas de ruta y descenso.</li>
+            <li>✓ Turno académico: <span class="text-yellow-400">Lunes a Viernes</span>.</li>
+          </ul>
+          <div class="bg-pink-600 p-3 text-sm font-black uppercase italic text-center text-white">Horario: 4:00 pm a 6:00 pm</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NUEVA SECCIÓN: Nuestro Equipo (Slider Oficial) -->
+<section id="equipo" class="py-24 bg-zinc-950 relative border-t-4 border-cyan-500 overflow-hidden">
+  <!-- Luces de fondo -->
+  <div class="absolute top-0 right-0 w-64 h-64 bg-pink-600 rounded-full mix-blend-screen filter blur-[100px] opacity-10"></div>
+  
+  <div class="container mx-auto px-4 relative z-10 text-center">
+    <!-- Título -->
+    <div class="bg-black inline-block px-10 py-3 transform -skew-x-6 shadow-[6px_6px_0px_#00d2ff] mb-12 border border-zinc-800">
+      <h2 class="text-4xl font-black uppercase italic text-white tracking-wider">Nuestro <span class="text-cyan-400">Equipo</span></h2>
+    </div>
+    
+    <!-- Carrusel / Slider CSS -->
+    <div class="flex overflow-x-auto gap-8 pb-10 px-4 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-cyan-500 scrollbar-track-zinc-900">
+      
+      <!-- Instructor 1: Emmanuel -->
+      <div class="min-w-[280px] flex-shrink-0 snap-center flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform -skew-x-2 relative group hover:-translate-y-2 transition-transform">
+        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform skew-x-2">
+          <img src="/equipo/emmanuel.png" alt="Emmanuel Noriega" class="w-full h-full object-cover bg-zinc-800" />
+        </div>
+        <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Emmanuel</h3>
+        <p class="text-cyan-400 font-bold italic uppercase transform skew-x-2 text-sm mb-3">Avanzado / Intermedio</p>
+        <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800">
+          <p class="text-lime-400 font-black text-xs tracking-wider">@emmanuel_noriega74</p>
+        </div>
+      </div>
+
+      <!-- Instructor 2: Yusdeilys -->
+      <div class="min-w-[280px] flex-shrink-0 snap-center flex flex-col items-center bg-zinc-900 p-6 border-2 border-pink-500 shadow-[6px_6px_0px_#db2777] transform -skew-x-2 relative group hover:-translate-y-2 transition-transform">
+        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-cyan-400 mb-4 transform skew-x-2">
+          <img src="/equipo/yusdeilys.png" alt="Yusdeilys Medrano" class="w-full h-full object-cover bg-zinc-800" />
+        </div>
+        <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Yusdeilys</h3>
+        <p class="text-pink-500 font-bold italic uppercase transform skew-x-2 text-sm mb-3">Básico / Intermedio</p>
+        <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800">
+          <p class="text-cyan-400 font-black text-xs tracking-wider">@medranoyusdeilys</p>
+        </div>
+      </div>
+
+      <!-- Instructor 3: Jorpierre -->
+      <div class="min-w-[280px] flex-shrink-0 snap-center flex flex-col items-center bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635] transform -skew-x-2 relative group hover:-translate-y-2 transition-transform">
+        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform skew-x-2">
+          <img src="/equipo/jorpierre.png" alt="Jorpierre López" class="w-full h-full object-cover bg-zinc-800" />
+        </div>
+        <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Jorpierre</h3>
+        <p class="text-lime-400 font-bold italic uppercase transform skew-x-2 text-sm mb-3">Nivel Básico</p>
+        <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800">
+          <p class="text-pink-500 font-black text-xs tracking-wider">@jorpierre_lopez</p>
+        </div>
+      </div>
+
+      <!-- Instructor 4: Yuliandrys -->
+      <div class="min-w-[280px] flex-shrink-0 snap-center flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform -skew-x-2 relative group hover:-translate-y-2 transition-transform">
+        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform skew-x-2">
+          <img src="/equipo/yuliandrys.png" alt="Yuliandrys Medrano" class="w-full h-full object-cover bg-zinc-800" />
+        </div>
+        <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Yuliandrys</h3>
+        <p class="text-cyan-400 font-bold italic uppercase transform skew-x-2 text-sm mb-3">Nivel Balance</p>
+        <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800">
+          <p class="text-lime-400 font-black text-xs tracking-wider">@yuli22012009</p>
+        </div>
+      </div>
+
+      <!-- Instructor 5: Jesús -->
+      <div class="min-w-[280px] flex-shrink-0 snap-center flex flex-col items-center bg-zinc-900 p-6 border-2 border-pink-500 shadow-[6px_6px_0px_#db2777] transform -skew-x-2 relative group hover:-translate-y-2 transition-transform">
+        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-cyan-400 mb-4 transform skew-x-2">
+          <img src="/equipo/jesus.png" alt="Jesús Días" class="w-full h-full object-cover bg-zinc-800" />
+        </div>
+        <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Jesús</h3>
+        <p class="text-pink-500 font-bold italic uppercase transform skew-x-2 text-xs mb-3 text-center">Básico / Intermedio / Avanzado</p>
+        <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800">
+          <p class="text-cyan-400 font-black text-xs tracking-wider">@chumbobike4</p>
+        </div>
+      </div>
+
+      <!-- Instructor 6: Junior -->
+      <div class="min-w-[280px] flex-shrink-0 snap-center flex flex-col items-center bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635] transform -skew-x-2 relative group hover:-translate-y-2 transition-transform">
+        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform skew-x-2">
+          <img src="/equipo/junior.png" alt="Junior González" class="w-full h-full object-cover bg-zinc-800" />
+        </div>
+        <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Junior</h3>
+        <p class="text-lime-400 font-bold italic uppercase transform skew-x-2 text-sm mb-3">Nivel Balance</p>
+        <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800">
+          <p class="text-pink-500 font-black text-xs tracking-wider">@jr.juniortalentoficial</p>
+        </div>
+      </div>
+
+      <!-- Instructor 7: Adrián -->
+      <div class="min-w-[280px] flex-shrink-0 snap-center flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform -skew-x-2 relative group hover:-translate-y-2 transition-transform">
+        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform skew-x-2">
+          <img src="/equipo/adrian.png" alt="Adrián López" class="w-full h-full object-cover bg-zinc-800" />
+        </div>
+        <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Adrián</h3>
+        <p class="text-cyan-400 font-bold italic uppercase transform skew-x-2 text-sm mb-3">Nivel Básico</p>
+        <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800">
+          <p class="text-lime-400 font-black text-xs tracking-wider">@adr_ianlopez22</p>
+        </div>
+      </div>
+
+      <!-- Instructor 8: Manzul -->
+      <div class="min-w-[280px] flex-shrink-0 snap-center flex flex-col items-center bg-zinc-900 p-6 border-2 border-pink-500 shadow-[6px_6px_0px_#db2777] transform -skew-x-2 relative group hover:-translate-y-2 transition-transform">
+        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-cyan-400 mb-4 transform skew-x-2">
+          <img src="/equipo/manzul.png" alt="Manzul" class="w-full h-full object-cover bg-zinc-800" />
+        </div>
+        <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Manzul</h3>
+        <p class="text-pink-500 font-bold italic uppercase transform skew-x-2 text-sm mb-3">Básico / Avanzado</p>
+        <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800">
+          <p class="text-cyan-400 font-black text-xs tracking-wider">@manzul_jos</p>
+        </div>
+      </div>
+
+      <!-- Instructor 9: David -->
+      <div class="min-w-[280px] flex-shrink-0 snap-center flex flex-col items-center bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635] transform -skew-x-2 relative group hover:-translate-y-2 transition-transform">
+        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform skew-x-2">
+          <img src="/equipo/david.png" alt="David Mata" class="w-full h-full object-cover bg-zinc-800" />
+        </div>
+        <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">David</h3>
+        <p class="text-lime-400 font-bold italic uppercase transform skew-x-2 text-sm mb-3">Nivel Avanzado</p>
+        <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800">
+          <p class="text-pink-500 font-black text-xs tracking-wider">@matadavid_07</p>
+        </div>
+      </div>
+
+      <!-- Instructor 10: Máximo -->
+      <div class="min-w-[280px] flex-shrink-0 snap-center flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform -skew-x-2 relative group hover:-translate-y-2 transition-transform">
+        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform skew-x-2">
+          <img src="/equipo/maximo.png" alt="Máximo" class="w-full h-full object-cover bg-zinc-800" />
+        </div>
+        <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Máximo</h3>
+        <p class="text-cyan-400 font-bold italic uppercase transform skew-x-2 text-xs mb-3 text-center">Balance / Estimulación</p>
+        <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800">
+          <p class="text-lime-400 font-black text-xs tracking-wider">Instructor</p>
+        </div>
+      </div>
+
+    </div>
+    
+    <!-- Instrucción de deslizar -->
+    <p class="text-zinc-500 mt-4 font-bold italic animate-pulse uppercase tracking-wider">⟵ Desliza para conocerlos ⟶</p>
+  </div>
+</section>
+
+  <!-- Sección de Toldo / Leads -->
+  <section class="bg-gradient-to-r from-blue-900 via-cyan-500 to-lime-500 py-24 text-white text-center border-t-8 border-black relative overflow-hidden">
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="bg-black inline-block px-10 py-3 transform -skew-x-12 shadow-[8px_8px_0px_rgba(0,0,0,0.4)] mb-8">
+        <h3 class="text-4xl md:text-5xl font-black uppercase italic text-white tracking-wider">¡Pedalea con nosotros!</h3>
+      </div>
+      <p class="mb-10 text-xl font-bold text-black bg-white/90 inline-block px-6 py-2 transform -skew-x-6 shadow-lg">Déjanos tu correo y sé el primero en recibir invitaciones a nuestras rodadas.</p>
+      
+      <form id="leadForm" class="max-w-2xl mx-auto flex flex-col sm:flex-row gap-4">
+        <input type="email" id="leadEmail" placeholder="TU CORREO ELECTRÓNICO" class="w-full px-6 py-4 text-black font-black italic uppercase transform -skew-x-6 focus:outline-none focus:ring-4 focus:ring-black shadow-[4px_4px_0px_rgba(0,0,0,0.8)]" required>
+        <button type="submit" id="btnLead" class="bg-black text-lime-400 px-10 py-4 font-black italic uppercase transform -skew-x-6 hover:bg-zinc-900 hover:text-white transition shadow-[4px_4px_0px_rgba(0,0,0,0.8)] border-2 border-transparent">Avisarme</button>
+      </form>
+      <div class="mt-8 h-10">
+        <p id="leadMensaje" class="text-lg font-black italic uppercase hidden px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] inline-block"></p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { supabase } from '../lib/supabase.js';
+
+  const form = document.getElementById('leadForm');
+  const mensaje = document.getElementById('leadMensaje');
+  const btnLead = document.getElementById('btnLead');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btnLead.textContent = "...";
+    btnLead.disabled = true;
+    const email = document.getElementById('leadEmail').value;
+    try {
+      const { error } = await supabase.from('leads_eventos').insert([{ email }]);
+      if (error) {
+        if (error.code === '23505') throw new Error('Este correo ya está registrado.');
+        throw error;
+      }
+      form.reset();
+      mensaje.textContent = "¡Listo! Te avisaremos de los eventos.";
+      mensaje.className = "text-lg font-black italic uppercase px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] inline-block bg-lime-400 text-black block";
+    } catch (error) {
+      mensaje.textContent = error.message || "Hubo un error. Intenta de nuevo.";
+      mensaje.className = "text-lg font-black italic uppercase px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] inline-block bg-red-600 text-white block";
+    } finally {
+      btnLead.textContent = "Avisarme";
+      btnLead.disabled = false;
+    }
+  });
+</script>

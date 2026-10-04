@@ -1,0 +1,153 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <!-- Navegación estilo Pupi Bike -->
+  <nav class="bg-black text-white p-4 border-b-4 border-lime-400">
+    <div class="container mx-auto flex justify-between items-center">
+      <a href="/" class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6 hover:text-cyan-400 transition">PUPI <span class="text-cyan-400">BIKE</span></a>
+      <a href="/" class="font-bold hover:text-lime-400 transition italic uppercase">Volver al inicio</a>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-4 py-16 max-w-3xl relative">
+    <!-- Luces de fondo sutiles -->
+    <div class="absolute top-10 left-0 w-64 h-64 bg-cyan-600 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none"></div>
+
+    <h1 class="text-4xl md:text-5xl font-black text-white mb-2 text-center uppercase italic transform -skew-x-6 drop-shadow-md">Inscripción y <span class="text-lime-400">Pago</span></h1>
+    <p class="text-zinc-400 mb-10 text-center italic text-lg font-medium">Temporada 2026-2027. Llena tus datos y reporta tu mensualidad.</p>
+
+    <!-- El Formulario con estilo extremo -->
+    <form id="registroForm" class="bg-zinc-900 p-8 md:p-10 shadow-[8px_8px_0px_#00d2ff] border-2 border-cyan-400 flex flex-col gap-8 relative z-10">
+      
+      <!-- SECCIÓN 1: Datos del Alumno -->
+      <div>
+        <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#a3e635] mb-6">
+          <h2 class="text-xl font-black uppercase italic text-lime-400 tracking-wider">Datos del Alumno</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Nombre Completo</label>
+            <input type="text" id="nombre" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2">
+          </div>
+          <div>
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Correo Electrónico</label>
+            <input type="email" id="email" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2">
+          </div>
+          <div>
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Teléfono / WhatsApp</label>
+            <input type="text" id="telefono" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2">
+          </div>
+          <div>
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Nivel / Horario</label>
+            <select id="nivel" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2 appearance-none">
+              <option value="Principiante">Principiante (Rueditas / Básico)</option>
+              <option value="Intermedio">Intermedio (MTB Básico)</option>
+              <option value="Avanzado">Avanzado (Turno Académico 4-6 PM)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: Reporte de Pago -->
+      <div class="mt-4">
+        <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#a3e635] mb-6">
+          <h2 class="text-xl font-black uppercase italic text-lime-400 tracking-wider">Reporte de Pago</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Método de Pago</label>
+            <select id="metodo_pago" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2 appearance-none">
+              <option value="Pago Movil">Pago Móvil</option>
+              <option value="Zelle">Zelle</option>
+              <option value="Efectivo">Efectivo</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Monto Pagado</label>
+            <input type="number" id="monto" placeholder="Ej: 30" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2">
+          </div>
+        </div>
+        <div class="mt-6">
+          <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Número de Referencia Bancaria</label>
+          <input type="text" id="referencia" placeholder="Últimos 4 a 6 dígitos" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2">
+        </div>
+      </div>
+
+      <!-- Cajón para mostrar mensajes -->
+      <div id="mensaje" class="hidden"></div>
+
+      <!-- Botón de Enviar Extremo -->
+      <button type="submit" id="btnSubmit" class="bg-blue-600 text-white font-black italic uppercase text-2xl py-4 hover:bg-blue-500 transition-all transform -skew-x-6 shadow-[6px_6px_0px_#a3e635] hover:translate-y-1 hover:shadow-[2px_2px_0px_#a3e635] mt-6 border-2 border-transparent">
+        Procesar Inscripción
+      </button>
+    </form>
+  </main>
+</Layout>
+
+<script>
+  import { supabase } from '../lib/supabase.js';
+
+  const form = document.getElementById('registroForm');
+  const mensaje = document.getElementById('mensaje');
+  const btnSubmit = document.getElementById('btnSubmit');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); 
+    
+    btnSubmit.textContent = "PROCESANDO...";
+    btnSubmit.disabled = true;
+
+    const nombre = document.getElementById('nombre').value;
+    const email = document.getElementById('email').value;
+    const telefono = document.getElementById('telefono').value;
+    const nivel = document.getElementById('nivel').value;
+    
+    const metodo_pago = document.getElementById('metodo_pago').value;
+    const monto = document.getElementById('monto').value;
+    const referencia = document.getElementById('referencia').value;
+    
+    const fecha = new Date();
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const mesActual = `${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+
+    try {
+      const { data: alumno, error: errorAlumno } = await supabase
+        .from('alumnos')
+        .insert([{ nombre, email, telefono, nivel }])
+        .select() 
+        .single();
+
+      if (errorAlumno) throw errorAlumno;
+
+      const { error: errorPago } = await supabase
+        .from('pagos')
+        .insert([{ 
+          alumno_id: alumno.id, 
+          mes_correspondiente: mesActual, 
+          monto: monto, 
+          metodo_pago: metodo_pago, 
+          referencia: referencia 
+        }]);
+
+      if (errorPago) throw errorPago;
+
+      form.reset();
+      mensaje.textContent = "¡Inscripción exitosa! Hemos registrado tu pago.";
+      // Estilo de éxito adaptado a la nueva marca
+      mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-lime-400 text-black block mt-2";
+
+    } catch (error) {
+      console.error(error);
+      mensaje.textContent = "Hubo un error. Por favor intenta nuevamente.";
+      // Estilo de error adaptado
+      mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-pink-600 text-white block mt-2";
+    } finally {
+      btnSubmit.textContent = "Procesar Inscripción";
+      btnSubmit.disabled = false;
+    }
+  });
+</script>
