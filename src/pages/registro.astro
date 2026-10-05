@@ -3,86 +3,125 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
-  <!-- Navegación estilo Pupi Bike -->
+  <!-- Navegación -->
   <nav class="bg-black text-white p-4 border-b-4 border-lime-400">
-    <div class="container mx-auto flex justify-between items-center">
-      <a href="/" class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6 hover:text-cyan-400 transition">PUPI <span class="text-cyan-400">BIKE</span></a>
-      <a href="/" class="font-bold hover:text-lime-400 transition italic uppercase">Volver al inicio</a>
+    <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
+      <a href="/" class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6 hover:opacity-80 transition">
+        PUPI BIKE 
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
+      </a>
+      <ul class="hidden md:flex space-x-4 items-center">
+        <li><a href="/login" class="text-cyan-400 border-2 border-cyan-400 px-6 py-2 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition transform hover:scale-105 shadow-[4px_4px_0px_#00d2ff]">Ingresar</a></li>
+      </ul>
     </div>
   </nav>
 
-  <main class="container mx-auto px-4 py-16 max-w-3xl relative">
-    <!-- Luces de fondo sutiles -->
-    <div class="absolute top-10 left-0 w-64 h-64 bg-cyan-600 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none"></div>
+  <main class="container mx-auto px-4 py-16 max-w-4xl relative">
+    <div class="absolute top-10 left-0 w-64 h-64 bg-pink-600 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none"></div>
 
-    <h1 class="text-4xl md:text-5xl font-black text-white mb-2 text-center uppercase italic transform -skew-x-6 drop-shadow-md">Inscripción y <span class="text-lime-400">Pago</span></h1>
-    <p class="text-zinc-400 mb-10 text-center italic text-lg font-medium">Temporada 2026-2027. Llena tus datos y reporta tu mensualidad.</p>
+    <h1 class="text-4xl md:text-5xl font-black text-white mb-2 text-center uppercase italic transform -skew-x-6 drop-shadow-md">Inscripción a la <span class="text-lime-400">Academia</span></h1>
+    <p class="text-zinc-400 mb-10 text-center italic text-lg font-medium">Crea tu cuenta de representante y registra a tu futuro campeón.</p>
 
-    <!-- El Formulario con estilo extremo -->
-    <form id="registroForm" class="bg-zinc-900 p-8 md:p-10 shadow-[8px_8px_0px_#00d2ff] border-2 border-cyan-400 flex flex-col gap-8 relative z-10">
+    <!-- Formulario -->
+    <form id="registroForm" class="bg-zinc-900 p-8 md:p-10 shadow-[8px_8px_0px_#a3e635] border-2 border-lime-400 flex flex-col gap-8 relative z-10">
       
-      <!-- SECCIÓN 1: Datos del Alumno -->
+      <!-- SECCIÓN 1: Seguridad (Representante) -->
       <div>
-        <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#a3e635] mb-6">
-          <h2 class="text-xl font-black uppercase italic text-lime-400 tracking-wider">Datos del Alumno</h2>
+        <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#00d2ff] mb-6">
+          <h2 class="text-xl font-black uppercase italic text-cyan-400 tracking-wider">1. Credenciales de Acceso</h2>
         </div>
-        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Nombre Completo</label>
-            <input type="text" id="nombre" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2">
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Correo Electrónico (Representante)</label>
+            <input type="email" id="email" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
           </div>
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Correo Electrónico</label>
-            <input type="email" id="email" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2">
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Crear Contraseña</label>
+            <input type="password" id="password" required minlength="6" placeholder="Mínimo 6 caracteres" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: Ficha Técnica (Alumno) -->
+      <div>
+        <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#00d2ff] mb-6 mt-4">
+          <h2 class="text-xl font-black uppercase italic text-cyan-400 tracking-wider">2. Ficha del Atleta</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Nombre Completo del Niño/a</label>
+            <input type="text" id="nombre" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
           </div>
           <div>
             <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Teléfono / WhatsApp</label>
-            <input type="text" id="telefono" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2">
+            <input type="text" id="telefono" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
           </div>
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Nivel / Horario</label>
-            <select id="nivel" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2 appearance-none">
-              <option value="Principiante">Principiante (Rueditas / Básico)</option>
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Fecha de Nacimiento</label>
+            <input type="date" id="fecha_nacimiento" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
+          </div>
+          <div>
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Lugar de Residencia</label>
+            <input type="text" id="direccion" placeholder="Ciudad, Sector" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
+          </div>
+          <div>
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Nivel a inscribir</label>
+            <select id="nivel" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2 appearance-none">
+              <option value="Principiante">Principiante (Rueditas / Balance)</option>
               <option value="Intermedio">Intermedio (MTB Básico)</option>
-              <option value="Avanzado">Avanzado (Turno Académico 4-6 PM)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECCIÓN 2: Reporte de Pago -->
-      <div class="mt-4">
-        <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#a3e635] mb-6">
-          <h2 class="text-xl font-black uppercase italic text-lime-400 tracking-wider">Reporte de Pago</h2>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Método de Pago</label>
-            <select id="metodo_pago" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2 appearance-none">
-              <option value="Pago Movil">Pago Móvil</option>
-              <option value="Zelle">Zelle</option>
-              <option value="Efectivo">Efectivo</option>
+              <option value="Avanzado">Avanzado (Competición)</option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Monto Pagado</label>
-            <input type="number" id="monto" placeholder="Ej: 30" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2">
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">URL de la Foto del Atleta</label>
+            <input type="url" id="foto_url" placeholder="https://ejemplo.com/foto.jpg" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2 placeholder-zinc-700">
           </div>
         </div>
-        <div class="mt-6">
-          <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Número de Referencia Bancaria</label>
-          <input type="text" id="referencia" placeholder="Últimos 4 a 6 dígitos" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2">
+
+        <!-- SECCIÓN 3: Detalles de la Bicicleta (Checkboxes y datos) -->
+        <div class="bg-zinc-950 p-6 border-2 border-zinc-800 mt-6">
+          <h3 class="text-lime-400 font-black italic uppercase text-lg mb-4">Información de la Bicicleta</h3>
+          
+          <!-- Checkboxes múltiples -->
+          <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-2">Tipos de bicicleta que posee (Puedes marcar varias)</label>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <label class="flex items-center gap-2 text-white font-bold cursor-pointer bg-zinc-900 p-3 border border-zinc-800 hover:border-lime-400 transition">
+              <input type="checkbox" name="tipos_bici" value="MTB" class="w-4 h-4 accent-lime-400"> MTB
+            </label>
+            <label class="flex items-center gap-2 text-white font-bold cursor-pointer bg-zinc-900 p-3 border border-zinc-800 hover:border-lime-400 transition">
+              <input type="checkbox" name="tipos_bici" value="Ruta" class="w-4 h-4 accent-lime-400"> Ruta
+            </label>
+            <label class="flex items-center gap-2 text-white font-bold cursor-pointer bg-zinc-900 p-3 border border-zinc-800 hover:border-lime-400 transition">
+              <input type="checkbox" name="tipos_bici" value="Gravel" class="w-4 h-4 accent-lime-400"> Gravel
+            </label>
+            <label class="flex items-center gap-2 text-white font-bold cursor-pointer bg-zinc-900 p-3 border border-zinc-800 hover:border-lime-400 transition">
+              <input type="checkbox" name="tipos_bici" value="Balance" class="w-4 h-4 accent-lime-400"> Balance
+            </label>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Rin</label>
+              <input type="text" id="rin_bici" placeholder="Ej: Rin 20, Rin 29" required class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400">
+            </div>
+            <div>
+              <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Marca</label>
+              <input type="text" id="marca_bici" placeholder="Ej: Specialized, Trek" required class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400">
+            </div>
+            <div>
+              <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Color</label>
+              <input type="text" id="color_bici" placeholder="Ej: Negro y Neón" required class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400">
+            </div>
+          </div>
         </div>
+
       </div>
 
-      <!-- Cajón para mostrar mensajes -->
       <div id="mensaje" class="hidden"></div>
 
-      <!-- Botón de Enviar Extremo -->
-      <button type="submit" id="btnSubmit" class="bg-blue-600 text-white font-black italic uppercase text-2xl py-4 hover:bg-blue-500 transition-all transform -skew-x-6 shadow-[6px_6px_0px_#a3e635] hover:translate-y-1 hover:shadow-[2px_2px_0px_#a3e635] mt-6 border-2 border-transparent">
-        Procesar Inscripción
+      <button type="submit" id="btnSubmit" class="bg-lime-400 text-black font-black italic uppercase text-2xl py-4 hover:bg-lime-300 transition-all transform -skew-x-6 shadow-[6px_6px_0px_#db2777] hover:translate-y-1 hover:shadow-[2px_2px_0px_#db2777] mt-6 border-2 border-transparent">
+        Crear Cuenta
       </button>
     </form>
   </main>
@@ -98,55 +137,73 @@ import Layout from '../layouts/Layout.astro';
   form.addEventListener('submit', async (e) => {
     e.preventDefault(); 
     
-    btnSubmit.textContent = "PROCESANDO...";
+    btnSubmit.textContent = "CREANDO CUENTA...";
     btnSubmit.disabled = true;
 
-    const nombre = document.getElementById('nombre').value;
     const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const nombre = document.getElementById('nombre').value;
     const telefono = document.getElementById('telefono').value;
+    const fecha_nacimiento = document.getElementById('fecha_nacimiento').value;
+    const direccion = document.getElementById('direccion').value;
     const nivel = document.getElementById('nivel').value;
-    
-    const metodo_pago = document.getElementById('metodo_pago').value;
-    const monto = document.getElementById('monto').value;
-    const referencia = document.getElementById('referencia').value;
-    
-    const fecha = new Date();
-    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    const mesActual = `${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+    const foto_url = document.getElementById('foto_url').value;
+
+    // Recoger los checkboxes marcados
+    const checkboxes = document.querySelectorAll('input[name="tipos_bici"]:checked');
+    const tipos_bici = Array.from(checkboxes).map(cb => cb.value);
+
+    const rin_bici = document.getElementById('rin_bici').value;
+    const marca_bici = document.getElementById('marca_bici').value;
+    const color_bici = document.getElementById('color_bici').value;
 
     try {
-      const { data: alumno, error: errorAlumno } = await supabase
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+      });
+
+      if (authError) throw authError;
+      
+      const userId = authData.user?.id;
+      if (!userId) throw new Error("No se pudo obtener el ID del usuario.");
+
+      const { error: errorAlumno } = await supabase
         .from('alumnos')
-        .insert([{ nombre, email, telefono, nivel }])
-        .select() 
-        .single();
+        .insert([{ 
+          user_id: userId,
+          email: email,
+          nombre: nombre, 
+          telefono: telefono,
+          fecha_nacimiento: fecha_nacimiento,
+          direccion: direccion,
+          nivel: nivel,
+          foto_url: foto_url,
+          tipos_bici: tipos_bici,
+          rin_bici: rin_bici,
+          marca_bici: marca_bici,
+          color_bici: color_bici
+        }]);
 
       if (errorAlumno) throw errorAlumno;
 
-      const { error: errorPago } = await supabase
-        .from('pagos')
-        .insert([{ 
-          alumno_id: alumno.id, 
-          mes_correspondiente: mesActual, 
-          monto: monto, 
-          metodo_pago: metodo_pago, 
-          referencia: referencia 
-        }]);
-
-      if (errorPago) throw errorPago;
-
       form.reset();
-      mensaje.textContent = "¡Inscripción exitosa! Hemos registrado tu pago.";
-      // Estilo de éxito adaptado a la nueva marca
+      mensaje.textContent = "¡Inscripción exitosa! Redirigiendo a tu panel...";
       mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-lime-400 text-black block mt-2";
+      
+      setTimeout(() => {
+         window.location.href = '/dashboard';
+      }, 2000);
 
     } catch (error) {
       console.error(error);
-      mensaje.textContent = "Hubo un error. Por favor intenta nuevamente.";
-      // Estilo de error adaptado
+      let errorMsg = "Hubo un error. Verifica tus datos.";
+      if (error.message.includes('already registered')) errorMsg = "Este correo ya está registrado.";
+      
+      mensaje.textContent = errorMsg;
       mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-pink-600 text-white block mt-2";
     } finally {
-      btnSubmit.textContent = "Procesar Inscripción";
+      btnSubmit.textContent = "Crear Cuenta";
       btnSubmit.disabled = false;
     }
   });
