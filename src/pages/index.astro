@@ -3,29 +3,38 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
-  <!-- Menú de Navegación -->
-  <nav class="bg-black text-white p-4 border-b-4 border-lime-400 fixed w-full z-50">
-    <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <!-- Logo Pupi Bike Kids -->
-        <h1 class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6">
-          PUPI BIKE 
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
-        </h1>
-      </div>
-      
-      <ul class="hidden md:flex space-x-4 items-center">
-        <li><a href="#niveles" class="font-bold hover:text-cyan-400 transition italic uppercase mr-2">Niveles</a></li>
-        <li><a href="#equipo" class="font-bold hover:text-lime-400 transition italic uppercase mr-4">Nuestro Equipo</a></li>
-        
-        <!-- NUEVO: Botón para Alumnos ya inscritos -->
-        <li><a href="/login" class="text-cyan-400 border-2 border-cyan-400 px-6 py-2 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition transform hover:scale-105 shadow-[4px_4px_0px_#00d2ff]">Ingresar</a></li>
-        
-        <!-- Botón para Nuevos Alumnos -->
-        <li><a href="/registro" class="bg-lime-400 text-black px-6 py-2 font-black italic uppercase tracking-wide hover:bg-lime-300 transition transform hover:scale-105 shadow-[4px_4px_0px_#db2777] border-2 border-transparent ml-2">¡Inscríbete!</a></li>
-      </ul>
-    </div>
-  </nav>
+  <!-- Navegación Principal Responsiva -->
+<nav class="bg-black text-white p-4 border-b-4 border-lime-400 sticky top-0 z-50">
+  <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
+    <a href="/" class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6 hover:opacity-80 transition">
+      PUPI BIKE 
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
+    </a>
+
+    <!-- Enlaces para Escritorio -->
+    <ul class="hidden md:flex space-x-6 items-center">
+      <li><a href="#niveles" class="font-bold hover:text-cyan-400 transition uppercase italic text-sm">Niveles</a></li>
+      <li><a href="#equipo" class="font-bold hover:text-cyan-400 transition uppercase italic text-sm">Equipo</a></li>
+      <li><a href="/login" class="text-cyan-400 border-2 border-cyan-400 px-6 py-2 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition transform hover:scale-105 shadow-[4px_4px_0px_#00d2ff]">Ingresar</a></li>
+      <li><a href="/registro" class="bg-lime-400 text-black px-6 py-2 font-black italic uppercase tracking-wide hover:bg-lime-300 transition transform hover:scale-105 shadow-[4px_4px_0px_#db2777]">¡Inscríbete!</a></li>
+    </ul>
+
+    <!-- Botón Hamburguesa para Móvil -->
+    <button id="btnMenuMobile" class="md:hidden text-lime-400 focus:outline-none p-2 border border-lime-400">
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Menú Desplegable Móvil (Oculto por defecto) -->
+  <div id="menuMobile" class="hidden md:hidden bg-zinc-950 border-t border-zinc-800 px-4 pt-4 pb-6 flex flex-col gap-4 mt-4 shadow-xl">
+    <a href="#niveles" class="text-white font-bold uppercase italic text-lg hover:text-cyan-400 transition">Niveles</a>
+    <a href="#equipo" class="text-white font-bold uppercase italic text-lg hover:text-cyan-400 transition">Equipo</a>
+    <a href="/login" class="text-center text-cyan-400 border-2 border-cyan-400 py-3 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition shadow-[4px_4px_0px_#00d2ff]">Ingresar</a>
+    <a href="/registro" class="text-center bg-lime-400 text-black py-3 font-black italic uppercase tracking-wide hover:bg-lime-300 transition shadow-[4px_4px_0px_#db2777]">¡Inscríbete!</a>
+  </div>
+</nav>
 
   <!-- Hero Section -->
   <header class="bg-zinc-950 pt-32 pb-24 lg:min-h-[85vh] flex items-center justify-center text-center relative overflow-hidden">
@@ -330,6 +339,17 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
+
+// Script rápido para alternar el menú en celulares
+  const btnMenuMobile = document.getElementById('btnMenuMobile');
+  const menuMobile = document.getElementById('menuMobile');
+
+  if (btnMenuMobile && menuMobile) {
+    btnMenuMobile.addEventListener('click', () => {
+      menuMobile.classList.toggle('hidden');
+    });
+  }
+
   import { supabase } from '../lib/supabase.js';
 
   // LÓGICA DEL FORMULARIO DE LEADS
