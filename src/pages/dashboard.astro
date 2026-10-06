@@ -24,7 +24,6 @@ import Layout from '../layouts/Layout.astro';
 
   <!-- Contenido del Dashboard -->
   <main id="dashboardContenido" class="container mx-auto px-4 py-12 max-w-6xl relative hidden min-h-[80vh]">
-    <!-- Luces de fondo -->
     <div class="absolute top-0 right-0 w-80 h-80 bg-pink-600 rounded-full mix-blend-screen filter blur-[120px] opacity-10 pointer-events-none"></div>
 
     <!-- Encabezado de Bienvenida -->
@@ -37,60 +36,62 @@ import Layout from '../layouts/Layout.astro';
       <p class="text-zinc-400 italic font-medium text-lg">Este es tu panel de control y autogestión de la academia.</p>
     </div>
 
-    <!-- SECCIÓN SUPERIOR: 2 Columnas (Ficha Técnica + Estado de Pagos / Merch) -->
+    <!-- SECCIÓN SUPERIOR: Ficha Técnica + Estado de Pagos / Merch -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-16">
       
-      <!-- COLUMNA 1: Ficha del Atleta (2 espacios) -->
+      <!-- COLUMNA 1: Ficha del Atleta -->
       <div class="lg:col-span-2 flex flex-col gap-8">
         <section class="bg-zinc-900 p-8 shadow-[8px_8px_0px_#a3e635] border-2 border-lime-400 relative">
           
-          <!-- Foto y Título -->
-          <div class="flex flex-col sm:flex-row items-center gap-6 mb-8 border-b border-zinc-700 pb-6">
-            <div class="w-28 h-28 rounded-full border-4 border-cyan-400 overflow-hidden bg-zinc-950 flex-shrink-0 shadow-lg">
-              <img id="uiFoto" src="" alt="Foto Atleta" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80'" />
+          <!-- Foto, Título y Botón de Editar Atractivo Arriba -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8 border-b border-zinc-700 pb-6">
+            <div class="flex items-center gap-6">
+              <div class="w-28 h-28 rounded-full border-4 border-cyan-400 overflow-hidden bg-zinc-950 flex-shrink-0 shadow-lg">
+                <img id="uiFoto" src="" alt="Foto Atleta" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80'" />
+              </div>
+              <div class="text-center sm:text-left">
+                <h2 class="text-2xl font-black italic uppercase text-lime-400">Ficha Técnica</h2>
+                <p id="uiNombreCompleto" class="text-white font-bold text-xl mt-1">...</p>
+                <p id="uiNivel" class="text-cyan-400 font-bold uppercase italic text-sm mt-1">...</p>
+              </div>
             </div>
-            <div class="text-center sm:text-left">
-              <h2 class="text-2xl font-black italic uppercase text-lime-400">Ficha Técnica del Atleta</h2>
-              <p id="uiNombreCompleto" class="text-white font-bold text-xl mt-1">...</p>
-              <p id="uiNivel" class="text-cyan-400 font-bold uppercase italic text-sm mt-1">...</p>
-            </div>
+
+            <!-- BOTÓN EDITAR FICHA -->
+            <button type="button" id="btnAbrirModalEditar" class="bg-cyan-400 text-black font-black italic uppercase px-5 py-3 hover:bg-cyan-300 transition-all transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] border-2 border-transparent text-sm flex-shrink-0">
+              ✏️ Editar Ficha
+            </button>
           </div>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Datos Personales -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div>
+              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Cédula (Atleta / Representante)</p>
+              <p id="uiCedula" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
+            </div>
+            <div>
+              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Correo Electrónico</p>
+              <p id="uiEmail" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2 lowercase">...</p>
+            </div>
             <div>
               <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Fecha de Nacimiento</p>
               <p id="uiNacimiento" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
             </div>
             <div>
-              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Lugar de Residencia</p>
-              <p id="uiDireccion" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
-            </div>
-            <div>
-              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Teléfono de Contacto</p>
+              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Teléfono / WhatsApp</p>
               <p id="uiTelefono" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
             </div>
-            <div>
-              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Modalidades / Bicicletas</p>
-              <p id="uiTiposBici" class="text-lime-400 font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
-            </div>
-            <div class="md:col-span-2 grid grid-cols-3 gap-3 bg-zinc-950 p-4 border border-zinc-800">
-              <div>
-                <p class="text-zinc-500 text-[10px] font-black uppercase">Rin</p>
-                <p id="uiRin" class="text-white font-bold text-sm">...</p>
-              </div>
-              <div>
-                <p class="text-zinc-500 text-[10px] font-black uppercase">Marca</p>
-                <p id="uiMarca" class="text-white font-bold text-sm">...</p>
-              </div>
-              <div>
-                <p class="text-zinc-500 text-[10px] font-black uppercase">Color</p>
-                <p id="uiColor" class="text-white font-bold text-sm">...</p>
-              </div>
+            <div class="md:col-span-2">
+              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Dirección / Residencia</p>
+              <p id="uiDireccion" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
             </div>
           </div>
 
-          <div class="mt-8 text-right">
-            <a href="https://wa.me/584248781128" target="_blank" class="text-zinc-400 hover:text-white text-sm font-bold italic transition underline">¿Necesitas actualizar tus datos? Contáctanos</a>
+          <!-- Inventario de Bicicletas -->
+          <div class="border-t border-zinc-700 pt-6">
+            <h3 class="text-lime-400 font-black italic uppercase text-lg mb-4">Inventario de Bicicletas</h3>
+            <div id="contenedorBicicletasVisual" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Se inyectarán dinámicamente -->
+            </div>
           </div>
         </section>
       </div>
@@ -119,11 +120,14 @@ import Layout from '../layouts/Layout.astro';
 
         <!-- Card de Merch / Maillot Oficial -->
         <section class="bg-zinc-900 p-6 shadow-[8px_8px_0px_#00d2ff] border-2 border-cyan-400 relative overflow-hidden group">
-          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-xl pointer-events-none"></div>
-          
           <h3 class="text-xl font-black italic uppercase text-cyan-400 mb-2">Maillot Oficial</h3>
-          <p class="text-zinc-400 text-xs mb-4">Viste los colores extremos de Pupi Bike Kids en cada rodada.</p>
+          <p class="text-zinc-400 text-xs mb-4">Viste los colores extremos de Pupi Bike Kids.</p>
           
+          <!-- Imagen del Maillot Local -->
+          <div class="bg-zinc-950 p-2 border border-zinc-800 mb-4 rounded overflow-hidden flex justify-center items-center h-40">
+            <img src="/maillot.webp" alt="Maillot Oficial" class="h-full object-cover transform group-hover:scale-105 transition-transform duration-300" />
+          </div>
+
           <div class="bg-zinc-950 p-3 border border-zinc-800 mb-4 text-center">
             <span class="text-white font-black italic text-lg">Edición Pro 2026</span>
             <p class="text-lime-400 font-bold text-sm">35$ (Todas las tallas)</p>
@@ -135,85 +139,195 @@ import Layout from '../layouts/Layout.astro';
         </section>
 
       </div>
-
     </div>
 
-    <!-- SECCIÓN INFERIOR: Calendario de Actividades del Mes -->
+    <!-- SECCIÓN INFERIOR: Calendario de Actividades -->
     <section class="bg-zinc-900 p-8 border-t-4 border-lime-400 shadow-xl relative">
       <div class="text-center mb-10">
         <div class="bg-black inline-block px-8 py-2 transform -skew-x-6 shadow-[6px_6px_0px_#a3e635] border border-zinc-800">
           <h2 class="text-2xl md:text-3xl font-black uppercase italic text-white tracking-wider">Calendario de <span class="text-lime-400">Actividades</span></h2>
         </div>
-        <p class="text-zinc-400 mt-3 font-bold italic text-sm">No te pierdas nuestros próximos eventos y rutas del mes.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-zinc-950 p-5 border-l-4 border-cyan-400 shadow-lg">
           <div class="text-cyan-400 font-black text-xl mb-1">15 OCT</div>
           <h3 class="text-base font-bold text-white mb-2 uppercase italic">Ruta Nocturna Familiar</h3>
-          <p class="text-zinc-400 text-xs">Recorrido seguro y divertido por la ciudad. ¡Trae tus luces!</p>
         </div>
         <div class="bg-zinc-950 p-5 border-l-4 border-pink-500 shadow-lg">
           <div class="text-pink-500 font-black text-xl mb-1">22 OCT</div>
           <h3 class="text-base font-bold text-white mb-2 uppercase italic">Clínica de Saltos</h3>
-          <p class="text-zinc-400 text-xs">Aprende la técnica correcta para despegar y aterrizar con seguridad.</p>
         </div>
         <div class="bg-zinc-950 p-5 border-l-4 border-lime-400 shadow-lg">
           <div class="text-lime-400 font-black text-xl mb-1">30 OCT</div>
           <h3 class="text-base font-bold text-white mb-2 uppercase italic">Competencia Halloween</h3>
-          <p class="text-zinc-400 text-xs">Ven disfrazado y demuestra lo aprendido. Premios sorpresa.</p>
         </div>
       </div>
     </section>
-
   </main>
 
-  <!-- MODAL PARA REPORTAR PAGO -->
+  <!-- MODAL REPORTAR PAGO -->
   <div id="modalPago" class="fixed inset-0 bg-black/80 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
     <div class="bg-zinc-900 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] p-6 md:p-8 w-full max-w-md mx-auto relative transform -skew-x-2">
       <button type="button" id="btnCerrarModal" class="absolute top-3 right-4 text-zinc-500 hover:text-pink-500 transform skew-x-2 text-2xl font-black">X</button>
       
       <div class="transform skew-x-2">
         <h2 class="text-2xl font-black uppercase italic text-pink-500 mb-6 border-b border-zinc-800 pb-2">Reportar Transferencia</h2>
-        
         <form id="formPago" class="flex flex-col gap-4">
           <div>
             <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Método de Pago</label>
-            <select id="inputMetodo" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:outline-none focus:border-pink-500 appearance-none">
+            <select id="inputMetodo" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold">
               <option value="Pago Movil">Pago Móvil</option>
               <option value="Transferencia Banesco">Transferencia Banesco</option>
               <option value="Zelle">Zelle</option>
               <option value="Efectivo">Efectivo en Pista</option>
             </select>
           </div>
-          
           <div>
             <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Número de Referencia</label>
-            <input type="text" id="inputReferencia" required placeholder="Ej: 12345678" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:outline-none focus:border-pink-500 placeholder-zinc-700">
+            <input type="text" id="inputReferencia" required placeholder="Ej: 12345678" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold">
           </div>
-
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Monto ($)</label>
-              <input type="number" id="inputMonto" required placeholder="30" min="1" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:outline-none focus:border-pink-500 placeholder-zinc-700">
+              <input type="number" id="inputMonto" required placeholder="30" min="1" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold">
             </div>
             <div>
               <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Mes que Cancela</label>
-              <select id="inputMes" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:outline-none focus:border-pink-500 appearance-none">
+              <select id="inputMes" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold">
                 <option value="Octubre 2026">Octubre 2026</option>
                 <option value="Noviembre 2026">Noviembre 2026</option>
                 <option value="Diciembre 2026">Diciembre 2026</option>
               </select>
             </div>
           </div>
-
           <input type="hidden" id="inputAlumnoId" value="">
-
           <div id="mensajePago" class="hidden text-sm font-bold uppercase italic text-center p-2 border mt-2"></div>
+          <button type="submit" id="btnEnviarPago" class="w-full bg-pink-600 text-white font-black italic uppercase text-lg py-3 hover:bg-pink-500 transition-all mt-2">Enviar Reporte</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
-          <button type="submit" id="btnEnviarPago" class="w-full bg-pink-600 text-white font-black italic uppercase text-lg py-3 hover:bg-pink-500 transition-all mt-2 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] border-2 border-transparent">
-            Enviar Reporte
-          </button>
+  <!-- MODAL EDITAR FICHA -->
+  <div id="modalEditar" class="fixed inset-0 bg-black/80 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+    <div class="bg-zinc-900 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] p-6 md:p-8 w-full max-w-3xl mx-auto relative transform -skew-x-2 max-h-[90vh] overflow-y-auto">
+      <button type="button" id="btnCerrarModalEditar" class="absolute top-3 right-4 text-zinc-500 hover:text-lime-400 transform skew-x-2 text-2xl font-black">X</button>
+      
+      <div class="transform skew-x-2">
+        <h2 class="text-2xl font-black uppercase italic text-lime-400 mb-6 border-b border-zinc-800 pb-2">Actualizar Ficha del Atleta</h2>
+        
+        <form id="formEditar" class="flex flex-col gap-6">
+          
+          <!-- Datos Personales -->
+          <div>
+            <h3 class="text-cyan-400 font-black italic uppercase text-sm mb-3">1. Datos Personales</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Nombre y Apellido</label>
+                <input type="text" id="editNombre" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Cédula (Atleta / Representante)</label>
+                <input type="text" id="editCedula" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Fecha de Nacimiento</label>
+                <input type="date" id="editNacimiento" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Correo Electrónico</label>
+                <input type="email" id="editEmail" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold lowercase">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Teléfono / WhatsApp</label>
+                <input type="text" id="editTelefono" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Nivel Actual</label>
+                <select id="editNivel" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+                  <option value="PRINCIPIANTE">PRINCIPIANTE</option>
+                  <option value="INTERMEDIO">INTERMEDIO</option>
+                  <option value="AVANZADO">AVANZADO</option>
+                </select>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Dirección / Residencia</label>
+                <input type="text" id="editDireccion" placeholder="Ciudad, Urbanización, Calle..." required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">URL de la Foto</label>
+                <input type="url" id="editFoto" class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold">
+              </div>
+            </div>
+          </div>
+
+          <!-- Inventario de Bicicletas -->
+          <div class="border-t border-zinc-800 pt-4">
+            <h3 class="text-cyan-400 font-black italic uppercase text-sm mb-3">2. Inventario de Bicicletas</h3>
+            
+            <div class="space-y-4">
+              <!-- Bici 1 -->
+              <div class="bg-zinc-950 p-4 border border-zinc-800">
+                <span class="text-lime-400 font-black text-xs uppercase italic mb-2 block">Bicicleta 1 (Principal)</span>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div>
+                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Tipo</label>
+                    <select id="editBici1Tipo" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold">
+                      <option value="MTB">MTB</option>
+                      <option value="RUTA">RUTA</option>
+                      <option value="GRAVEL">GRAVEL</option>
+                      <option value="BALANCE">BALANCE</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Rin</label>
+                    <input type="text" id="editBici1Rin" placeholder="Ej: 29" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Marca</label>
+                    <input type="text" id="editBici1Marca" placeholder="Ej: Giant" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Color</label>
+                    <input type="text" id="editBici1Color" placeholder="Ej: Verde" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bici 2 -->
+              <div class="bg-zinc-950 p-4 border border-zinc-800">
+                <span class="text-cyan-400 font-black text-xs uppercase italic mb-2 block">Bicicleta 2 (Opcional)</span>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div>
+                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Tipo</label>
+                    <select id="editBici2Tipo" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold">
+                      <option value="">-- Ninguna --</option>
+                      <option value="MTB">MTB</option>
+                      <option value="RUTA">RUTA</option>
+                      <option value="GRAVEL">GRAVEL</option>
+                      <option value="BALANCE">BALANCE</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Rin</label>
+                    <input type="text" id="editBici2Rin" placeholder="Ej: 20" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Marca</label>
+                    <input type="text" id="editBici2Marca" placeholder="Ej: Trek" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Color</label>
+                    <input type="text" id="editBici2Color" placeholder="Ej: Negro" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="mensajeEditar" class="hidden text-sm font-bold uppercase italic text-center p-2 border mt-2"></div>
+          <button type="submit" id="btnGuardarEdicion" class="w-full bg-lime-400 text-black font-black italic uppercase text-lg py-3 hover:bg-lime-300 transition-all mt-2 shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">Guardar Cambios</button>
         </form>
       </div>
     </div>
@@ -229,14 +343,9 @@ import Layout from '../layouts/Layout.astro';
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        window.location.href = '/login';
-        return;
-      }
+      if (!session) { window.location.href = '/login'; return; }
 
       const user = session.user;
-
       const { data: alumno, error } = await supabase
         .from('alumnos')
         .select('*')
@@ -246,35 +355,49 @@ import Layout from '../layouts/Layout.astro';
       if (error) throw error;
       if (!alumno) throw new Error("No se encontró la ficha del alumno.");
 
-      // Pintar datos del alumno
-      const primerNombre = alumno.nombre.split(' ')[0];
-      document.getElementById('uiNombre').textContent = primerNombre;
+      // Variables globales para el modal
+      window.currentCedula = alumno.cedula || '';
+      window.currentEmail = alumno.email || user.email;
+      window.currentDireccion = alumno.direccion || '';
+      window.currentNacimientoRaw = alumno.fecha_nacimiento || '';
+      window.currentBicicletas = alumno.tipos_bici || [];
+
+      // Pintar datos personales
+      document.getElementById('uiNombre').textContent = alumno.nombre.split(' ')[0];
       document.getElementById('uiNombreCompleto').textContent = alumno.nombre;
       document.getElementById('uiNivel').textContent = alumno.nivel;
+      document.getElementById('uiCedula').textContent = alumno.cedula || 'NO REGISTRADA';
+      document.getElementById('uiEmail').textContent = alumno.email || user.email;
       
-      const [anio, mes, dia] = alumno.fecha_nacimiento.split('-');
+      const [anio, mes, dia] = alumno.fecha_nacimiento ? alumno.fecha_nacimiento.split('-') : ['--', '--', '--'];
       document.getElementById('uiNacimiento').textContent = `${dia}/${mes}/${anio}`;
       
-      document.getElementById('uiDireccion').textContent = alumno.direccion || 'No registrada';
       document.getElementById('uiTelefono').textContent = alumno.telefono;
+      document.getElementById('uiDireccion').textContent = alumno.direccion || 'NO REGISTRADA';
       document.getElementById('inputAlumnoId').value = alumno.id;
 
-      // Foto
-      if (alumno.foto_url) {
-        document.getElementById('uiFoto').src = alumno.foto_url;
-      }
+      if (alumno.foto_url) document.getElementById('uiFoto').src = alumno.foto_url;
 
-      // Tipos de bicicleta (Array)
-      if (alumno.tipos_bici && alumno.tipos_bici.length > 0) {
-        document.getElementById('uiTiposBici').textContent = alumno.tipos_bici.join(', ');
+      // Renderizar el inventario de bicicletas en la tarjeta principal
+      const contenedorBicis = document.getElementById('contenedorBicicletasVisual');
+      contenedorBicis.innerHTML = '';
+      const bicisList = alumno.tipos_bici || []; 
+      const bicisValidas = bicisList.filter(b => b && (b.rin || b.marca || b.color || b.tipo));
+
+      if (bicisValidas.length > 0) {
+        bicisValidas.forEach((bici, index) => {
+          contenedorBicis.innerHTML += `
+            <div class="bg-zinc-950 p-4 border border-zinc-800 transform -skew-x-2">
+              <span class="text-lime-400 font-black text-xs uppercase italic block mb-1">Bicicleta ${index + 1} (${bici.tipo || 'BICICLETA'})</span>
+              <p class="text-white text-sm font-bold">Rin: <span class="text-cyan-400">${bici.rin || 'N/A'}</span></p>
+              <p class="text-white text-sm font-bold">Marca: <span class="text-cyan-400">${bici.marca || 'N/A'}</span></p>
+              <p class="text-white text-sm font-bold">Color: <span class="text-cyan-400">${bici.color || 'N/A'}</span></p>
+            </div>
+          `;
+        });
       } else {
-        document.getElementById('uiTiposBici').textContent = 'No especificado';
+        contenedorBicis.innerHTML = `<p class="text-zinc-500 text-sm italic">No hay bicicletas registradas.</p>`;
       }
-
-      // Detalles técnicos
-      document.getElementById('uiRin').textContent = alumno.rin_bici || 'N/A';
-      document.getElementById('uiMarca').textContent = alumno.marca_bici || 'N/A';
-      document.getElementById('uiColor').textContent = alumno.color_bici || 'N/A';
 
       // Verificación de Solvencia
       const fechaActual = new Date();
@@ -306,7 +429,7 @@ import Layout from '../layouts/Layout.astro';
       dashboardContenido.classList.remove('hidden');
 
     } catch (error) {
-      console.error("Error cargando el dashboard:", error);
+      console.error(error);
       alert("Hubo un error cargando tu información.");
       window.location.href = '/';
     }
@@ -318,60 +441,136 @@ import Layout from '../layouts/Layout.astro';
     window.location.href = '/login';
   });
 
-  // Modal de Pagos
+  // Modal Pagos
   const modalPago = document.getElementById('modalPago');
-  const btnAbrirModalPago = document.getElementById('btnAbrirModalPago');
-  const btnCerrarModal = document.getElementById('btnCerrarModal');
-  const formPago = document.getElementById('formPago');
-  const mensajePago = document.getElementById('mensajePago');
-  const btnEnviarPago = document.getElementById('btnEnviarPago');
+  document.getElementById('btnAbrirModalPago').addEventListener('click', () => modalPago.classList.remove('hidden'));
+  document.getElementById('btnCerrarModal').addEventListener('click', () => { modalPago.classList.add('hidden'); document.getElementById('formPago').reset(); });
 
-  btnAbrirModalPago.addEventListener('click', () => modalPago.classList.remove('hidden'));
-  btnCerrarModal.addEventListener('click', () => {
-    modalPago.classList.add('hidden');
-    formPago.reset();
-    mensajePago.classList.add('hidden');
-  });
-
-  formPago.addEventListener('submit', async (e) => {
+  document.getElementById('formPago').addEventListener('submit', async (e) => {
     e.preventDefault();
-    btnEnviarPago.textContent = "ENVIANDO...";
-    btnEnviarPago.disabled = true;
-
-    const alumno_id = document.getElementById('inputAlumnoId').value;
-    const metodo_pago = document.getElementById('inputMetodo').value;
-    const referencia = document.getElementById('inputReferencia').value;
-    const monto = document.getElementById('inputMonto').value;
-    const mes_correspondiente = document.getElementById('inputMes').value;
+    const btn = document.getElementById('btnEnviarPago');
+    btn.textContent = "ENVIANDO..."; btn.disabled = true;
 
     try {
       const { error } = await supabase.from('pagos').insert([{ 
-        alumno_id: alumno_id,
-        metodo_pago: metodo_pago,
-        referencia: referencia,
-        monto: parseFloat(monto),
-        mes_correspondiente: mes_correspondiente
+        alumno_id: document.getElementById('inputAlumnoId').value,
+        metodo_pago: document.getElementById('inputMetodo').value,
+        referencia: document.getElementById('inputReferencia').value,
+        monto: parseFloat(document.getElementById('inputMonto').value),
+        mes_correspondiente: document.getElementById('inputMes').value
       }]);
+      if (error) throw error;
+
+      const msg = document.getElementById('mensajePago');
+      msg.textContent = "¡Pago reportado con éxito!";
+      msg.className = "text-sm font-bold uppercase italic text-center p-2 border border-lime-400 bg-lime-400/20 text-lime-400 block mt-2";
+      setTimeout(() => { modalPago.classList.add('hidden'); document.getElementById('formPago').reset(); msg.classList.add('hidden'); btn.textContent = "Enviar Reporte"; btn.disabled = false; }, 2000);
+    } catch (err) {
+      console.error(err);
+      alert("Error al reportar el pago.");
+      btn.textContent = "Enviar Reporte"; btn.disabled = false;
+    }
+  });
+
+  // Modal Edición
+  const modalEditar = document.getElementById('modalEditar');
+  document.getElementById('btnAbrirModalEditar').addEventListener('click', () => {
+    document.getElementById('editNombre').value = (document.getElementById('uiNombreCompleto')?.textContent || '').toUpperCase();
+    document.getElementById('editCedula').value = (window.currentCedula || '').toUpperCase();
+    document.getElementById('editNacimiento').value = window.currentNacimientoRaw || '';
+    document.getElementById('editEmail').value = (window.currentEmail || '').toLowerCase();
+    document.getElementById('editTelefono').value = (document.getElementById('uiTelefono')?.textContent || '').toUpperCase();
+    document.getElementById('editDireccion').value = (window.currentDireccion || '').toUpperCase();
+    document.getElementById('editNivel').value = (document.getElementById('uiNivel')?.textContent || 'INTERMEDIO').toUpperCase();
+    document.getElementById('editFoto').value = document.getElementById('uiFoto')?.src || '';
+
+    const bicis = window.currentBicicletas || [];
+    
+    // Cargar Bicicleta 1
+    if (bicis[0]) {
+      document.getElementById('editBici1Tipo').value = bicis[0].tipo || 'MTB';
+      document.getElementById('editBici1Rin').value = bicis[0].rin || '';
+      document.getElementById('editBici1Marca').value = bicis[0].marca || '';
+      document.getElementById('editBici1Color').value = bicis[0].color || '';
+    }
+    
+    // Cargar Bicicleta 2
+    if (bicis[1]) {
+      document.getElementById('editBici2Tipo').value = bicis[1].tipo || '';
+      document.getElementById('editBici2Rin').value = bicis[1].rin || '';
+      document.getElementById('editBici2Marca').value = bicis[1].marca || '';
+      document.getElementById('editBici2Color').value = bicis[1].color || '';
+    } else {
+      document.getElementById('editBici2Tipo').value = '';
+      document.getElementById('editBici2Rin').value = '';
+      document.getElementById('editBici2Marca').value = '';
+      document.getElementById('editBici2Color').value = '';
+    }
+    
+    modalEditar.classList.remove('hidden');
+  });
+
+  document.getElementById('btnCerrarModalEditar').addEventListener('click', () => modalEditar.classList.add('hidden'));
+
+  document.getElementById('formEditar').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btnGuardarEdicion');
+    btn.textContent = "GUARDANDO..."; 
+    btn.disabled = true;
+
+    const listaBicicletas = [];
+    
+    // Recoger Bicicleta 1
+    const b1Tipo = document.getElementById('editBici1Tipo').value;
+    if (b1Tipo) {
+      listaBicicletas.push({
+        tipo: b1Tipo,
+        rin: document.getElementById('editBici1Rin').value.toUpperCase(),
+        marca: document.getElementById('editBici1Marca').value.toUpperCase(),
+        color: document.getElementById('editBici1Color').value.toUpperCase()
+      });
+    }
+
+    // Recoger Bicicleta 2
+    const b2Tipo = document.getElementById('editBici2Tipo').value;
+    if (b2Tipo && b2Tipo !== "") {
+      listaBicicletas.push({
+        tipo: b2Tipo,
+        rin: document.getElementById('editBici2Rin').value.toUpperCase(),
+        marca: document.getElementById('editBici2Marca').value.toUpperCase(),
+        color: document.getElementById('editBici2Color').value.toUpperCase()
+      });
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const { error } = await supabase
+        .from('alumnos')
+        .update({
+          nombre: document.getElementById('editNombre').value.toUpperCase(),
+          cedula: document.getElementById('editCedula').value.toUpperCase(),
+          fecha_nacimiento: document.getElementById('editNacimiento').value,
+          email: document.getElementById('editEmail').value.toLowerCase(),
+          direccion: document.getElementById('editDireccion').value.toUpperCase(),
+          telefono: document.getElementById('editTelefono').value.toUpperCase(),
+          nivel: document.getElementById('editNivel').value.toUpperCase(),
+          foto_url: document.getElementById('editFoto').value,
+          tipos_bici: listaBicicletas
+        })
+        .eq('user_id', session.user.id);
 
       if (error) throw error;
 
-      mensajePago.textContent = "¡Pago reportado con éxito! En revisión.";
-      mensajePago.className = "text-sm font-bold uppercase italic text-center p-2 border border-lime-400 bg-lime-400/20 text-lime-400 block mt-2";
+      const msg = document.getElementById('mensajeEditar');
+      msg.textContent = "¡Ficha actualizada con éxito! Recargando...";
+      msg.className = "text-sm font-bold uppercase italic text-center p-2 border border-lime-400 bg-lime-400/20 text-lime-400 block mt-2";
       
-      setTimeout(() => {
-        modalPago.classList.add('hidden');
-        formPago.reset();
-        mensajePago.classList.add('hidden');
-        btnEnviarPago.textContent = "Enviar Reporte";
-        btnEnviarPago.disabled = false;
-      }, 2000);
-
-    } catch (error) {
-      console.error(error);
-      mensajePago.textContent = "Error al reportar. Intente nuevamente.";
-      mensajePago.className = "text-sm font-bold uppercase italic text-center p-2 border border-pink-500 bg-pink-500/20 text-pink-500 block mt-2";
-      btnEnviarPago.textContent = "Enviar Reporte";
-      btnEnviarPago.disabled = false;
+      setTimeout(() => { window.location.reload(); }, 1500);
+    } catch (err) {
+      console.error(err);
+      alert("Error al actualizar la ficha.");
+      btn.textContent = "Guardar Cambios"; 
+      btn.disabled = false;
     }
   });
 </script>
