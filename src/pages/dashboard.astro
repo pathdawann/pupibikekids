@@ -256,8 +256,8 @@ import Layout from '../layouts/Layout.astro';
                 <input type="text" id="editDireccion" placeholder="Ciudad, Urbanización, Calle..." required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
               </div>
               <div class="md:col-span-2">
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">URL de la Foto</label>
-                <input type="url" id="editFoto" class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold">
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Actualizar Fotografía (Opcional)</label>
+                <input type="file" id="editFotoFile" accept="image/*,image/jpeg,image/jpg,image/png,image/webp,image/heif" class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold file:mr-4 file:py-1 file:px-3 file:border-0 file:text-xs file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer">
               </div>
             </div>
           </div>
@@ -482,19 +482,18 @@ import Layout from '../layouts/Layout.astro';
     document.getElementById('editTelefono').value = (document.getElementById('uiTelefono')?.textContent || '').toUpperCase();
     document.getElementById('editDireccion').value = (window.currentDireccion || '').toUpperCase();
     document.getElementById('editNivel').value = (document.getElementById('uiNivel')?.textContent || 'INTERMEDIO').toUpperCase();
-    document.getElementById('editFoto').value = document.getElementById('uiFoto')?.src || '';
+    
+    // Limpiar el selector de archivo al abrir
+    document.getElementById('editFotoFile').value = '';
 
     const bicis = window.currentBicicletas || [];
     
-    // Cargar Bicicleta 1
     if (bicis[0]) {
       document.getElementById('editBici1Tipo').value = bicis[0].tipo || 'MTB';
       document.getElementById('editBici1Rin').value = bicis[0].rin || '';
       document.getElementById('editBici1Marca').value = bicis[0].marca || '';
       document.getElementById('editBici1Color').value = bicis[0].color || '';
     }
-    
-    // Cargar Bicicleta 2
     if (bicis[1]) {
       document.getElementById('editBici2Tipo').value = bicis[1].tipo || '';
       document.getElementById('editBici2Rin').value = bicis[1].rin || '';
@@ -515,35 +514,64 @@ import Layout from '../layouts/Layout.astro';
   document.getElementById('formEditar').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnGuardarEdicion');
-    btn.textContent = "GUARDANDO..."; 
+    btn.textContent = "GUARDANDO CAMBIOS..."; 
     btn.disabled = true;
-
-    const listaBicicletas = [];
-    
-    // Recoger Bicicleta 1
-    const b1Tipo = document.getElementById('editBici1Tipo').value;
-    if (b1Tipo) {
-      listaBicicletas.push({
-        tipo: b1Tipo,
-        rin: document.getElementById('editBici1Rin').value.toUpperCase(),
-        marca: document.getElementById('editBici1Marca').value.toUpperCase(),
-        color: document.getElementById('editBici1Color').value.toUpperCase()
-      });
-    }
-
-    // Recoger Bicicleta 2
-    const b2Tipo = document.getElementById('editBici2Tipo').value;
-    if (b2Tipo && b2Tipo !== "") {
-      listaBicicletas.push({
-        tipo: b2Tipo,
-        rin: document.getElementById('editBici2Rin').value.toUpperCase(),
-        marca: document.getElementById('editBici2Marca').value.toUpperCase(),
-        color: document.getElementById('editBici2Color').value.toUpperCase()
-      });
-    }
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
+      const userId = session.user.id;
+
+      // Obtener datos actuales del alumno para conservar la foto anterior si no se sube una nueva
+      const { data: alumnoActual } = await supabase
+        .from('alumnos')
+        .select('foto_url')
+        .eq('user_id', userId)
+        .single();
+
+      let fotoUrlFinal = alumnoActual?.foto_url || '';
+      const fotoFile = document.getElementById('editFotoFile').files[0];
+
+      // Si el usuario seleccionó una nueva foto, subirla a Supabase Storage
+      if (fotoFile) {
+        const fileExt = fotoFile.name.split('.').pop();
+        const fileName = `${userId}-${Date.now()}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('fotos-atletas')
+          .upload(fileName, fotoFile, { upsert: true });
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('fotos-atletas')
+          .getPublicUrl(fileName);
+
+        fotoUrlFinal = publicUrlData.publicUrl;
+      }
+
+      // Empaquetar bicicletas
+      const listaBicicletas = [];
+      const b1Tipo = document.getElementById('editBici1Tipo').value;
+      if (b1Tipo) {
+        listaBicicletas.push({
+          tipo: b1Tipo,
+          rin: document.getElementById('editBici1Rin').value.toUpperCase(),
+          marca: document.getElementById('editBici1Marca').value.toUpperCase(),
+          color: document.getElementById('editBici1Color').value.toUpperCase()
+        });
+      }
+
+      const b2Tipo = document.getElementById('editBici2Tipo').value;
+      if (b2Tipo && b2Tipo !== "") {
+        listaBicicletas.push({
+          tipo: b2Tipo,
+          rin: document.getElementById('editBici2Rin').value.toUpperCase(),
+          marca: document.getElementById('editBici2Marca').value.toUpperCase(),
+          color: document.getElementById('editBici2Color').value.toUpperCase()
+        });
+      }
+
+      // Actualizar registro en la tabla alumnos
       const { error } = await supabase
         .from('alumnos')
         .update({
@@ -554,10 +582,10 @@ import Layout from '../layouts/Layout.astro';
           direccion: document.getElementById('editDireccion').value.toUpperCase(),
           telefono: document.getElementById('editTelefono').value.toUpperCase(),
           nivel: document.getElementById('editNivel').value.toUpperCase(),
-          foto_url: document.getElementById('editFoto').value,
+          foto_url: fotoUrlFinal,
           tipos_bici: listaBicicletas
         })
-        .eq('user_id', session.user.id);
+        .eq('user_id', userId);
 
       if (error) throw error;
 
@@ -568,7 +596,7 @@ import Layout from '../layouts/Layout.astro';
       setTimeout(() => { window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
-      alert("Error al actualizar la ficha.");
+      alert("Error al actualizar la ficha o subir la imagen.");
       btn.textContent = "Guardar Cambios"; 
       btn.disabled = false;
     }
