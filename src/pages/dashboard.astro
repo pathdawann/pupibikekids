@@ -404,20 +404,29 @@ import Layout from '../layouts/Layout.astro';
       const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
       const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
 
+      // Buscar si tiene pagos para este mes
       const { data: pagosMes } = await supabase
         .from('pagos')
-        .select('id')
+        .select('estado')
         .eq('alumno_id', alumno.id)
         .eq('mes_correspondiente', mesActualStr);
 
       const uiEstatus = document.getElementById('uiEstatus');
       const uiIcono = document.getElementById('uiIconoEstatus');
 
-      if (pagosMes && pagosMes.length > 0) {
-        uiEstatus.textContent = "AL DÍA (REVISIÓN)";
-        uiEstatus.className = "text-xl font-black italic uppercase text-cyan-400";
-        uiIcono.className = "w-12 h-12 bg-cyan-400 rounded-full flex items-center justify-center text-black text-2xl shadow-[0_0_15px_#00d2ff]";
+      const pagoAprobado = pagosMes?.some(p => p.estado === 'aprobado');
+      const pagoEnRevision = pagosMes?.some(p => p.estado === 'revision');
+
+      if (pagoAprobado) {
+        uiEstatus.textContent = "AL DÍA (APROBADO)";
+        uiEstatus.className = "text-xl font-black italic uppercase text-lime-400";
+        uiIcono.className = "w-12 h-12 bg-lime-400 rounded-full flex items-center justify-center text-black text-2xl shadow-[0_0_15px_#a3e635]";
         uiIcono.textContent = "✓";
+      } else if (pagoEnRevision) {
+        uiEstatus.textContent = "EN REVISIÓN";
+        uiEstatus.className = "text-xl font-black italic uppercase text-cyan-400";
+        uiIcono.className = "w-12 h-12 bg-cyan-400 rounded-full flex items-center justify-center text-black text-2xl shadow-[0_0_15px_#00d2ff] animate-pulse";
+        uiIcono.textContent = "⏳";
       } else {
         uiEstatus.textContent = "CON DEUDA";
         uiEstatus.className = "text-2xl font-black italic uppercase text-pink-500";

@@ -21,7 +21,7 @@ import Layout from '../layouts/Layout.astro';
   <!-- Pantalla de Carga -->
   <div id="pantallaCargaAdmin" class="min-h-[80vh] flex flex-col items-center justify-center">
     <div class="w-16 h-16 border-4 border-lime-400 border-t-transparent rounded-full animate-spin mb-4"></div>
-    <p class="text-lime-400 font-black italic uppercase tracking-widest animate-pulse">Verificando credenciales de administrador...</p>
+    <p class="text-lime-400 font-black italic uppercase tracking-widest animate-pulse">Cargando centro de control...</p>
   </div>
 
   <!-- Contenido Admin -->
@@ -31,7 +31,7 @@ import Layout from '../layouts/Layout.astro';
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635]">
       <div>
         <h1 class="text-3xl font-black text-white uppercase italic tracking-wider">Centro de Control y <span class="text-lime-400">Academia</span></h1>
-        <p class="text-zinc-400 text-sm mt-1">Gestión integral de atletas, validación de pagos y respaldos de seguridad.</p>
+        <p class="text-zinc-400 text-sm mt-1">Aprobación de pagos, gestión por niveles y notificaciones directas.</p>
       </div>
       <div class="flex flex-wrap gap-3">
         <button id="btnExportarAlumnos" class="bg-cyan-400 text-black font-black italic uppercase px-4 py-2 text-sm hover:bg-cyan-300 shadow-[3px_3px_0px_rgba(0,0,0,0.5)]">
@@ -43,8 +43,8 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
 
-    <!-- SECCIÓN: Tasa del Dólar del Día -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+    <!-- SECCIÓN: Tasa del Dólar y Seguridad -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
       <div class="bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff]">
         <h2 class="text-xl font-black italic uppercase text-cyan-400 mb-3">Tasa de Cambio del Día</h2>
         <form id="formTasa" class="flex flex-col gap-4">
@@ -57,19 +57,18 @@ import Layout from '../layouts/Layout.astro';
         <p id="mensajeTasa" class="text-xs font-bold mt-2 text-center hidden"></p>
       </div>
 
-      <!-- Resumen Rápido -->
       <div class="md:col-span-2 bg-zinc-900 p-6 border-2 border-zinc-700 flex flex-col justify-center">
-        <h3 class="text-lg font-black italic uppercase text-white mb-2">💡 Recomendación de Seguridad</h3>
+        <h3 class="text-lg font-black italic uppercase text-white mb-2">💡 Control Operativo</h3>
         <p class="text-zinc-400 text-sm leading-relaxed">
-          Realiza una descarga de los reportes en CSV al finalizar cada semana o antes de cerrar ciclos de mensualidad. Esto garantiza que tengas un respaldo local independiente en tu ordenador ante cualquier eventualidad.
+          Desde esta sección puedes aprobar los recibos reportados. Al hacer clic en "Aprobar", el estado cambiará de inmediato para que el representante lo refleje como solvente en su panel personal. Además, puedes contactar a los atletas por WhatsApp con un solo clic.
         </p>
       </div>
     </div>
 
-    <!-- SECCIÓN: Pagos Pendientes por Aprobar -->
+    <!-- SECCIÓN: Pagos Pendientes con Botón de Aprobar -->
     <div class="mb-12">
       <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#db2777] mb-6">
-        <h2 class="text-2xl font-black uppercase italic text-pink-500 tracking-wider">Pagos en Revisión / Por Aprobar</h2>
+        <h2 class="text-2xl font-black uppercase italic text-pink-500 tracking-wider">Últimos Pagos Reportados</h2>
       </div>
       
       <div class="overflow-x-auto bg-zinc-900 border-2 border-pink-500 shadow-[6px_6px_0px_#db2777]">
@@ -77,7 +76,6 @@ import Layout from '../layouts/Layout.astro';
           <thead>
             <tr class="bg-zinc-950 text-pink-500 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
               <th class="p-4">Fecha</th>
-              <th class="p-4">Atleta ID</th>
               <th class="p-4">Método</th>
               <th class="p-4">Referencia</th>
               <th class="p-4">Monto</th>
@@ -92,32 +90,34 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
 
-    <!-- SECCIÓN: Listado General de Alumnos Inscritos -->
-    <div>
+    <!-- SECCIÓN: Listado de Alumnos Agrupado por Niveles -->
+    <div class="mb-12">
       <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#a3e635] mb-6">
-        <h2 class="text-2xl font-black uppercase italic text-lime-400 tracking-wider">Listado General de Inscritos</h2>
+        <h2 class="text-2xl font-black uppercase italic text-lime-400 tracking-wider">Atletas Inscritos por Niveles</h2>
       </div>
 
-      <div class="overflow-x-auto bg-zinc-900 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635]">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="bg-zinc-950 text-lime-400 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
-              <th class="p-4">Atleta</th>
-              <th class="p-4">Nivel</th>
-              <th class="p-4">Cédula</th>
-              <th class="p-4">Teléfono</th>
-              <th class="p-4">Correo</th>
-              <th class="p-4">Bici Principal</th>
-            </tr>
-          </thead>
-          <tbody id="tablaAlumnos" class="divide-y divide-zinc-800 text-sm font-medium">
-            <!-- Inyectado por JS -->
-          </tbody>
-        </table>
+      <div id="contenedorNiveles" class="flex flex-col gap-8">
+        <!-- Las tablas por niveles se inyectarán dinámicamente aquí -->
       </div>
     </div>
 
   </main>
+<!-- MODAL CONFIRMAR PAGO -->
+    <div id="modalConfirmarPago" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-zinc-900 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] p-6 md:p-8 w-full max-w-md mx-auto relative transform -skew-x-2 text-center">
+        <h2 class="text-2xl font-black uppercase italic text-lime-400 mb-4 tracking-wider">Aprobar Pago</h2>
+        <p class="text-zinc-300 font-medium mb-8">¿Estás seguro de aprobar este recibo? El atleta reflejará su solvencia de inmediato en su panel.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <button id="btnCancelarAprobacion" class="bg-zinc-800 text-white font-black italic uppercase px-6 py-3 hover:bg-zinc-700 transition shadow-[4px_4px_0px_rgba(0,0,0,0.5)] transform skew-x-2">
+            Cancelar
+          </button>
+          <button id="btnConfirmarAprobacion" class="bg-lime-400 text-black font-black italic uppercase px-6 py-3 hover:bg-lime-300 transition shadow-[4px_4px_0px_#db2777] transform skew-x-2">
+            Sí, Aprobar
+          </button>
+        </div>
+      </div>
+    </div>
+
 </Layout>
 
 <script type="module">
@@ -128,50 +128,35 @@ import Layout from '../layouts/Layout.astro';
     const adminContenido = document.getElementById('adminContenido');
 
     try {
-      // 1. Validar sesión
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { 
-        window.location.href = '/login'; 
-        return; 
-      }
+      if (!session) { window.location.href = '/login'; return; }
 
-      // 🔒 RESTRICCIÓN DE SEGURIDAD EXCLUSIVA PARA ADMINISTRADORES
-      const correosAutorizados = ["pathdawann@gmail.com", "cesar@gmail.com"]; // <-- COLOCA TU CORREO AQUÍ
-      
+      // Restricción de Administrador (Coloca tu correo aquí)
+      const correosAutorizados = ["pathdawann@gmail.com", "cesar@gmail.com"];
       if (!correosAutorizados.includes(session.user.email)) {
-        alert("Acceso denegado. Esta sección es exclusiva para la administración.");
+        alert("Acceso denegado.");
         window.location.href = '/dashboard';
         return;
       }
 
-      // 2. Cargar Tasa del Día
-      const { data: tasaData } = await supabase
-        .from('configuracion')
-        .select('valor')
-        .eq('clave', 'tasa_dolar')
-        .single();
-      
-      if (tasaData) {
-        document.getElementById('inputTasa').value = tasaData.valor;
-      }
+      // Cargar Tasa del Día
+      const { data: tasaData } = await supabase.from('configuracion').select('valor').eq('clave', 'tasa_dolar').single();
+      if (tasaData) document.getElementById('inputTasa').value = tasaData.valor;
 
-      // 3. Cargar Pagos Pendientes
       await cargarPagosPendientes();
-
-      // 4. Cargar Alumnos
-      await cargarAlumnos();
+      await cargarAlumnosPorNiveles();
 
       pantallaCarga.classList.add('hidden');
       adminContenido.classList.remove('hidden');
 
     } catch (err) {
       console.error(err);
-      alert("Error al cargar el panel administrativo.");
+      alert("Error al cargar el panel.");
       window.location.href = '/dashboard';
     }
   });
 
-  // Función para cargar pagos pendientes
+  // 1. Cargar Últimos Pagos (Pendientes y Aprobados)
   async function cargarPagosPendientes() {
     const tbody = document.getElementById('tablaPagosPendientes');
     tbody.innerHTML = '';
@@ -179,37 +164,103 @@ import Layout from '../layouts/Layout.astro';
     const { data: pagos, error } = await supabase
       .from('pagos')
       .select('*')
-      .order('created_at', { ascending: false });
+      // Quitamos el filtro .eq('estado', 'revision') para poder ver también los aprobados
+      .order('created_at', { ascending: false })
+      .limit(30); // Mostramos los últimos 30 recibos para no saturar la pantalla
 
     if (error) { console.error(error); return; }
 
     if (!pagos || pagos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-500 italic">No hay pagos registrados.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-500 italic">No hay pagos registrados aún.</td></tr>`;
       return;
     }
 
     pagos.forEach(pago => {
       const fecha = new Date(pago.created_at).toLocaleDateString('es-ES');
+      let accionHtml = '';
+
+      // Si el pago está en revisión, mostramos el botón de APROBAR
+      if (pago.estado === 'revision' || !pago.estado) {
+        accionHtml = `
+          <button onclick="aprobarPago('${pago.id}')" class="bg-lime-400 text-black font-black italic uppercase px-4 py-2 text-xs hover:bg-lime-300 shadow transform skew-x-2 transition">
+            ✓ Aprobar
+          </button>
+        `;
+      } 
+      // Si ya está aprobado, mostramos la etiqueta de APROBADO
+      else if (pago.estado === 'aprobado') {
+        accionHtml = `
+          <span class="bg-zinc-950 text-lime-400 font-black italic uppercase px-4 py-2 text-xs border border-lime-400 shadow transform skew-x-2 inline-block">
+            ✓ Aprobado
+          </span>
+        `;
+      }
+
       tbody.innerHTML += `
         <tr class="hover:bg-zinc-800/50">
           <td class="p-4 text-zinc-300">${fecha}</td>
-          <td class="p-4 font-mono text-xs text-cyan-400">${pago.alumno_id.slice(0, 8)}...</td>
-          <td class="p-4 font-bold">${pago.metodo_pago}</td>
-          <td class="p-4 font-mono text-lime-400">${pago.referencia}</td>
-          <td class="p-4 font-black text-white">${pago.monto}$</td>
+          <td class="p-4 font-bold text-white">${pago.metodo_pago}</td>
+          <td class="p-4 font-mono text-cyan-400">${pago.referencia}</td>
+          <td class="p-4 font-black text-pink-500">${pago.monto}$</td>
           <td class="p-4 text-zinc-300">${pago.mes_correspondiente}</td>
           <td class="p-4 text-center">
-            <span class="bg-zinc-800 text-zinc-300 px-3 py-1 text-xs font-bold uppercase border border-zinc-700">Registrado</span>
+            ${accionHtml}
           </td>
         </tr>
       `;
     });
   }
 
-  // Función para cargar alumnos
-  async function cargarAlumnos() {
-    const tbody = document.getElementById('tablaAlumnos');
-    tbody.innerHTML = '';
+  // --- LÓGICA DEL MODAL DE APROBACIÓN DE PAGOS ---
+  let pagoPendienteId = null;
+  const modalConfirmar = document.getElementById('modalConfirmarPago');
+  const btnConfirmar = document.getElementById('btnConfirmarAprobacion');
+  const btnCancelar = document.getElementById('btnCancelarAprobacion');
+
+  // Abre el modal en lugar de la alerta fea
+  window.aprobarPago = function(pagoId) {
+    pagoPendienteId = pagoId;
+    modalConfirmar.classList.remove('hidden');
+  };
+
+  // Botón Cancelar
+  btnCancelar.addEventListener('click', () => {
+    pagoPendienteId = null;
+    modalConfirmar.classList.add('hidden');
+  });
+
+  // Botón Sí, Aprobar
+  btnConfirmar.addEventListener('click', async () => {
+    if (!pagoPendienteId) return;
+    
+    btnConfirmar.textContent = 'PROCESANDO...';
+    btnConfirmar.disabled = true;
+
+    try {
+      const { error } = await supabase
+        .from('pagos')
+        .update({ estado: 'aprobado' })
+        .eq('id', pagoPendienteId);
+
+      if (error) throw error;
+      
+      modalConfirmar.classList.add('hidden');
+      await cargarPagosPendientes(); // Recarga la tabla de inmediato
+      
+    } catch (err) {
+      console.error(err);
+      alert("Error al aprobar el pago. Revisa tu conexión.");
+    } finally {
+      btnConfirmar.textContent = 'SÍ, APROBAR';
+      btnConfirmar.disabled = false;
+      pagoPendienteId = null;
+    }
+  });
+
+  // 2. Cargar Alumnos Agrupados por Niveles con Botón de WhatsApp
+  async function cargarAlumnosPorNiveles() {
+    const contenedor = document.getElementById('contenedorNiveles');
+    contenedor.innerHTML = '';
 
     const { data: alumnos, error } = await supabase
       .from('alumnos')
@@ -219,23 +270,68 @@ import Layout from '../layouts/Layout.astro';
     if (error) { console.error(error); return; }
 
     if (!alumnos || alumnos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-500 italic">No hay alumnos inscritos.</td></tr>`;
+      contenedor.innerHTML = `<p class="text-zinc-500 italic">No hay alumnos inscritos.</p>`;
       return;
     }
 
+    // Agrupar por nivel
+    const nivelesMap = {};
     alumnos.forEach(alumno => {
-      const bici = alumno.tipos_bici && alumno.tipos_bici[0] ? `${alumno.tipos_bici[0].tipo} - Rin ${alumno.tipos_bici[0].rin}` : 'N/A';
-      tbody.innerHTML += `
-        <tr class="hover:bg-zinc-800/50">
-          <td class="p-4 font-bold text-white uppercase">${alumno.nombre}</td>
-          <td class="p-4 text-cyan-400 font-bold uppercase text-xs">${alumno.nivel}</td>
-          <td class="p-4 font-mono text-zinc-300">${alumno.cedula}</td>
-          <td class="p-4 text-zinc-300">${alumno.telefono}</td>
-          <td class="p-4 text-zinc-400 text-xs">${alumno.email}</td>
-          <td class="p-4 text-lime-400 text-xs font-bold">${bici}</td>
-        </tr>
-      `;
+      const niv = (alumno.nivel || 'SIN NIVEL').toUpperCase();
+      if (!nivelesMap[niv]) nivelesMap[niv] = [];
+      nivelesMap[niv].push(alumno);
     });
+
+    // Renderizar una tabla por cada nivel
+    for (const [nivel, lista] of Object.entries(nivelesMap)) {
+      let filasHtml = '';
+      lista.forEach(alumno => {
+        const bici = alumno.tipos_bici && alumno.tipos_bici[0] ? `${alumno.tipos_bici[0].tipo} - Rin ${alumno.tipos_bici[0].rin}` : 'N/A';
+        const telefonoLim = (alumno.telefono || '').replace(/\s+/g, '');
+        const mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Te escribimos de Pupi Bike Kids para recordarte sobre tu mensualidad y nuestros próximos eventos de la academia.`);
+
+        filasHtml += `
+          <tr class="hover:bg-zinc-800/50">
+            <td class="p-4 font-bold text-white uppercase">${alumno.nombre}</td>
+            <td class="p-4 font-mono text-zinc-300">${alumno.cedula}</td>
+            <td class="p-4 text-zinc-300">${alumno.telefono}</td>
+            <td class="p-4 text-zinc-400 text-xs">${alumno.email}</td>
+            <td class="p-4 text-lime-400 text-xs font-bold">${bici}</td>
+            <td class="p-4 text-center">
+              <a href="https://wa.me/${telefonoLim}?text=${mensajeWp}" target="_blank" class="inline-block bg-emerald-600 text-white font-black px-3 py-1.5 text-xs uppercase hover:bg-emerald-500 transition shadow">
+                💬 WhatsApp
+              </a>
+            </td>
+          </tr>
+        `;
+      });
+
+      contenedor.innerHTML += `
+        <div class="bg-zinc-900 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] overflow-hidden">
+          <div class="bg-black px-6 py-3 border-b border-zinc-800 flex justify-between items-center">
+            <h3 class="text-xl font-black italic uppercase text-cyan-400">Nivel: ${nivel}</h3>
+            <span class="bg-cyan-400 text-black font-black text-xs px-3 py-1 uppercase">${lista.length} Atletas</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-zinc-950 text-zinc-400 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
+                  <th class="p-4">Atleta</th>
+                  <th class="p-4">Cédula</th>
+                  <th class="p-4">Teléfono</th>
+                  <th class="p-4">Correo</th>
+                  <th class="p-4">Bici Principal</th>
+                  <th class="p-4 text-center">Notificar</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-800 text-sm font-medium">
+                ${filasHtml}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
   }
 
   // Actualizar Tasa del Dólar
@@ -245,13 +341,8 @@ import Layout from '../layouts/Layout.astro';
     const msg = document.getElementById('mensajeTasa');
 
     try {
-      const { error } = await supabase
-        .from('configuracion')
-        .update({ valor: nuevoValor, updated_at: new Date() })
-        .eq('clave', 'tasa_dolar');
-
+      const { error } = await supabase.from('configuracion').update({ valor: nuevoValor, updated_at: new Date() }).eq('clave', 'tasa_dolar');
       if (error) throw error;
-
       msg.textContent = "¡Tasa actualizada con éxito!";
       msg.className = "text-xs font-bold mt-2 text-center text-lime-400 block";
     } catch (err) {
@@ -261,7 +352,7 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // Funciones de Respaldo (Exportar CSV)
+  // Exportar CSV
   document.getElementById('btnExportarAlumnos').addEventListener('click', async () => {
     const { data } = await supabase.from('alumnos').select('*');
     exportarACSV(data, 'respaldo_alumnos_pupibike.csv');
@@ -273,21 +364,17 @@ import Layout from '../layouts/Layout.astro';
   });
 
   function exportarACSV(arr, filename) {
-    if (!arr || !arr.length) { alert("No hay datos para exportar."); return; }
+    if (!arr || !arr.length) { alert("No hay datos."); return; }
     const keys = Object.keys(arr[0]);
-    const csvContent = "data:text/csv;charset=utf-8," + 
-      [keys.join(","), ...arr.map(row => keys.map(k => JSON.stringify(row[k] || "")).join(","))].join("\n");
-    
-    const encodedUri = encodeURI(csvContent);
+    const csvContent = "data:text/csv;charset=utf-8," + [keys.join(","), ...arr.map(row => keys.map(k => JSON.stringify(row[k] || "")).join(","))].join("\n");
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
+    link.setAttribute("href", encodeURI(csvContent));
     link.setAttribute("download", filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
 
-  // Cerrar Sesión Admin
   document.getElementById('btnAdminLogout').addEventListener('click', async () => {
     await supabase.auth.signOut();
     window.location.href = '/login';
