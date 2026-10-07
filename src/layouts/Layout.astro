@@ -1,15 +1,35 @@
 ---
 import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = "Pupi Bike Kids - Academia de Ciclismo", 
+  description = "Formando a los futuros campeones del MTB con técnica, disciplina y pasión en un ambiente seguro para niños y jóvenes." 
+} = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PupiBikeKids - Academia de Ciclismo</title>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Redes Sociales (WhatsApp, Facebook, Twitter, Instagram) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/fondo-hero.jpg" />
+
+    <!-- Favicon / Avatar de la web -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
   </head>
-  <body class="bg-zinc-950 text-white font-sans selection:bg-lime-500 selection:text-black">
-  <slot />
-</body>
+  <body class="bg-zinc-950 text-white font-sans selection:bg-lime-500 selection:text-black antialiased">
+    <slot />
+  </body>
 </html>
