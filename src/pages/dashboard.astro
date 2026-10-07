@@ -334,6 +334,27 @@ import Layout from '../layouts/Layout.astro';
   </div>
 </Layout>
 
+<!-- MODAL RECORDATORIO DE PAGO (COBRO AMISTOSO) -->
+  <div id="modalRecordatorioDeuda" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+    <div class="bg-zinc-900 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] p-8 w-full max-w-md mx-auto relative transform -skew-x-2 text-center">
+      <button type="button" id="btnCerrarRecordatorio" class="absolute top-3 right-4 text-zinc-500 hover:text-pink-500 transform skew-x-2 text-2xl font-black z-10">X</button>
+      
+      <div class="transform skew-x-2">
+        <div class="text-pink-500 text-6xl mb-4 animate-bounce">⚠️</div>
+        <h2 class="text-2xl font-black uppercase italic text-pink-500 mb-4 tracking-wider">Recordatorio Amistoso</h2>
+        <p class="text-zinc-300 font-medium mb-4 text-sm leading-relaxed">
+          ¡Hola! Esperamos que estés excelente. Te recordamos que los días regulares de pago son del <span class="text-white font-black">1 al 5 de cada mes</span>, y el sistema nos indica que tienes pendiente tu mensualidad.
+        </p>
+        <p class="text-lime-400 font-black italic uppercase mb-8">
+          ¡Ponte al día para seguir rodando con nosotros sin interrupciones!
+        </p>
+        <button type="button" id="btnIrAPagarDeuda" class="w-full bg-pink-600 text-white font-black italic uppercase text-lg py-4 hover:bg-pink-500 transition-all shadow-[4px_4px_0px_rgba(0,0,0,0.5)] border-2 border-transparent">
+          Reportar Pago Ahora
+        </button>
+      </div>
+    </div>
+  </div>
+
 <script type="module">
   import { supabase } from '../lib/supabase.js';
 
@@ -404,7 +425,6 @@ import Layout from '../layouts/Layout.astro';
       const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
       const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
 
-      // Buscar si tiene pagos para este mes
       const { data: pagosMes } = await supabase
         .from('pagos')
         .select('estado')
@@ -432,6 +452,11 @@ import Layout from '../layouts/Layout.astro';
         uiEstatus.className = "text-2xl font-black italic uppercase text-pink-500";
         uiIcono.className = "w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center text-white text-2xl shadow-[0_0_15px_#db2777] animate-pulse";
         uiIcono.textContent = "!";
+        
+        // <--- NUEVO: Disparar el modal si es mayor al día 5
+        if (fechaActual.getDate() > 5) {
+          document.getElementById('modalRecordatorioDeuda').classList.remove('hidden');
+        }
       }
 
       pantallaCarga.classList.add('hidden');
@@ -443,6 +468,16 @@ import Layout from '../layouts/Layout.astro';
       window.location.href = '/';
     }
   });
+
+  // <--- NUEVO: Eventos para los botones del modal de recordatorio
+  const modalDeuda = document.getElementById('modalRecordatorioDeuda');
+  if(modalDeuda) {
+    document.getElementById('btnCerrarRecordatorio').addEventListener('click', () => modalDeuda.classList.add('hidden'));
+    document.getElementById('btnIrAPagarDeuda').addEventListener('click', () => {
+      modalDeuda.classList.add('hidden');
+      document.getElementById('modalPago').classList.remove('hidden'); // Abre directo el modal de pago
+    });
+  }
 
   // Cerrar Sesión
   document.getElementById('btnLogout').addEventListener('click', async () => {

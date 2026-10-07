@@ -34,6 +34,9 @@ import Layout from '../layouts/Layout.astro';
         <p class="text-zinc-400 text-sm mt-1">Aprobación de pagos, gestión por niveles y notificaciones directas.</p>
       </div>
       <div class="flex flex-wrap gap-3">
+        <button id="btnCorreoMasivo" class="bg-lime-400 text-black font-black italic uppercase px-4 py-2 text-sm hover:bg-lime-300 shadow-[3px_3px_0px_rgba(0,0,0,0.5)]">
+          ✉️ Correo Masivo (BCC)
+        </button>
         <button id="btnExportarAlumnos" class="bg-cyan-400 text-black font-black italic uppercase px-4 py-2 text-sm hover:bg-cyan-300 shadow-[3px_3px_0px_rgba(0,0,0,0.5)]">
           📥 Descargar Alumnos (CSV)
         </button>
@@ -101,7 +104,7 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
 
-  </main>
+  
 <!-- MODAL CONFIRMAR PAGO -->
     <div id="modalConfirmarPago" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
       <div class="bg-zinc-900 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] p-6 md:p-8 w-full max-w-md mx-auto relative transform -skew-x-2 text-center">
@@ -118,6 +121,23 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
 
+    <!-- MODAL DESHACER PAGO -->
+    <div id="modalRevertirPago" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-zinc-900 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] p-6 md:p-8 w-full max-w-md mx-auto relative transform -skew-x-2 text-center">
+        <h2 class="text-2xl font-black uppercase italic text-pink-500 mb-4 tracking-wider">Deshacer Aprobación</h2>
+        <p class="text-zinc-300 font-medium mb-8">¿Seguro que deseas devolver este pago a "Revisión"? El atleta volverá a ver su deuda pendiente.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <button id="btnCancelarReversion" class="bg-zinc-800 text-white font-black italic uppercase px-6 py-3 hover:bg-zinc-700 transition shadow-[4px_4px_0px_rgba(0,0,0,0.5)] transform skew-x-2">
+            Cancelar
+          </button>
+          <button id="btnConfirmarReversion" class="bg-pink-600 text-white font-black italic uppercase px-6 py-3 hover:bg-pink-500 transition shadow-[4px_4px_0px_#db2777] transform skew-x-2">
+            Sí, Deshacer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    </main>
 </Layout>
 
 <script type="module">
@@ -190,9 +210,10 @@ import Layout from '../layouts/Layout.astro';
       // Si ya está aprobado, mostramos la etiqueta de APROBADO
       else if (pago.estado === 'aprobado') {
         accionHtml = `
-          <span class="bg-zinc-950 text-lime-400 font-black italic uppercase px-4 py-2 text-xs border border-lime-400 shadow transform skew-x-2 inline-block">
-            ✓ Aprobado
-          </span>
+          <button onclick="revertirPago('${pago.id}')" class="bg-zinc-950 text-lime-400 font-black italic uppercase px-4 py-2 text-xs border border-lime-400 shadow transform skew-x-2 hover:bg-pink-600 hover:text-white hover:border-pink-500 transition group relative w-32" title="Clic para deshacer">
+            <span class="group-hover:hidden">✓ Aprobado</span>
+            <span class="hidden group-hover:inline">⟲ Deshacer</span>
+          </button>
         `;
       }
 
@@ -222,6 +243,49 @@ import Layout from '../layouts/Layout.astro';
     pagoPendienteId = pagoId;
     modalConfirmar.classList.remove('hidden');
   };
+
+  // --- LÓGICA DEL MODAL: DESHACER PAGO ---
+  let pagoRevertirId = null;
+  const modalRevertir = document.getElementById('modalRevertirPago');
+  const btnConfReversion = document.getElementById('btnConfirmarReversion');
+  const btnCancReversion = document.getElementById('btnCancelarReversion');
+
+  window.revertirPago = function(pagoId) {
+    pagoRevertirId = pagoId;
+    modalRevertir.classList.remove('hidden');
+  };
+
+  btnCancReversion.addEventListener('click', () => {
+    pagoRevertirId = null;
+    modalRevertir.classList.add('hidden');
+  });
+
+  btnConfReversion.addEventListener('click', async () => {
+    if (!pagoRevertirId) return;
+    btnConfReversion.textContent = 'PROCESANDO...';
+    btnConfReversion.disabled = true;
+
+    try {
+      const { error } = await supabase
+        .from('pagos')
+        .update({ estado: 'revision' })
+        .eq('id', pagoRevertirId);
+
+      if (error) throw error;
+      
+      modalRevertir.classList.add('hidden');
+      await cargarPagosPendientes(); // Recarga la tabla de pagos
+      await cargarAlumnosPorNiveles(); // Recarga la tabla de alumnos para actualizar los semáforos
+      
+    } catch (err) {
+      console.error(err);
+      alert("Error al revertir el pago.");
+    } finally {
+      btnConfReversion.textContent = 'SÍ, DESHACER';
+      btnConfReversion.disabled = false;
+      pagoRevertirId = null;
+    }
+  });
 
   // Botón Cancelar
   btnCancelar.addEventListener('click', () => {
@@ -257,21 +321,43 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // 2. Cargar Alumnos Agrupados por Niveles con Botón de WhatsApp
+  // 2. Cargar Alumnos Agrupados por Niveles con Estatus Inteligente
   async function cargarAlumnosPorNiveles() {
     const contenedor = document.getElementById('contenedorNiveles');
     contenedor.innerHTML = '';
 
-    const { data: alumnos, error } = await supabase
+    // Obtener mes actual y día actual
+    const fechaActual = new Date();
+    const diaActual = fechaActual.getDate();
+    const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
+
+    // 1. Traer todos los alumnos
+    const { data: alumnos, error: errorAlumnos } = await supabase
       .from('alumnos')
       .select('*')
       .order('nombre', { ascending: true });
 
-    if (error) { console.error(error); return; }
+    // 2. Traer todos los pagos del mes en curso
+    const { data: pagosMes, error: errorPagos } = await supabase
+      .from('pagos')
+      .select('alumno_id, estado')
+      .eq('mes_correspondiente', mesActualStr);
+
+    if (errorAlumnos || errorPagos) { console.error("Error cargando data"); return; }
 
     if (!alumnos || alumnos.length === 0) {
       contenedor.innerHTML = `<p class="text-zinc-500 italic">No hay alumnos inscritos.</p>`;
       return;
+    }
+
+    // Crear mapa de pagos para búsqueda rápida (ej: pagosMap['id_alumno'] = 'aprobado')
+    const pagosMap = {};
+    if (pagosMes) {
+      pagosMes.forEach(p => {
+        if (p.estado === 'aprobado') pagosMap[p.alumno_id] = 'aprobado';
+        else if (p.estado === 'revision' && pagosMap[p.alumno_id] !== 'aprobado') pagosMap[p.alumno_id] = 'revision';
+      });
     }
 
     // Agrupar por nivel
@@ -286,17 +372,36 @@ import Layout from '../layouts/Layout.astro';
     for (const [nivel, lista] of Object.entries(nivelesMap)) {
       let filasHtml = '';
       lista.forEach(alumno => {
-        const bici = alumno.tipos_bici && alumno.tipos_bici[0] ? `${alumno.tipos_bici[0].tipo} - Rin ${alumno.tipos_bici[0].rin}` : 'N/A';
         const telefonoLim = (alumno.telefono || '').replace(/\s+/g, '');
-        const mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Te escribimos de Pupi Bike Kids para recordarte sobre tu mensualidad y nuestros próximos eventos de la academia.`);
+        const estadoPago = pagosMap[alumno.id];
+        
+        let badgeHtml = '';
+        let mensajeWp = '';
+
+        // Lógica del semáforo de estatus
+        if (estadoPago === 'aprobado') {
+          badgeHtml = `<span class="bg-lime-400 text-black px-3 py-1 text-xs font-black uppercase">✓ AL DÍA</span>`;
+          mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Te escribimos de Pupi Bike Kids. ¡Gracias por estar al día! Te recordamos nuestros próximos eventos de la academia.`);
+        } else if (estadoPago === 'revision') {
+          badgeHtml = `<span class="bg-cyan-400 text-black px-3 py-1 text-xs font-black uppercase">⏳ REVISIÓN</span>`;
+          mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recibimos tu comprobante de pago. Pronto lo validaremos en el sistema. ¡Gracias!`);
+        } else {
+          // No ha pagado: verificamos si ya pasó el día 5 de gracia
+          if (diaActual > 5) {
+            badgeHtml = `<span class="bg-pink-600 text-white px-3 py-1 text-xs font-black uppercase animate-pulse">⚠️ MOROSO</span>`;
+            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recordatorio amistoso de Pupi Bike Kids: El plazo de pago (del 1 al 5) para la mensualidad de ${mesActualStr} ha vencido. Por favor, reporta tu pago lo antes posible en tu panel para evitar recargos.`);
+          } else {
+            badgeHtml = `<span class="bg-yellow-400 text-black px-3 py-1 text-xs font-black uppercase">PENDIENTE</span>`;
+            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recuerda que estamos en los días de pago (del 1 al 5) para la mensualidad de ${mesActualStr}. ¡Evita recargos!`);
+          }
+        }
 
         filasHtml += `
           <tr class="hover:bg-zinc-800/50">
             <td class="p-4 font-bold text-white uppercase">${alumno.nombre}</td>
-            <td class="p-4 font-mono text-zinc-300">${alumno.cedula}</td>
-            <td class="p-4 text-zinc-300">${alumno.telefono}</td>
+            <td class="p-4">${badgeHtml}</td>
+            <td class="p-4 text-zinc-300 font-mono">${alumno.telefono}</td>
             <td class="p-4 text-zinc-400 text-xs">${alumno.email}</td>
-            <td class="p-4 text-lime-400 text-xs font-bold">${bici}</td>
             <td class="p-4 text-center">
               <a href="https://wa.me/${telefonoLim}?text=${mensajeWp}" target="_blank" class="inline-block bg-emerald-600 text-white font-black px-3 py-1.5 text-xs uppercase hover:bg-emerald-500 transition shadow">
                 💬 WhatsApp
@@ -317,11 +422,10 @@ import Layout from '../layouts/Layout.astro';
               <thead>
                 <tr class="bg-zinc-950 text-zinc-400 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
                   <th class="p-4">Atleta</th>
-                  <th class="p-4">Cédula</th>
+                  <th class="p-4">Estatus del Mes</th>
                   <th class="p-4">Teléfono</th>
                   <th class="p-4">Correo</th>
-                  <th class="p-4">Bici Principal</th>
-                  <th class="p-4 text-center">Notificar</th>
+                  <th class="p-4 text-center">Gestión</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-zinc-800 text-sm font-medium">
@@ -351,6 +455,45 @@ import Layout from '../layouts/Layout.astro';
       msg.className = "text-xs font-bold mt-2 text-center text-pink-500 block";
     }
   });
+
+// --- Función de Correo Masivo (BCC) ---
+  const btnCorreoMasivo = document.getElementById('btnCorreoMasivo');
+  if (btnCorreoMasivo) {
+    btnCorreoMasivo.addEventListener('click', async () => {
+      btnCorreoMasivo.textContent = 'Generando...';
+      try {
+        // Obtenemos solo los correos de la base de datos
+        const { data, error } = await supabase.from('alumnos').select('email');
+        if (error) throw error;
+        
+        // Filtramos para quitar espacios vacíos y los unimos con una coma
+        const listaCorreos = data
+          .map(alumno => alumno.email)
+          .filter(email => email && email.trim() !== '')
+          .join(',');
+
+        if (listaCorreos.length === 0) {
+          alert("Aún no hay correos registrados en la base de datos.");
+          return;
+        }
+
+        const asunto = encodeURIComponent("Novedades y Eventos - Pupi Bike Kids");
+        
+        // Enlace directo y exclusivo a la interfaz web de Gmail
+        const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&bcc=${listaCorreos}&su=${asunto}`;
+        
+        // Abrimos Gmail en una nueva pestaña
+        window.open(gmailLink, '_blank');
+
+      } catch (err) {
+        console.error(err);
+        alert("Error al intentar generar la lista de correos.");
+      } finally {
+        btnCorreoMasivo.textContent = '✉️ Correo Masivo (BCC)';
+      }
+    });
+  }
+
 
   // Exportar CSV
   document.getElementById('btnExportarAlumnos').addEventListener('click', async () => {
