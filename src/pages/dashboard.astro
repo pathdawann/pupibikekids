@@ -123,9 +123,9 @@ import Layout from '../layouts/Layout.astro';
           <h3 class="text-xl font-black italic uppercase text-cyan-400 mb-2">Maillot Oficial</h3>
           <p class="text-zinc-400 text-xs mb-4">Viste los colores extremos de Pupi Bike Kids.</p>
           
-          <!-- Imagen del Maillot Local -->
-          <div class="bg-zinc-950 p-2 border border-zinc-800 mb-4 rounded overflow-hidden flex justify-center items-center h-40">
-            <img src="/maillot.webp" alt="Maillot Oficial" class="h-full object-cover transform group-hover:scale-105 transition-transform duration-300" />
+          <!-- Imagen del Maillot Ampliada -->
+          <div class="bg-zinc-950 p-3 border border-zinc-800 mb-4 rounded-xl overflow-hidden flex justify-center items-center h-72 shadow-inner">
+            <img src="/maillot.png" alt="Maillot Oficial" class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-300" />
           </div>
 
           <div class="bg-zinc-950 p-3 border border-zinc-800 mb-4 text-center">
@@ -133,7 +133,7 @@ import Layout from '../layouts/Layout.astro';
             <p class="text-lime-400 font-bold text-sm">35$ (Todas las tallas)</p>
           </div>
 
-          <a href="https://wa.me/584248781128?text=Hola,%20quiero%20comprar%20el%20maillot%20oficial%20de%20la%20academia" target="_blank" class="block text-center bg-cyan-400 text-black font-black italic uppercase py-3 hover:bg-cyan-300 transition-all shadow-[4px_4px_0px_rgba(0,0,0,0.5)] transform -skew-x-4">
+          <a href="https://wa.me/584248781128?text=Hola%20Cesar,%20quiero%20comprar%20el%20maillot%20oficial%20de%20la%20academia." target="_blank" class="block text-center bg-cyan-400 text-black font-black italic uppercase py-3 hover:bg-cyan-300 transition-all shadow-[4px_4px_0px_rgba(0,0,0,0.5)] transform -skew-x-4">
             Comprar Ahora
           </a>
         </section>
@@ -166,10 +166,10 @@ import Layout from '../layouts/Layout.astro';
     </section>
   </main>
 
-  <!-- MODAL REPORTAR PAGO -->
-  <div id="modalPago" class="fixed inset-0 bg-black/80 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
-    <div class="bg-zinc-900 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] p-6 md:p-8 w-full max-w-md mx-auto relative transform -skew-x-2">
-      <button type="button" id="btnCerrarModal" class="absolute top-3 right-4 text-zinc-500 hover:text-pink-500 transform skew-x-2 text-2xl font-black">X</button>
+<!-- MODAL REPORTAR PAGO OPTIMIZADO -->
+  <div id="modalPago" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-2 md:p-4">
+    <div class="bg-zinc-900 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] p-4 md:p-8 w-full max-w-md mx-auto relative transform md:-skew-x-2 max-h-[95vh] overflow-y-auto">
+      <button type="button" id="btnCerrarModal" class="absolute top-3 right-4 text-zinc-500 hover:text-pink-500 transform md:skew-x-2 text-2xl font-black z-10">X</button>
       
       <div class="transform skew-x-2">
         <h2 class="text-2xl font-black uppercase italic text-pink-500 mb-6 border-b border-zinc-800 pb-2">Reportar Transferencia</h2>
@@ -209,10 +209,10 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </div>
 
-  <!-- MODAL EDITAR FICHA -->
-  <div id="modalEditar" class="fixed inset-0 bg-black/80 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
-    <div class="bg-zinc-900 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] p-6 md:p-8 w-full max-w-3xl mx-auto relative transform -skew-x-2 max-h-[90vh] overflow-y-auto">
-      <button type="button" id="btnCerrarModalEditar" class="absolute top-3 right-4 text-zinc-500 hover:text-lime-400 transform skew-x-2 text-2xl font-black">X</button>
+  <!-- MODAL EDITAR FICHA OPTIMIZADO -->
+  <div id="modalEditar" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-2 md:p-4">
+    <div class="bg-zinc-900 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] p-4 md:p-8 w-full max-w-3xl mx-auto relative transform md:-skew-x-2 h-[95vh] md:h-auto md:max-h-[90vh] overflow-y-auto">
+      <button type="button" id="btnCerrarModalEditar" class="absolute top-3 right-4 text-zinc-500 hover:text-lime-400 transform md:skew-x-2 text-2xl font-black z-10">X</button>
       
       <div class="transform skew-x-2">
         <h2 class="text-2xl font-black uppercase italic text-lime-400 mb-6 border-b border-zinc-800 pb-2">Actualizar Ficha del Atleta</h2>

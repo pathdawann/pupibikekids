@@ -1,0 +1,295 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Panel Administrativo | Pupi Bike Kids">
+  <!-- Navegación del Panel Admin -->
+  <nav class="bg-black text-white p-4 border-b-4 border-lime-400 sticky top-0 z-50">
+    <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
+      <a href="/admin" class="text-2xl md:text-3xl font-black italic tracking-wider text-white transform -skew-x-6">
+        PUPI BIKE <span class="text-lime-400">ADMIN</span>
+      </a>
+      <div class="flex items-center gap-4">
+        <a href="/dashboard" class="text-cyan-400 font-bold hover:underline italic text-sm">Mi Panel de Atleta</a>
+        <button id="btnAdminLogout" class="text-pink-500 font-bold hover:text-white transition italic uppercase text-sm border border-pink-500 px-3 py-1">
+          Salir
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Pantalla de Carga -->
+  <div id="pantallaCargaAdmin" class="min-h-[80vh] flex flex-col items-center justify-center">
+    <div class="w-16 h-16 border-4 border-lime-400 border-t-transparent rounded-full animate-spin mb-4"></div>
+    <p class="text-lime-400 font-black italic uppercase tracking-widest animate-pulse">Verificando credenciales de administrador...</p>
+  </div>
+
+  <!-- Contenido Admin -->
+  <main id="adminContenido" class="container mx-auto px-4 py-10 max-w-7xl hidden">
+    
+    <!-- Encabezado y Respaldo -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635]">
+      <div>
+        <h1 class="text-3xl font-black text-white uppercase italic tracking-wider">Centro de Control y <span class="text-lime-400">Academia</span></h1>
+        <p class="text-zinc-400 text-sm mt-1">Gestión integral de atletas, validación de pagos y respaldos de seguridad.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <button id="btnExportarAlumnos" class="bg-cyan-400 text-black font-black italic uppercase px-4 py-2 text-sm hover:bg-cyan-300 shadow-[3px_3px_0px_rgba(0,0,0,0.5)]">
+          📥 Descargar Alumnos (CSV)
+        </button>
+        <button id="btnExportarPagos" class="bg-pink-600 text-white font-black italic uppercase px-4 py-2 text-sm hover:bg-pink-500 shadow-[3px_3px_0px_rgba(0,0,0,0.5)]">
+          📥 Descargar Pagos (CSV)
+        </button>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: Tasa del Dólar del Día -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+      <div class="bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff]">
+        <h2 class="text-xl font-black italic uppercase text-cyan-400 mb-3">Tasa de Cambio del Día</h2>
+        <form id="formTasa" class="flex flex-col gap-4">
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Valor Actual ($ a Bs)</label>
+            <input type="text" id="inputTasa" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold text-lg" placeholder="36.50">
+          </div>
+          <button type="submit" id="btnGuardarTasa" class="bg-cyan-400 text-black font-black italic uppercase py-2 hover:bg-cyan-300">Actualizar Tasa</button>
+        </form>
+        <p id="mensajeTasa" class="text-xs font-bold mt-2 text-center hidden"></p>
+      </div>
+
+      <!-- Resumen Rápido -->
+      <div class="md:col-span-2 bg-zinc-900 p-6 border-2 border-zinc-700 flex flex-col justify-center">
+        <h3 class="text-lg font-black italic uppercase text-white mb-2">💡 Recomendación de Seguridad</h3>
+        <p class="text-zinc-400 text-sm leading-relaxed">
+          Realiza una descarga de los reportes en CSV al finalizar cada semana o antes de cerrar ciclos de mensualidad. Esto garantiza que tengas un respaldo local independiente en tu ordenador ante cualquier eventualidad.
+        </p>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: Pagos Pendientes por Aprobar -->
+    <div class="mb-12">
+      <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#db2777] mb-6">
+        <h2 class="text-2xl font-black uppercase italic text-pink-500 tracking-wider">Pagos en Revisión / Por Aprobar</h2>
+      </div>
+      
+      <div class="overflow-x-auto bg-zinc-900 border-2 border-pink-500 shadow-[6px_6px_0px_#db2777]">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-zinc-950 text-pink-500 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
+              <th class="p-4">Fecha</th>
+              <th class="p-4">Atleta ID</th>
+              <th class="p-4">Método</th>
+              <th class="p-4">Referencia</th>
+              <th class="p-4">Monto</th>
+              <th class="p-4">Mes</th>
+              <th class="p-4 text-center">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tablaPagosPendientes" class="divide-y divide-zinc-800 text-sm font-medium">
+            <!-- Inyectado por JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: Listado General de Alumnos Inscritos -->
+    <div>
+      <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#a3e635] mb-6">
+        <h2 class="text-2xl font-black uppercase italic text-lime-400 tracking-wider">Listado General de Inscritos</h2>
+      </div>
+
+      <div class="overflow-x-auto bg-zinc-900 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635]">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-zinc-950 text-lime-400 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
+              <th class="p-4">Atleta</th>
+              <th class="p-4">Nivel</th>
+              <th class="p-4">Cédula</th>
+              <th class="p-4">Teléfono</th>
+              <th class="p-4">Correo</th>
+              <th class="p-4">Bici Principal</th>
+            </tr>
+          </thead>
+          <tbody id="tablaAlumnos" class="divide-y divide-zinc-800 text-sm font-medium">
+            <!-- Inyectado por JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</Layout>
+
+<script type="module">
+  import { supabase } from '../lib/supabase.js';
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const pantallaCarga = document.getElementById('pantallaCargaAdmin');
+    const adminContenido = document.getElementById('adminContenido');
+
+    try {
+      // 1. Validar sesión
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { 
+        window.location.href = '/login'; 
+        return; 
+      }
+
+      // 🔒 RESTRICCIÓN DE SEGURIDAD EXCLUSIVA PARA ADMINISTRADORES
+      const correosAutorizados = ["pathdawann@gmail.com", "cesar@gmail.com"]; // <-- COLOCA TU CORREO AQUÍ
+      
+      if (!correosAutorizados.includes(session.user.email)) {
+        alert("Acceso denegado. Esta sección es exclusiva para la administración.");
+        window.location.href = '/dashboard';
+        return;
+      }
+
+      // 2. Cargar Tasa del Día
+      const { data: tasaData } = await supabase
+        .from('configuracion')
+        .select('valor')
+        .eq('clave', 'tasa_dolar')
+        .single();
+      
+      if (tasaData) {
+        document.getElementById('inputTasa').value = tasaData.valor;
+      }
+
+      // 3. Cargar Pagos Pendientes
+      await cargarPagosPendientes();
+
+      // 4. Cargar Alumnos
+      await cargarAlumnos();
+
+      pantallaCarga.classList.add('hidden');
+      adminContenido.classList.remove('hidden');
+
+    } catch (err) {
+      console.error(err);
+      alert("Error al cargar el panel administrativo.");
+      window.location.href = '/dashboard';
+    }
+  });
+
+  // Función para cargar pagos pendientes
+  async function cargarPagosPendientes() {
+    const tbody = document.getElementById('tablaPagosPendientes');
+    tbody.innerHTML = '';
+
+    const { data: pagos, error } = await supabase
+      .from('pagos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error(error); return; }
+
+    if (!pagos || pagos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-500 italic">No hay pagos registrados.</td></tr>`;
+      return;
+    }
+
+    pagos.forEach(pago => {
+      const fecha = new Date(pago.created_at).toLocaleDateString('es-ES');
+      tbody.innerHTML += `
+        <tr class="hover:bg-zinc-800/50">
+          <td class="p-4 text-zinc-300">${fecha}</td>
+          <td class="p-4 font-mono text-xs text-cyan-400">${pago.alumno_id.slice(0, 8)}...</td>
+          <td class="p-4 font-bold">${pago.metodo_pago}</td>
+          <td class="p-4 font-mono text-lime-400">${pago.referencia}</td>
+          <td class="p-4 font-black text-white">${pago.monto}$</td>
+          <td class="p-4 text-zinc-300">${pago.mes_correspondiente}</td>
+          <td class="p-4 text-center">
+            <span class="bg-zinc-800 text-zinc-300 px-3 py-1 text-xs font-bold uppercase border border-zinc-700">Registrado</span>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  // Función para cargar alumnos
+  async function cargarAlumnos() {
+    const tbody = document.getElementById('tablaAlumnos');
+    tbody.innerHTML = '';
+
+    const { data: alumnos, error } = await supabase
+      .from('alumnos')
+      .select('*')
+      .order('nombre', { ascending: true });
+
+    if (error) { console.error(error); return; }
+
+    if (!alumnos || alumnos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-500 italic">No hay alumnos inscritos.</td></tr>`;
+      return;
+    }
+
+    alumnos.forEach(alumno => {
+      const bici = alumno.tipos_bici && alumno.tipos_bici[0] ? `${alumno.tipos_bici[0].tipo} - Rin ${alumno.tipos_bici[0].rin}` : 'N/A';
+      tbody.innerHTML += `
+        <tr class="hover:bg-zinc-800/50">
+          <td class="p-4 font-bold text-white uppercase">${alumno.nombre}</td>
+          <td class="p-4 text-cyan-400 font-bold uppercase text-xs">${alumno.nivel}</td>
+          <td class="p-4 font-mono text-zinc-300">${alumno.cedula}</td>
+          <td class="p-4 text-zinc-300">${alumno.telefono}</td>
+          <td class="p-4 text-zinc-400 text-xs">${alumno.email}</td>
+          <td class="p-4 text-lime-400 text-xs font-bold">${bici}</td>
+        </tr>
+      `;
+    });
+  }
+
+  // Actualizar Tasa del Dólar
+  document.getElementById('formTasa').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nuevoValor = document.getElementById('inputTasa').value;
+    const msg = document.getElementById('mensajeTasa');
+
+    try {
+      const { error } = await supabase
+        .from('configuracion')
+        .update({ valor: nuevoValor, updated_at: new Date() })
+        .eq('clave', 'tasa_dolar');
+
+      if (error) throw error;
+
+      msg.textContent = "¡Tasa actualizada con éxito!";
+      msg.className = "text-xs font-bold mt-2 text-center text-lime-400 block";
+    } catch (err) {
+      console.error(err);
+      msg.textContent = "Error al actualizar la tasa.";
+      msg.className = "text-xs font-bold mt-2 text-center text-pink-500 block";
+    }
+  });
+
+  // Funciones de Respaldo (Exportar CSV)
+  document.getElementById('btnExportarAlumnos').addEventListener('click', async () => {
+    const { data } = await supabase.from('alumnos').select('*');
+    exportarACSV(data, 'respaldo_alumnos_pupibike.csv');
+  });
+
+  document.getElementById('btnExportarPagos').addEventListener('click', async () => {
+    const { data } = await supabase.from('pagos').select('*');
+    exportarACSV(data, 'respaldo_pagos_pupibike.csv');
+  });
+
+  function exportarACSV(arr, filename) {
+    if (!arr || !arr.length) { alert("No hay datos para exportar."); return; }
+    const keys = Object.keys(arr[0]);
+    const csvContent = "data:text/csv;charset=utf-8," + 
+      [keys.join(","), ...arr.map(row => keys.map(k => JSON.stringify(row[k] || "")).join(","))].join("\n");
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // Cerrar Sesión Admin
+  document.getElementById('btnAdminLogout').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  });
+</script>
