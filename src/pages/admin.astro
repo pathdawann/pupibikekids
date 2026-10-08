@@ -2,8 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import { supabaseServer } from '../lib/supabase-server.js';
 
-// 1. Inicializamos el cliente de servidor leyendo las cookies
-const supabase = supabaseServer(Astro.cookies);
+// 1. Inicializamos 
+const supabase = supabaseServer(Astro);
 
 // 2. Verificamos la sesión directamente en la base de datos
 const { data: { session }, error } = await supabase.auth.getSession();

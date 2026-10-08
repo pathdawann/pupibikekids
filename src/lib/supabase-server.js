@@ -1,13 +1,16 @@
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient, parseCookieHeader } from '@supabase/ssr';
 
-export const supabaseServer = (cookies) => {
+export const supabaseServer = (context) => {
+  const request = context.request;
+  const cookies = context.cookies;
+
   return createServerClient(
     import.meta.env.PUBLIC_SUPABASE_URL,
     import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {
-          return cookies.getAll();
+          return parseCookieHeader(request.headers.get('Cookie') ?? '');
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
