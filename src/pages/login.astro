@@ -28,7 +28,7 @@ import Layout from '../layouts/Layout.astro';
       
       <div>
         <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Correo Electrónico</label>
-        <input type="email" id="email" placeholder="tucorreo@ejemplo.com" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2 placeholder-zinc-700">
+        <input type="email" id="email" placeholder="tucorreo@ejemplo.com" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2 placeholder-zinc-700 lowercase">
       </div>
       
       <div>
@@ -50,7 +50,7 @@ import Layout from '../layouts/Layout.astro';
   </main>
 </Layout>
 
-  <script type="module">
+<script type="module">
   import { supabase } from '../lib/supabase.js';
 
   const form = document.getElementById('loginForm');
@@ -62,8 +62,9 @@ import Layout from '../layouts/Layout.astro';
     
     btnSubmit.textContent = "VERIFICANDO...";
     btnSubmit.disabled = true;
+    mensaje.classList.add('hidden');
 
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value.trim().toLowerCase();
     const password = document.getElementById('password').value;
 
     try {
@@ -74,13 +75,28 @@ import Layout from '../layouts/Layout.astro';
 
       if (error) throw error;
 
-      // Si el login es exitoso, redirigimos al portal interno (que crearemos pronto)
-      window.location.href = '/dashboard';
+      // Lista de correos administradores
+      const correosAdmin = ["pathdawann@gmail.com", "cesar@gmail.com"];
+
+      if (data.user?.email && correosAdmin.includes(data.user.email)) {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/dashboard';
+      }
 
     } catch (error) {
       console.error(error);
-      mensaje.textContent = "Credenciales incorrectas. Verifica tu correo y contraseña.";
+      let errorMsg = "Credenciales incorrectas. Verifica tu correo y contraseña.";
+      
+      if (error.message && error.message.includes('Email not confirmed')) {
+        errorMsg = "Debes confirmar tu correo electrónico antes de ingresar. Revisa tu bandeja de entrada o spam.";
+      } else if (error.message && error.message.includes('Invalid login credentials')) {
+        errorMsg = "Correo o contraseña incorrectos.";
+      }
+
+      mensaje.textContent = errorMsg;
       mensaje.className = "p-3 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-pink-600 text-white block mt-2 text-sm";
+      mensaje.classList.remove('hidden');
     } finally {
       btnSubmit.textContent = "Ingresar al Panel";
       btnSubmit.disabled = false;
