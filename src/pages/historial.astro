@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout>
+<Layout title="Historial de Pagos | Pupi Bike Kids">
   <!-- Navegación Privada -->
   <nav class="bg-black text-white p-4 border-b-4 border-pink-500 sticky top-0 z-50">
     <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
@@ -11,7 +11,7 @@ import Layout from '../layouts/Layout.astro';
         <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
       </a>
       <a href="/dashboard" class="text-cyan-400 font-bold hover:text-white transition italic uppercase text-sm md:text-base underline">
-        Volver al Panel
+        ← Volver al Panel
       </a>
     </div>
   </nav>
@@ -24,7 +24,6 @@ import Layout from '../layouts/Layout.astro';
 
   <!-- Contenedor Principal -->
   <main id="historialContenido" class="container mx-auto px-4 py-12 max-w-4xl relative hidden min-h-[80vh]">
-    <!-- Luces de fondo -->
     <div class="absolute top-10 left-0 w-80 h-80 bg-cyan-600 rounded-full mix-blend-screen filter blur-[120px] opacity-10 pointer-events-none"></div>
 
     <div class="mb-10 text-center">
@@ -36,12 +35,10 @@ import Layout from '../layouts/Layout.astro';
       <p class="text-zinc-400 italic font-medium text-lg">Registro completo de tus reportes de transferencias.</p>
     </div>
 
-    <!-- Lista donde JavaScript inyectará las tarjetas de pago -->
-    <div id="contenedorLista" class="flex flex-col gap-6 relative z-10">
-      <!-- Aquí irán los pagos -->
-    </div>
+    <!-- Lista inyectada por JS -->
+    <div id="contenedorLista" class="flex flex-col gap-6 relative z-10"></div>
 
-    <!-- Mensaje por si no hay pagos registrados -->
+    <!-- Mensaje vacío -->
     <div id="mensajeVacio" class="hidden bg-zinc-900 border-2 border-zinc-700 p-10 text-center transform -skew-x-2 shadow-lg mt-8">
       <div class="transform skew-x-2">
         <p class="text-zinc-400 text-xl font-bold italic uppercase mb-2">Aún no tienes pagos reportados</p>
@@ -73,7 +70,7 @@ import Layout from '../layouts/Layout.astro';
 
       const user = session.user;
 
-      // 2. Obtener el ID del Alumno vinculado a este usuario
+      // 2. Obtener el ID del Alumno
       const { data: alumno, error: errAlumno } = await supabase
         .from('alumnos')
         .select('id')
@@ -82,7 +79,7 @@ import Layout from '../layouts/Layout.astro';
 
       if (errAlumno || !alumno) throw new Error("No se pudo identificar al alumno.");
 
-      // 3. Buscar todos los pagos de este alumno (ordenados por el más reciente primero)
+      // 3. Buscar pagos del alumno ordenados por fecha descendente
       const { data: pagos, error: errPagos } = await supabase
         .from('pagos')
         .select('*')
@@ -91,7 +88,6 @@ import Layout from '../layouts/Layout.astro';
 
       if (errPagos) throw errPagos;
 
-      // 4. Pintar los pagos en la pantalla
       pantallaCarga.classList.add('hidden');
       historialContenido.classList.remove('hidden');
 
@@ -99,22 +95,33 @@ import Layout from '../layouts/Layout.astro';
         mensajeVacio.classList.remove('hidden');
       } else {
         pagos.forEach(pago => {
-          // Extraer solo la fecha de la marca de tiempo (created_at)
-          const fechaReporte = new Date(pago.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+          const fechaReporte = new Date(pago.created_at).toLocaleDateString('es-ES', { 
+            day: '2-digit', 
+            month: 'short', 
+            year: 'numeric' 
+          });
+
+          // Badge dinámico según el estado real del recibo
+          let badgeEstadoHtml = '';
+          if (pago.estado === 'aprobado') {
+            badgeEstadoHtml = `<span class="text-xs font-black bg-lime-400 text-black px-3 py-1 uppercase tracking-widest border border-lime-300 mt-2">✓ Aprobado</span>`;
+          } else {
+            badgeEstadoHtml = `<span class="text-xs font-black bg-cyan-400/20 text-cyan-400 px-3 py-1 uppercase tracking-widest border border-cyan-400 mt-2">⏳ En Revisión</span>`;
+          }
 
           const tarjetaHtml = `
-            <div class="bg-zinc-900 border-l-8 border-pink-500 p-6 md:p-8 shadow-[6px_6px_0px_rgba(0,0,0,0.3)] transform -skew-x-2 hover:-translate-y-1 transition-transform border-y border-r border-zinc-800">
+            <div class="bg-zinc-900 border-l-8 ${pago.estado === 'aprobado' ? 'border-lime-400' : 'border-pink-500'} p-6 md:p-8 shadow-[6px_6px_0px_rgba(0,0,0,0.3)] transform -skew-x-2 hover:-translate-y-1 transition-transform border-y border-r border-zinc-800">
               <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 transform skew-x-2">
                 
                 <div class="flex-1">
-                  <p class="text-pink-500 font-black uppercase italic tracking-wider text-xl mb-1">${pago.mes_correspondiente}</p>
+                  <p class="${pago.estado === 'aprobado' ? 'text-lime-400' : 'text-pink-500'} font-black uppercase italic tracking-wider text-xl mb-1">${pago.mes_correspondiente}</p>
                   <p class="text-white font-bold text-lg mb-1">${pago.metodo_pago} <span class="text-zinc-500">|</span> Ref: ${pago.referencia}</p>
                   <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Reportado el: ${fechaReporte}</p>
                 </div>
 
                 <div class="text-left md:text-right flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center">
                   <p class="text-3xl font-black text-lime-400 italic">${pago.monto}$</p>
-                  <p class="text-xs font-bold bg-zinc-800 text-zinc-300 px-3 py-1 uppercase tracking-widest border border-zinc-700 mt-2">En Revisión</p>
+                  ${badgeEstadoHtml}
                 </div>
 
               </div>
@@ -125,7 +132,7 @@ import Layout from '../layouts/Layout.astro';
       }
 
     } catch (error) {
-      console.error("Error cargando el historial:", error);
+      console.error("Error cargando historial:", error);
       alert("Hubo un error cargando tu historial.");
       window.location.href = '/dashboard';
     }

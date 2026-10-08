@@ -14,7 +14,12 @@ export const supabaseServer = (context) => {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
-            cookies.set(name, value, options);
+            cookies.set(name, value, {
+              ...options,
+              path: options?.path ?? '/',
+              secure: import.meta.env.PROD,
+              sameSite: 'lax',
+            });
           });
         },
       },
