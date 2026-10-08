@@ -3,13 +3,22 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import vercel from '@astrojs/vercel';
 
+import sitemap from '@astrojs/sitemap';
+
 export default defineConfig({
+  // <--- Añade tu dominio oficial aquí
+  site: 'https://www.pupibikekids.com',
+
   output: 'server',
+
   security: {
-    checkOrigin: true // Activa un escudo para que nadie envíe formularios a tu web desde sitios maliciosos
+    checkOrigin: true
   },
+
   vite: {
     plugins: [tailwindcss()]
   },
-  adapter: vercel()
+
+  adapter: vercel(),
+  integrations: [sitemap()]
 });

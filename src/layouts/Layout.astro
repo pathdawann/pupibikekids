@@ -4,12 +4,20 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  noindex?: boolean;
 }
 
 const { 
-  title = "Pupi Bike Kids - Academia de Ciclismo", 
-  description = "Formando a los futuros campeones del MTB con técnica, disciplina y pasión en un ambiente seguro para niños y jóvenes." 
+  title = "Pupi Bike Kids - Academia de Ciclismo MTB", 
+  description = "Academia de ciclismo infantil y juvenil en Barcelona, Anzoátegui. Clases de iniciación, balance y competición MTB para niños.",
+  image = "/fondo-hero.jpg",
+  noindex = false
 } = Astro.props;
+
+// Construye la URL absoluta canónica de la página actual
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://www.pupibikekids.com");
+const imageURL = new URL(image, Astro.site || "https://www.pupibikekids.com");
 ---
 
 <!DOCTYPE html>
@@ -17,17 +25,36 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
 
-    <!-- Open Graph / Redes Sociales (WhatsApp, Facebook, Twitter, Instagram) -->
+    <!-- Control de Indexación: Si es página privada (admin, dashboard), bloquea el rastreo -->
+    {noindex ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      <meta name="robots" content="index, follow" />
+    )}
+
+    <!-- Open Graph / WhatsApp / Facebook -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="/fondo-hero.jpg" />
+    <meta property="og:image" content={imageURL} />
+    <meta property="og:locale" content="es_VE" />
 
-    <!-- Favicon / Avatar de la web -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageURL} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
   </head>
   <body class="bg-zinc-950 text-white font-sans selection:bg-lime-500 selection:text-black antialiased">
     <slot />

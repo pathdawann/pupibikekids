@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /registro
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /historial
+Disallow: /login
+
+Sitemap: https://www.pupibikekids.com/sitemap-index.xml
