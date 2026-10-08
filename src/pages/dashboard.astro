@@ -375,7 +375,6 @@ import Layout from '../layouts/Layout.astro';
 <script type="module">
   import { supabase } from '../lib/supabase.js';
 
-  // Variables globales de ámbito de módulo para reutilizar en los formularios
   let currentUser = null;
   let currentAlumno = null;
 
@@ -384,7 +383,7 @@ import Layout from '../layouts/Layout.astro';
     const dashboardContenido = document.getElementById('dashboardContenido');
 
     try {
-      // 1. Obtención y validación de sesión activa
+      // 1. Sesión activa
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { 
         window.location.href = '/login'; 
@@ -393,19 +392,18 @@ import Layout from '../layouts/Layout.astro';
 
       currentUser = session.user;
 
-      // 2. Cargar perfil del atleta vinculado al user_id
+      // 2. Cargar perfil del atleta
       const { data: alumno, error } = await supabase
         .from('alumnos')
         .select('*')
         .eq('user_id', currentUser.id)
         .single();
 
-      if (error) throw error;
-      if (!alumno) throw new Error("No se encontró la ficha del alumno.");
+      if (error || !alumno) throw new Error("No se encontró la ficha del alumno.");
 
       currentAlumno = alumno;
 
-      // Guardar en variables globales auxiliares para precargar el modal de edición
+      // Variables auxiliares para el modal de edición
       window.currentCedula = alumno.cedula || '';
       window.currentEmail = alumno.email || currentUser.email;
       window.currentDireccion = alumno.direccion || '';
@@ -413,7 +411,7 @@ import Layout from '../layouts/Layout.astro';
       window.currentTipoSangre = alumno.tipo_sangre || '';
       window.currentBicicletas = alumno.tipos_bici || [];
 
-      // 3. Renderizar datos personales en pantalla
+      // 3. Renderizar ficha en pantalla
       document.getElementById('uiNombre').textContent = (alumno.nombre || 'ATLETA').split(' ')[0];
       document.getElementById('uiNombreCompleto').textContent = alumno.nombre || 'Atleta';
       document.getElementById('uiNivel').textContent = alumno.nivel || 'NIVEL GENERAL';
@@ -431,7 +429,7 @@ import Layout from '../layouts/Layout.astro';
         document.getElementById('uiFoto').src = alumno.foto_url;
       }
 
-      // 4. Renderizar inventario de bicicletas
+      // 4. Renderizar bicicletas
       const contenedorBicis = document.getElementById('contenedorBicicletasVisual');
       contenedorBicis.innerHTML = '';
       const bicisList = alumno.tipos_bici || []; 
@@ -452,29 +450,40 @@ import Layout from '../layouts/Layout.astro';
         contenedorBicis.innerHTML = `<p class="text-zinc-500 text-sm italic">No hay bicicletas registradas.</p>`;
       }
 
-      // 5. Verificación de Solvencia del mes actual
+      // 5. Verificación de Solvencia Inteligente
       const fechaActual = new Date();
       const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
       const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
 
-      const { data: pagosMes } = await supabase
+      // Consultamos los últimos pagos del atleta
+      const { data: ultimosPagos } = await supabase
         .from('pagos')
-        .select('estado')
+        .select('*')
         .eq('alumno_id', alumno.id)
-        .eq('mes_correspondiente', mesActualStr);
+        .order('created_at', { ascending: false });
 
       const uiEstatus = document.getElementById('uiEstatus');
       const uiIcono = document.getElementById('uiIconoEstatus');
 
-      const pagoAprobado = pagosMes?.some(p => p.estado === 'aprobado');
-      const pagoEnRevision = pagosMes?.some(p => p.estado === 'revision');
+      // Evaluamos el estatus: primero del mes corriente, o el más reciente reportado
+      const pagoMesActual = ultimosPagos?.find(p => p.mes_correspondiente === mesActualStr);
+      const ultimoPago = ultimosPagos?.[0];
 
-      if (pagoAprobado) {
+      let estatusFinal = 'deuda';
+
+      if (pagoMesActual) {
+        estatusFinal = pagoMesActual.estado;
+      } else if (ultimoPago && ultimoPago.estado === 'revision') {
+        // Si reportó otro mes (ej. Diciembre) y está en revisión
+        estatusFinal = 'revision';
+      }
+
+      if (estatusFinal === 'aprobado') {
         uiEstatus.textContent = "AL DÍA (APROBADO)";
         uiEstatus.className = "text-xl font-black italic uppercase text-lime-400";
         uiIcono.className = "w-12 h-12 bg-lime-400 rounded-full flex items-center justify-center text-black text-2xl shadow-[0_0_15px_#a3e635]";
         uiIcono.textContent = "✓";
-      } else if (pagoEnRevision) {
+      } else if (estatusFinal === 'revision') {
         uiEstatus.textContent = "EN REVISIÓN";
         uiEstatus.className = "text-xl font-black italic uppercase text-cyan-400";
         uiIcono.className = "w-12 h-12 bg-cyan-400 rounded-full flex items-center justify-center text-black text-2xl shadow-[0_0_15px_#00d2ff] animate-pulse";
@@ -485,8 +494,13 @@ import Layout from '../layouts/Layout.astro';
         uiIcono.className = "w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center text-white text-2xl shadow-[0_0_15px_#db2777] animate-pulse";
         uiIcono.textContent = "!";
         
-        // Modal de aviso a partir del día 6 del mes
-        if (fechaActual.getDate() > 5) {
+        // MODAL NO INVASIVO:
+        // Solo se muestra si:
+        // 1. Pasan del día 5
+        // 2. NO tiene ningún pago en revisión
+        // 3. No lo ha cerrado ya en esta sesión de navegador
+        const yaVistoEnSesion = sessionStorage.getItem('recordatorio_visto');
+        if (fechaActual.getDate() > 5 && estatusFinal !== 'revision' && !yaVistoEnSesion) {
           document.getElementById('modalRecordatorioDeuda')?.classList.remove('hidden');
         }
       }
@@ -501,18 +515,24 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // Modal Recordatorio de Deuda
+  // Control del Modal de Deuda (Amigable con sessionStorage)
   const modalDeuda = document.getElementById('modalRecordatorioDeuda');
   if (modalDeuda) {
-    document.getElementById('btnCerrarRecordatorio')?.addEventListener('click', () => modalDeuda.classList.add('hidden'));
-    document.getElementById('btnIrAPagarDeuda')?.addEventListener('click', () => {
+    const cerrarModal = () => {
       modalDeuda.classList.add('hidden');
+      sessionStorage.setItem('recordatorio_visto', 'true'); // No vuelve a molestar en esta sesión
+    };
+
+    document.getElementById('btnCerrarRecordatorio')?.addEventListener('click', cerrarModal);
+    document.getElementById('btnIrAPagarDeuda')?.addEventListener('click', () => {
+      cerrarModal();
       document.getElementById('modalPago')?.classList.remove('hidden');
     });
   }
 
   // Cierre de Sesión
   document.getElementById('btnLogout')?.addEventListener('click', async () => {
+    sessionStorage.clear();
     await supabase.auth.signOut();
     window.location.href = '/login';
   });
@@ -535,7 +555,6 @@ import Layout from '../layouts/Layout.astro';
     msg.classList.add('hidden');
 
     try {
-      // 1. Verificamos que los datos del atleta y sesión estén cargados en memoria
       if (!currentUser || !currentAlumno?.id) {
         throw new Error("Sesión no válida. Por favor recarga la página.");
       }
@@ -549,7 +568,6 @@ import Layout from '../layouts/Layout.astro';
         throw new Error("Por favor ingresa un monto y referencia válidos.");
       }
 
-      // 2. Inserción protegida vinculando directamente el id del alumno autenticado
       const { error } = await supabase.from('pagos').insert([{ 
         alumno_id: currentAlumno.id,
         metodo_pago: metodo,
@@ -561,33 +579,19 @@ import Layout from '../layouts/Layout.astro';
 
       if (error) throw error;
 
-      // 3. Notificación de éxito
+      sessionStorage.setItem('recordatorio_visto', 'true');
       msg.textContent = "¡Pago reportado con éxito!";
       msg.className = "text-sm font-bold uppercase italic text-center p-2 border border-lime-400 bg-lime-400/20 text-lime-400 block mt-2";
       
       setTimeout(() => { 
-        modalPago.classList.add('hidden'); 
-        document.getElementById('formPago').reset(); 
-        msg.classList.add('hidden'); 
-        btn.textContent = "Enviar Reporte"; 
-        btn.disabled = false;
         window.location.reload();
-      }, 1500);
+      }, 1200);
 
     } catch (err) {
       console.error("Error al reportar pago:", err);
-      
-      let mensajeError = "Error al reportar el pago. Por favor intenta de nuevo.";
-      if (err.message && err.message.includes('row-level security')) {
-        mensajeError = "No tienes permiso para reportar pagos en esta cuenta.";
-      } else if (err.message) {
-        mensajeError = err.message;
-      }
-
-      msg.textContent = mensajeError;
+      msg.textContent = err.message || "Error al reportar el pago.";
       msg.className = "text-sm font-bold uppercase italic text-center p-2 border border-pink-500 bg-pink-500/20 text-pink-500 block mt-2";
       msg.classList.remove('hidden');
-
       btn.textContent = "Enviar Reporte"; 
       btn.disabled = false;
     }
@@ -640,7 +644,6 @@ import Layout from '../layouts/Layout.astro';
     try {
       const userId = currentUser.id;
 
-      // Mantener la foto previa si no se sube un nuevo archivo
       const { data: alumnoActual } = await supabase
         .from('alumnos')
         .select('foto_url')
@@ -667,7 +670,6 @@ import Layout from '../layouts/Layout.astro';
         fotoUrlFinal = publicUrlData.publicUrl;
       }
 
-      // Estructurar bicicletas
       const listaBicicletas = [];
       const b1Tipo = document.getElementById('editBici1Tipo').value;
       if (b1Tipo) {
@@ -689,7 +691,6 @@ import Layout from '../layouts/Layout.astro';
         });
       }
 
-      // Actualizar registro en la tabla alumnos incluyendo tipo_sangre
       const { error } = await supabase
         .from('alumnos')
         .update({
@@ -715,7 +716,7 @@ import Layout from '../layouts/Layout.astro';
       setTimeout(() => { window.location.reload(); }, 1200);
     } catch (err) {
       console.error(err);
-      alert("Error al actualizar la ficha o subir la imagen.");
+      alert("Error al actualizar la ficha.");
       btn.textContent = "Guardar Cambios"; 
       btn.disabled = false;
     }
