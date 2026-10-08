@@ -77,15 +77,30 @@ import Layout from '../layouts/Layout.astro';
               <option value="AVANZADO">AVANZADO (COMPETICIÓN)</option>
             </select>
           </div>
+          <!-- NUEVO CAMPO: Tipo de Sangre (Opcional) -->
+          <div>
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Tipo de Sangre (Opcional)</label>
+            <select id="tipo_sangre" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2 appearance-none">
+              <option value="">-- NO ESPECIFICADO --</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+            </select>
+          </div>
           <div class="md:col-span-2">
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Fotografía del Atleta (Archivo)</label>
-            <input type="file" id="fotoFile" accept="image/*,image/jpeg,image/jpg,image/png,image/webp,image/heif" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer">
+            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Fotografía del Atleta (Opcional)</label>
+            <input type="file" id="fotoFile" accept="image/*" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer">
           </div>
         </div>
 
         <!-- SECCIÓN 3: Bicicleta Principal -->
         <div class="bg-zinc-950 p-6 border-2 border-zinc-800 mt-6">
-          <h3 class="text-lime-400 font-black italic uppercase text-lg mb-4">Información de la Bicicleta Principal</h3>
+          <h3 class="text-lime-400 font-black italic uppercase text-lg mb-4">Información de la Bicicleta Principal (Opcional)</h3>
           
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
@@ -99,15 +114,15 @@ import Layout from '../layouts/Layout.astro';
             </div>
             <div>
               <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Rin</label>
-              <input type="text" id="biciRin" placeholder="Ej: 29" required class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400">
+              <input type="text" id="biciRin" placeholder="Ej: 29" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400">
             </div>
             <div>
               <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Marca</label>
-              <input type="text" id="biciMarca" placeholder="Ej: Giant" required class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400">
+              <input type="text" id="biciMarca" placeholder="Ej: Giant" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400">
             </div>
             <div>
               <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Color</label>
-              <input type="text" id="biciColor" placeholder="Ej: Verde" required class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400">
+              <input type="text" id="biciColor" placeholder="Ej: Verde" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400">
             </div>
           </div>
         </div>
@@ -144,6 +159,7 @@ import Layout from '../layouts/Layout.astro';
     const fecha_nacimiento = document.getElementById('fecha_nacimiento').value;
     const direccion = document.getElementById('direccion').value.toUpperCase();
     const nivel = document.getElementById('nivel').value.toUpperCase();
+    const tipo_sangre = document.getElementById('tipo_sangre').value; // <--- Nuevo valor
     const fotoFile = document.getElementById('fotoFile').files[0];
 
     let fotoUrlFinal = '';
@@ -160,33 +176,33 @@ import Layout from '../layouts/Layout.astro';
       const userId = authData.user?.id;
       if (!userId) throw new Error("No se pudo obtener el ID del usuario.");
 
-      // 2. Si seleccionaron una foto, subirla a Supabase Storage (Bucket: fotos-atletas)
+      // 2. Foto a Storage (Opcional)
       if (fotoFile) {
         const fileExt = fotoFile.name.split('.').pop();
         const fileName = `${userId}-${Math.random()}.${fileExt}`;
         const filePath = `${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from('fotos-atletas')
-          .upload(filePath, fotoFile);
-
+        const { error: uploadError } = await supabase.storage.from('fotos-atletas').upload(filePath, fotoFile);
         if (uploadError) throw uploadError;
 
-        // Obtener la URL pública de la imagen subida
-        const { data: publicUrlData } = supabase.storage
-          .from('fotos-atletas')
-          .getPublicUrl(filePath);
-
+        const { data: publicUrlData } = supabase.storage.from('fotos-atletas').getPublicUrl(filePath);
         fotoUrlFinal = publicUrlData.publicUrl;
       }
 
-      // 3. Empaquetar la bicicleta principal en formato estructurado (JSONB)
-      const listaBicicletas = [{
-        tipo: document.getElementById('biciTipo').value,
-        rin: document.getElementById('biciRin').value.toUpperCase(),
-        marca: document.getElementById('biciMarca').value.toUpperCase(),
-        color: document.getElementById('biciColor').value.toUpperCase()
-      }];
+      // 3. Bicicleta (Se guarda solo si escribieron algo, ya que es opcional)
+      const listaBicicletas = [];
+      const biciRin = document.getElementById('biciRin').value.toUpperCase();
+      const biciMarca = document.getElementById('biciMarca').value.toUpperCase();
+      const biciColor = document.getElementById('biciColor').value.toUpperCase();
+
+      if (biciRin || biciMarca || biciColor) {
+        listaBicicletas.push({
+          tipo: document.getElementById('biciTipo').value,
+          rin: biciRin,
+          marca: biciMarca,
+          color: biciColor
+        });
+      }
 
       // 4. Guardar registro en la tabla alumnos
       const { error: errorAlumno } = await supabase
@@ -200,6 +216,7 @@ import Layout from '../layouts/Layout.astro';
           fecha_nacimiento: fecha_nacimiento,
           direccion: direccion,
           nivel: nivel,
+          tipo_sangre: tipo_sangre, // <--- Enviado a la base de datos
           foto_url: fotoUrlFinal,
           tipos_bici: listaBicicletas
         }]);

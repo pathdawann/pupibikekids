@@ -80,6 +80,10 @@ import Layout from '../layouts/Layout.astro';
               <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Teléfono / WhatsApp</p>
               <p id="uiTelefono" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
             </div>
+            <div>
+              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Tipo de Sangre</p>
+              <p id="uiTipoSangre" class="text-pink-500 font-black bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
+            </div>
             <div class="md:col-span-2">
               <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Dirección / Residencia</p>
               <p id="uiDireccion" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
@@ -251,6 +255,20 @@ import Layout from '../layouts/Layout.astro';
                   <option value="AVANZADO">AVANZADO</option>
                 </select>
               </div>
+              <div>
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Tipo de Sangre</label>
+                <select id="editTipoSangre" class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+                  <option value="">-- NO ESPECIFICADO --</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                </select>
+              </div>
               <div class="md:col-span-2">
                 <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Dirección / Residencia</label>
                 <input type="text" id="editDireccion" placeholder="Ciudad, Urbanización, Calle..." required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
@@ -358,48 +376,64 @@ import Layout from '../layouts/Layout.astro';
 <script type="module">
   import { supabase } from '../lib/supabase.js';
 
+  // Variables globales de ámbito de módulo para reutilizar en los formularios
+  let currentUser = null;
+  let currentAlumno = null;
+
   document.addEventListener('DOMContentLoaded', async () => {
     const pantallaCarga = document.getElementById('pantallaCarga');
     const dashboardContenido = document.getElementById('dashboardContenido');
 
     try {
+      // 1. Obtención y validación de sesión activa
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { window.location.href = '/login'; return; }
+      if (!session) { 
+        window.location.href = '/login'; 
+        return; 
+      }
 
-      const user = session.user;
+      currentUser = session.user;
+
+      // 2. Cargar perfil del atleta vinculado al user_id
       const { data: alumno, error } = await supabase
         .from('alumnos')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', currentUser.id)
         .single();
 
       if (error) throw error;
       if (!alumno) throw new Error("No se encontró la ficha del alumno.");
 
-      // Variables globales para el modal
+      currentAlumno = alumno;
+
+      // Guardar en variables globales auxiliares para precargar el modal de edición
       window.currentCedula = alumno.cedula || '';
-      window.currentEmail = alumno.email || user.email;
+      window.currentEmail = alumno.email || currentUser.email;
       window.currentDireccion = alumno.direccion || '';
       window.currentNacimientoRaw = alumno.fecha_nacimiento || '';
+      window.currentTipoSangre = alumno.tipo_sangre || '';
       window.currentBicicletas = alumno.tipos_bici || [];
 
-      // Pintar datos personales
-      document.getElementById('uiNombre').textContent = alumno.nombre.split(' ')[0];
-      document.getElementById('uiNombreCompleto').textContent = alumno.nombre;
-      document.getElementById('uiNivel').textContent = alumno.nivel;
+      // 3. Renderizar datos personales en pantalla
+      document.getElementById('uiNombre').textContent = (alumno.nombre || 'ATLETA').split(' ')[0];
+      document.getElementById('uiNombreCompleto').textContent = alumno.nombre || 'Atleta';
+      document.getElementById('uiNivel').textContent = alumno.nivel || 'NIVEL GENERAL';
       document.getElementById('uiCedula').textContent = alumno.cedula || 'NO REGISTRADA';
-      document.getElementById('uiEmail').textContent = alumno.email || user.email;
+      document.getElementById('uiEmail').textContent = alumno.email || currentUser.email;
+      document.getElementById('uiTipoSangre').textContent = alumno.tipo_sangre || 'NO REGISTRADO';
       
       const [anio, mes, dia] = alumno.fecha_nacimiento ? alumno.fecha_nacimiento.split('-') : ['--', '--', '--'];
       document.getElementById('uiNacimiento').textContent = `${dia}/${mes}/${anio}`;
       
-      document.getElementById('uiTelefono').textContent = alumno.telefono;
+      document.getElementById('uiTelefono').textContent = alumno.telefono || 'NO REGISTRADO';
       document.getElementById('uiDireccion').textContent = alumno.direccion || 'NO REGISTRADA';
       document.getElementById('inputAlumnoId').value = alumno.id;
 
-      if (alumno.foto_url) document.getElementById('uiFoto').src = alumno.foto_url;
+      if (alumno.foto_url) {
+        document.getElementById('uiFoto').src = alumno.foto_url;
+      }
 
-      // Renderizar el inventario de bicicletas en la tarjeta principal
+      // 4. Renderizar inventario de bicicletas
       const contenedorBicis = document.getElementById('contenedorBicicletasVisual');
       contenedorBicis.innerHTML = '';
       const bicisList = alumno.tipos_bici || []; 
@@ -420,7 +454,7 @@ import Layout from '../layouts/Layout.astro';
         contenedorBicis.innerHTML = `<p class="text-zinc-500 text-sm italic">No hay bicicletas registradas.</p>`;
       }
 
-      // Verificación de Solvencia
+      // 5. Verificación de Solvencia del mes actual
       const fechaActual = new Date();
       const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
       const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
@@ -453,9 +487,9 @@ import Layout from '../layouts/Layout.astro';
         uiIcono.className = "w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center text-white text-2xl shadow-[0_0_15px_#db2777] animate-pulse";
         uiIcono.textContent = "!";
         
-        // <--- NUEVO: Disparar el modal si es mayor al día 5
+        // Modal de aviso a partir del día 6 del mes
         if (fechaActual.getDate() > 5) {
-          document.getElementById('modalRecordatorioDeuda').classList.remove('hidden');
+          document.getElementById('modalRecordatorioDeuda')?.classList.remove('hidden');
         }
       }
 
@@ -463,62 +497,84 @@ import Layout from '../layouts/Layout.astro';
       dashboardContenido.classList.remove('hidden');
 
     } catch (error) {
-      console.error(error);
+      console.error("Error al cargar perfil:", error);
       alert("Hubo un error cargando tu información.");
       window.location.href = '/';
     }
   });
 
-  // <--- NUEVO: Eventos para los botones del modal de recordatorio
+  // Modal Recordatorio de Deuda
   const modalDeuda = document.getElementById('modalRecordatorioDeuda');
-  if(modalDeuda) {
-    document.getElementById('btnCerrarRecordatorio').addEventListener('click', () => modalDeuda.classList.add('hidden'));
-    document.getElementById('btnIrAPagarDeuda').addEventListener('click', () => {
+  if (modalDeuda) {
+    document.getElementById('btnCerrarRecordatorio')?.addEventListener('click', () => modalDeuda.classList.add('hidden'));
+    document.getElementById('btnIrAPagarDeuda')?.addEventListener('click', () => {
       modalDeuda.classList.add('hidden');
-      document.getElementById('modalPago').classList.remove('hidden'); // Abre directo el modal de pago
+      document.getElementById('modalPago')?.classList.remove('hidden');
     });
   }
 
-  // Cerrar Sesión
-  document.getElementById('btnLogout').addEventListener('click', async () => {
+  // Cierre de Sesión
+  document.getElementById('btnLogout')?.addEventListener('click', async () => {
     await supabase.auth.signOut();
     window.location.href = '/login';
   });
 
   // Modal Pagos
   const modalPago = document.getElementById('modalPago');
-  document.getElementById('btnAbrirModalPago').addEventListener('click', () => modalPago.classList.remove('hidden'));
-  document.getElementById('btnCerrarModal').addEventListener('click', () => { modalPago.classList.add('hidden'); document.getElementById('formPago').reset(); });
+  document.getElementById('btnAbrirModalPago')?.addEventListener('click', () => modalPago.classList.remove('hidden'));
+  document.getElementById('btnCerrarModal')?.addEventListener('click', () => { 
+    modalPago.classList.add('hidden'); 
+    document.getElementById('formPago').reset(); 
+  });
 
-  document.getElementById('formPago').addEventListener('submit', async (e) => {
+  document.getElementById('formPago')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnEnviarPago');
-    btn.textContent = "ENVIANDO..."; btn.disabled = true;
+    btn.textContent = "ENVIANDO..."; 
+    btn.disabled = true;
 
     try {
+      if (!currentUser || !currentAlumno) {
+        throw new Error("No hay una sesión activa de atleta.");
+      }
+
+      // Inserción blindada con user_id y estado en revision para RLS
       const { error } = await supabase.from('pagos').insert([{ 
-        alumno_id: document.getElementById('inputAlumnoId').value,
+        user_id: currentUser.id,
+        alumno_id: currentAlumno.id,
         metodo_pago: document.getElementById('inputMetodo').value,
-        referencia: document.getElementById('inputReferencia').value,
+        referencia: document.getElementById('inputReferencia').value.trim(),
         monto: parseFloat(document.getElementById('inputMonto').value),
-        mes_correspondiente: document.getElementById('inputMes').value
+        mes_correspondiente: document.getElementById('inputMes').value,
+        estado: 'revision'
       }]);
+
       if (error) throw error;
 
       const msg = document.getElementById('mensajePago');
       msg.textContent = "¡Pago reportado con éxito!";
       msg.className = "text-sm font-bold uppercase italic text-center p-2 border border-lime-400 bg-lime-400/20 text-lime-400 block mt-2";
-      setTimeout(() => { modalPago.classList.add('hidden'); document.getElementById('formPago').reset(); msg.classList.add('hidden'); btn.textContent = "Enviar Reporte"; btn.disabled = false; }, 2000);
+      
+      setTimeout(() => { 
+        modalPago.classList.add('hidden'); 
+        document.getElementById('formPago').reset(); 
+        msg.classList.add('hidden'); 
+        btn.textContent = "Enviar Reporte"; 
+        btn.disabled = false;
+        window.location.reload();
+      }, 1500);
+
     } catch (err) {
       console.error(err);
-      alert("Error al reportar el pago.");
-      btn.textContent = "Enviar Reporte"; btn.disabled = false;
+      alert("Error al reportar el pago. Por favor intenta de nuevo.");
+      btn.textContent = "Enviar Reporte"; 
+      btn.disabled = false;
     }
   });
 
-  // Modal Edición
+  // Modal Edición de Ficha
   const modalEditar = document.getElementById('modalEditar');
-  document.getElementById('btnAbrirModalEditar').addEventListener('click', () => {
+  document.getElementById('btnAbrirModalEditar')?.addEventListener('click', () => {
     document.getElementById('editNombre').value = (document.getElementById('uiNombreCompleto')?.textContent || '').toUpperCase();
     document.getElementById('editCedula').value = (window.currentCedula || '').toUpperCase();
     document.getElementById('editNacimiento').value = window.currentNacimientoRaw || '';
@@ -526,8 +582,7 @@ import Layout from '../layouts/Layout.astro';
     document.getElementById('editTelefono').value = (document.getElementById('uiTelefono')?.textContent || '').toUpperCase();
     document.getElementById('editDireccion').value = (window.currentDireccion || '').toUpperCase();
     document.getElementById('editNivel').value = (document.getElementById('uiNivel')?.textContent || 'INTERMEDIO').toUpperCase();
-    
-    // Limpiar el selector de archivo al abrir
+    document.getElementById('editTipoSangre').value = window.currentTipoSangre || '';
     document.getElementById('editFotoFile').value = '';
 
     const bicis = window.currentBicicletas || [];
@@ -553,19 +608,18 @@ import Layout from '../layouts/Layout.astro';
     modalEditar.classList.remove('hidden');
   });
 
-  document.getElementById('btnCerrarModalEditar').addEventListener('click', () => modalEditar.classList.add('hidden'));
+  document.getElementById('btnCerrarModalEditar')?.addEventListener('click', () => modalEditar.classList.add('hidden'));
 
-  document.getElementById('formEditar').addEventListener('submit', async (e) => {
+  document.getElementById('formEditar')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnGuardarEdicion');
     btn.textContent = "GUARDANDO CAMBIOS..."; 
     btn.disabled = true;
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const userId = session.user.id;
+      const userId = currentUser.id;
 
-      // Obtener datos actuales del alumno para conservar la foto anterior si no se sube una nueva
+      // Mantener la foto previa si no se sube un nuevo archivo
       const { data: alumnoActual } = await supabase
         .from('alumnos')
         .select('foto_url')
@@ -575,7 +629,6 @@ import Layout from '../layouts/Layout.astro';
       let fotoUrlFinal = alumnoActual?.foto_url || '';
       const fotoFile = document.getElementById('editFotoFile').files[0];
 
-      // Si el usuario seleccionó una nueva foto, subirla a Supabase Storage
       if (fotoFile) {
         const fileExt = fotoFile.name.split('.').pop();
         const fileName = `${userId}-${Date.now()}.${fileExt}`;
@@ -593,15 +646,15 @@ import Layout from '../layouts/Layout.astro';
         fotoUrlFinal = publicUrlData.publicUrl;
       }
 
-      // Empaquetar bicicletas
+      // Estructurar bicicletas
       const listaBicicletas = [];
       const b1Tipo = document.getElementById('editBici1Tipo').value;
       if (b1Tipo) {
         listaBicicletas.push({
           tipo: b1Tipo,
-          rin: document.getElementById('editBici1Rin').value.toUpperCase(),
-          marca: document.getElementById('editBici1Marca').value.toUpperCase(),
-          color: document.getElementById('editBici1Color').value.toUpperCase()
+          rin: document.getElementById('editBici1Rin').value.trim().toUpperCase(),
+          marca: document.getElementById('editBici1Marca').value.trim().toUpperCase(),
+          color: document.getElementById('editBici1Color').value.trim().toUpperCase()
         });
       }
 
@@ -609,22 +662,23 @@ import Layout from '../layouts/Layout.astro';
       if (b2Tipo && b2Tipo !== "") {
         listaBicicletas.push({
           tipo: b2Tipo,
-          rin: document.getElementById('editBici2Rin').value.toUpperCase(),
-          marca: document.getElementById('editBici2Marca').value.toUpperCase(),
-          color: document.getElementById('editBici2Color').value.toUpperCase()
+          rin: document.getElementById('editBici2Rin').value.trim().toUpperCase(),
+          marca: document.getElementById('editBici2Marca').value.trim().toUpperCase(),
+          color: document.getElementById('editBici2Color').value.trim().toUpperCase()
         });
       }
 
-      // Actualizar registro en la tabla alumnos
+      // Actualizar registro en la tabla alumnos incluyendo tipo_sangre
       const { error } = await supabase
         .from('alumnos')
         .update({
-          nombre: document.getElementById('editNombre').value.toUpperCase(),
-          cedula: document.getElementById('editCedula').value.toUpperCase(),
+          nombre: document.getElementById('editNombre').value.trim().toUpperCase(),
+          cedula: document.getElementById('editCedula').value.trim().toUpperCase(),
           fecha_nacimiento: document.getElementById('editNacimiento').value,
-          email: document.getElementById('editEmail').value.toLowerCase(),
-          direccion: document.getElementById('editDireccion').value.toUpperCase(),
-          telefono: document.getElementById('editTelefono').value.toUpperCase(),
+          email: document.getElementById('editEmail').value.trim().toLowerCase(),
+          direccion: document.getElementById('editDireccion').value.trim().toUpperCase(),
+          telefono: document.getElementById('editTelefono').value.trim().toUpperCase(),
+          tipo_sangre: document.getElementById('editTipoSangre').value,
           nivel: document.getElementById('editNivel').value.toUpperCase(),
           foto_url: fotoUrlFinal,
           tipos_bici: listaBicicletas
@@ -637,7 +691,7 @@ import Layout from '../layouts/Layout.astro';
       msg.textContent = "¡Ficha actualizada con éxito! Recargando...";
       msg.className = "text-sm font-bold uppercase italic text-center p-2 border border-lime-400 bg-lime-400/20 text-lime-400 block mt-2";
       
-      setTimeout(() => { window.location.reload(); }, 1500);
+      setTimeout(() => { window.location.reload(); }, 1200);
     } catch (err) {
       console.error(err);
       alert("Error al actualizar la ficha o subir la imagen.");

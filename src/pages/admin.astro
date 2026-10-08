@@ -1,5 +1,26 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { supabaseServer } from '../lib/supabase-server.js';
+
+// 1. Inicializamos el cliente de servidor leyendo las cookies
+const supabase = supabaseServer(Astro.cookies);
+
+// 2. Verificamos la sesión directamente en la base de datos
+const { data: { session }, error } = await supabase.auth.getSession();
+
+// 3. Si no hay sesión (no está logueado), lo pateamos al login
+if (!session || error) {
+  return Astro.redirect('/login');
+}
+
+// 4. Verificamos si tiene permisos de Administrador
+const correosAutorizados = ["pathdawann@gmail.com", "cesar@gmail.com"];
+if (!correosAutorizados.includes(session.user.email)) {
+  // Si un atleta intenta entrar al admin, lo mandamos a su panel
+  return Astro.redirect('/dashboard');
+}
+
+// Si el código llega hasta aquí, significa que es administrador y es seguro mostrarle el HTML
 ---
 
 <Layout title="Panel Administrativo | Pupi Bike Kids">
@@ -18,14 +39,8 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </nav>
 
-  <!-- Pantalla de Carga -->
-  <div id="pantallaCargaAdmin" class="min-h-[80vh] flex flex-col items-center justify-center">
-    <div class="w-16 h-16 border-4 border-lime-400 border-t-transparent rounded-full animate-spin mb-4"></div>
-    <p class="text-lime-400 font-black italic uppercase tracking-widest animate-pulse">Cargando centro de control...</p>
-  </div>
-
   <!-- Contenido Admin -->
-  <main id="adminContenido" class="container mx-auto px-4 py-10 max-w-7xl hidden">
+  <main id="adminContenido" class="container mx-auto px-4 py-10 max-w-7xl">
     
     <!-- Encabezado y Respaldo -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635]">
@@ -144,35 +159,26 @@ import Layout from '../layouts/Layout.astro';
   import { supabase } from '../lib/supabase.js';
 
   document.addEventListener('DOMContentLoaded', async () => {
-    const pantallaCarga = document.getElementById('pantallaCargaAdmin');
-    const adminContenido = document.getElementById('adminContenido');
-
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { window.location.href = '/login'; return; }
+      // 1. Cargar Tasa del Día
+      const { data: tasaData } = await supabase
+        .from('configuracion')
+        .select('valor')
+        .eq('clave', 'tasa_dolar')
+        .single();
 
-      // Restricción de Administrador (Coloca tu correo aquí)
-      const correosAutorizados = ["pathdawann@gmail.com", "cesar@gmail.com"];
-      if (!correosAutorizados.includes(session.user.email)) {
-        alert("Acceso denegado.");
-        window.location.href = '/dashboard';
-        return;
+      if (tasaData) {
+        document.getElementById('inputTasa').value = tasaData.valor;
       }
 
-      // Cargar Tasa del Día
-      const { data: tasaData } = await supabase.from('configuracion').select('valor').eq('clave', 'tasa_dolar').single();
-      if (tasaData) document.getElementById('inputTasa').value = tasaData.valor;
-
-      await cargarPagosPendientes();
-      await cargarAlumnosPorNiveles();
-
-      pantallaCarga.classList.add('hidden');
-      adminContenido.classList.remove('hidden');
+      // 2. Cargar listas dinámicas en paralelo
+      await Promise.all([
+        cargarPagosPendientes(),
+        cargarAlumnosPorNiveles()
+      ]);
 
     } catch (err) {
-      console.error(err);
-      alert("Error al cargar el panel.");
-      window.location.href = '/dashboard';
+      console.error("Error al cargar los datos del panel:", err);
     }
   });
 
@@ -184,11 +190,13 @@ import Layout from '../layouts/Layout.astro';
     const { data: pagos, error } = await supabase
       .from('pagos')
       .select('*')
-      // Quitamos el filtro .eq('estado', 'revision') para poder ver también los aprobados
       .order('created_at', { ascending: false })
-      .limit(30); // Mostramos los últimos 30 recibos para no saturar la pantalla
+      .limit(30);
 
-    if (error) { console.error(error); return; }
+    if (error) { 
+      console.error(error); 
+      return; 
+    }
 
     if (!pagos || pagos.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-500 italic">No hay pagos registrados aún.</td></tr>`;
@@ -199,16 +207,13 @@ import Layout from '../layouts/Layout.astro';
       const fecha = new Date(pago.created_at).toLocaleDateString('es-ES');
       let accionHtml = '';
 
-      // Si el pago está en revisión, mostramos el botón de APROBAR
       if (pago.estado === 'revision' || !pago.estado) {
         accionHtml = `
           <button onclick="aprobarPago('${pago.id}')" class="bg-lime-400 text-black font-black italic uppercase px-4 py-2 text-xs hover:bg-lime-300 shadow transform skew-x-2 transition">
             ✓ Aprobar
           </button>
         `;
-      } 
-      // Si ya está aprobado, mostramos la etiqueta de APROBADO
-      else if (pago.estado === 'aprobado') {
+      } else if (pago.estado === 'aprobado') {
         accionHtml = `
           <button onclick="revertirPago('${pago.id}')" class="bg-zinc-950 text-lime-400 font-black italic uppercase px-4 py-2 text-xs border border-lime-400 shadow transform skew-x-2 hover:bg-pink-600 hover:text-white hover:border-pink-500 transition group relative w-32" title="Clic para deshacer">
             <span class="group-hover:hidden">✓ Aprobado</span>
@@ -238,11 +243,45 @@ import Layout from '../layouts/Layout.astro';
   const btnConfirmar = document.getElementById('btnConfirmarAprobacion');
   const btnCancelar = document.getElementById('btnCancelarAprobacion');
 
-  // Abre el modal en lugar de la alerta fea
   window.aprobarPago = function(pagoId) {
     pagoPendienteId = pagoId;
     modalConfirmar.classList.remove('hidden');
   };
+
+  btnCancelar.addEventListener('click', () => {
+    pagoPendienteId = null;
+    modalConfirmar.classList.add('hidden');
+  });
+
+  btnConfirmar.addEventListener('click', async () => {
+    if (!pagoPendienteId) return;
+    
+    btnConfirmar.textContent = 'PROCESANDO...';
+    btnConfirmar.disabled = true;
+
+    try {
+      const { error } = await supabase
+        .from('pagos')
+        .update({ estado: 'aprobado' })
+        .eq('id', pagoPendienteId);
+
+      if (error) throw error;
+      
+      modalConfirmar.classList.add('hidden');
+      await Promise.all([
+        cargarPagosPendientes(),
+        cargarAlumnosPorNiveles()
+      ]);
+      
+    } catch (err) {
+      console.error(err);
+      alert("Error al aprobar el pago. Revisa tu conexión.");
+    } finally {
+      btnConfirmar.textContent = 'SÍ, APROBAR';
+      btnConfirmar.disabled = false;
+      pagoPendienteId = null;
+    }
+  });
 
   // --- LÓGICA DEL MODAL: DESHACER PAGO ---
   let pagoRevertirId = null;
@@ -274,8 +313,10 @@ import Layout from '../layouts/Layout.astro';
       if (error) throw error;
       
       modalRevertir.classList.add('hidden');
-      await cargarPagosPendientes(); // Recarga la tabla de pagos
-      await cargarAlumnosPorNiveles(); // Recarga la tabla de alumnos para actualizar los semáforos
+      await Promise.all([
+        cargarPagosPendientes(),
+        cargarAlumnosPorNiveles()
+      ]);
       
     } catch (err) {
       console.error(err);
@@ -287,71 +328,31 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // Botón Cancelar
-  btnCancelar.addEventListener('click', () => {
-    pagoPendienteId = null;
-    modalConfirmar.classList.add('hidden');
-  });
-
-  // Botón Sí, Aprobar
-  btnConfirmar.addEventListener('click', async () => {
-    if (!pagoPendienteId) return;
-    
-    btnConfirmar.textContent = 'PROCESANDO...';
-    btnConfirmar.disabled = true;
-
-    try {
-      const { error } = await supabase
-        .from('pagos')
-        .update({ estado: 'aprobado' })
-        .eq('id', pagoPendienteId);
-
-      if (error) throw error;
-      
-      modalConfirmar.classList.add('hidden');
-      await cargarPagosPendientes(); // Recarga la tabla de inmediato
-      
-    } catch (err) {
-      console.error(err);
-      alert("Error al aprobar el pago. Revisa tu conexión.");
-    } finally {
-      btnConfirmar.textContent = 'SÍ, APROBAR';
-      btnConfirmar.disabled = false;
-      pagoPendienteId = null;
-    }
-  });
-
   // 2. Cargar Alumnos Agrupados por Niveles con Estatus Inteligente
   async function cargarAlumnosPorNiveles() {
     const contenedor = document.getElementById('contenedorNiveles');
     contenedor.innerHTML = '';
 
-    // Obtener mes actual y día actual
     const fechaActual = new Date();
     const diaActual = fechaActual.getDate();
     const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
 
-    // 1. Traer todos los alumnos
-    const { data: alumnos, error: errorAlumnos } = await supabase
-      .from('alumnos')
-      .select('*')
-      .order('nombre', { ascending: true });
+    const [{ data: alumnos, error: errorAlumnos }, { data: pagosMes, error: errorPagos }] = await Promise.all([
+      supabase.from('alumnos').select('*').order('nombre', { ascending: true }),
+      supabase.from('pagos').select('alumno_id, estado').eq('mes_correspondiente', mesActualStr)
+    ]);
 
-    // 2. Traer todos los pagos del mes en curso
-    const { data: pagosMes, error: errorPagos } = await supabase
-      .from('pagos')
-      .select('alumno_id, estado')
-      .eq('mes_correspondiente', mesActualStr);
-
-    if (errorAlumnos || errorPagos) { console.error("Error cargando data"); return; }
+    if (errorAlumnos || errorPagos) { 
+      console.error("Error cargando data"); 
+      return; 
+    }
 
     if (!alumnos || alumnos.length === 0) {
       contenedor.innerHTML = `<p class="text-zinc-500 italic">No hay alumnos inscritos.</p>`;
       return;
     }
 
-    // Crear mapa de pagos para búsqueda rápida (ej: pagosMap['id_alumno'] = 'aprobado')
     const pagosMap = {};
     if (pagosMes) {
       pagosMes.forEach(p => {
@@ -360,7 +361,6 @@ import Layout from '../layouts/Layout.astro';
       });
     }
 
-    // Agrupar por nivel
     const nivelesMap = {};
     alumnos.forEach(alumno => {
       const niv = (alumno.nivel || 'SIN NIVEL').toUpperCase();
@@ -368,7 +368,6 @@ import Layout from '../layouts/Layout.astro';
       nivelesMap[niv].push(alumno);
     });
 
-    // Renderizar una tabla por cada nivel
     for (const [nivel, lista] of Object.entries(nivelesMap)) {
       let filasHtml = '';
       lista.forEach(alumno => {
@@ -378,7 +377,6 @@ import Layout from '../layouts/Layout.astro';
         let badgeHtml = '';
         let mensajeWp = '';
 
-        // Lógica del semáforo de estatus
         if (estadoPago === 'aprobado') {
           badgeHtml = `<span class="bg-lime-400 text-black px-3 py-1 text-xs font-black uppercase">✓ AL DÍA</span>`;
           mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Te escribimos de Pupi Bike Kids. ¡Gracias por estar al día! Te recordamos nuestros próximos eventos de la academia.`);
@@ -386,7 +384,6 @@ import Layout from '../layouts/Layout.astro';
           badgeHtml = `<span class="bg-cyan-400 text-black px-3 py-1 text-xs font-black uppercase">⏳ REVISIÓN</span>`;
           mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recibimos tu comprobante de pago. Pronto lo validaremos en el sistema. ¡Gracias!`);
         } else {
-          // No ha pagado: verificamos si ya pasó el día 5 de gracia
           if (diaActual > 5) {
             badgeHtml = `<span class="bg-pink-600 text-white px-3 py-1 text-xs font-black uppercase animate-pulse">⚠️ MOROSO</span>`;
             mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recordatorio amistoso de Pupi Bike Kids: El plazo de pago (del 1 al 5) para la mensualidad de ${mesActualStr} ha vencido. Por favor, reporta tu pago lo antes posible en tu panel para evitar recargos.`);
@@ -456,17 +453,15 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-// --- Función de Correo Masivo (BCC) ---
+  // Función de Correo Masivo (BCC)
   const btnCorreoMasivo = document.getElementById('btnCorreoMasivo');
   if (btnCorreoMasivo) {
     btnCorreoMasivo.addEventListener('click', async () => {
       btnCorreoMasivo.textContent = 'Generando...';
       try {
-        // Obtenemos solo los correos de la base de datos
         const { data, error } = await supabase.from('alumnos').select('email');
         if (error) throw error;
         
-        // Filtramos para quitar espacios vacíos y los unimos con una coma
         const listaCorreos = data
           .map(alumno => alumno.email)
           .filter(email => email && email.trim() !== '')
@@ -478,11 +473,7 @@ import Layout from '../layouts/Layout.astro';
         }
 
         const asunto = encodeURIComponent("Novedades y Eventos - Pupi Bike Kids");
-        
-        // Enlace directo y exclusivo a la interfaz web de Gmail
         const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&bcc=${listaCorreos}&su=${asunto}`;
-        
-        // Abrimos Gmail en una nueva pestaña
         window.open(gmailLink, '_blank');
 
       } catch (err) {
@@ -493,7 +484,6 @@ import Layout from '../layouts/Layout.astro';
       }
     });
   }
-
 
   // Exportar CSV
   document.getElementById('btnExportarAlumnos').addEventListener('click', async () => {
@@ -507,17 +497,29 @@ import Layout from '../layouts/Layout.astro';
   });
 
   function exportarACSV(arr, filename) {
-    if (!arr || !arr.length) { alert("No hay datos."); return; }
+    if (!arr || !arr.length) { 
+      alert("No hay datos para exportar."); 
+      return; 
+    }
     const keys = Object.keys(arr[0]);
-    const csvContent = "data:text/csv;charset=utf-8," + [keys.join(","), ...arr.map(row => keys.map(k => JSON.stringify(row[k] || "")).join(","))].join("\n");
+    const csvContent = "\uFEFF" + [
+      keys.join(","), 
+      ...arr.map(row => keys.map(k => JSON.stringify(row[k] ?? "")).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
-    link.setAttribute("href", encodeURI(csvContent));
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute("href", url);
     link.setAttribute("download", filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
+  // Cierre de sesión
   document.getElementById('btnAdminLogout').addEventListener('click', async () => {
     await supabase.auth.signOut();
     window.location.href = '/login';
