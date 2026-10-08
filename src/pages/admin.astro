@@ -5,7 +5,7 @@ import { supabaseServer } from '../lib/supabase-server.js';
 // 1. Inicializamos cliente de servidor
 const supabase = supabaseServer(Astro);
 
-// 2. Verificamos la autenticidad del usuario en el servidor (método seguro)
+// 2. Verificamos la autenticidad del usuario en el servidor
 const { data: { user }, error } = await supabase.auth.getUser();
 
 // 3. Si no hay sesión válida, redirigimos al login
@@ -65,7 +65,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
         <form id="formTasa" class="flex flex-col gap-4">
           <div>
             <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Valor Actual ($ a Bs)</label>
-            <input type="text" id="inputTasa" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold text-lg" placeholder="36.50">
+            <input type="number" step="0.01" id="inputTasa" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold text-lg" placeholder="Ej: 37.50">
           </div>
           <button type="submit" id="btnGuardarTasa" class="bg-cyan-400 text-black font-black italic uppercase py-2 hover:bg-cyan-300">Actualizar Tasa</button>
         </form>
@@ -73,9 +73,9 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       </div>
 
       <div class="md:col-span-2 bg-zinc-900 p-6 border-2 border-zinc-700 flex flex-col justify-center">
-        <h3 class="text-lg font-black italic uppercase text-white mb-2">💡 Control Operativo</h3>
+        <h3 class="text-lg font-black italic uppercase text-white mb-2">💡 Control Operativo y Facturación</h3>
         <p class="text-zinc-400 text-sm leading-relaxed">
-          Desde esta sección puedes aprobar los recibos reportados. Al hacer clic en "Aprobar", el estado cambiará de inmediato para que el representante lo refleje como solvente en su panel personal. Además, puedes contactar a los atletas por WhatsApp con un solo clic.
+          La tasa establecida aquí se reflejará automáticamente en el portal de cada atleta, convirtiendo la mensualidad en Bolívares para facilitar sus pagos móviles. Puedes ver y gestionar la ficha técnica y pagos de cada atleta haciendo clic en "Ver Ficha".
         </p>
       </div>
     </div>
@@ -148,11 +148,24 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       </div>
     </div>
 
+    <!-- MODAL DETALLE DE FICHA Y PAGOS DEL ATLETA -->
+    <div id="modalFichaAtleta" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-3 md:p-6">
+      <div class="bg-zinc-900 border-2 border-cyan-400 shadow-[8px_8px_0px_#00d2ff] p-6 md:p-8 w-full max-w-4xl mx-auto relative max-h-[92vh] overflow-y-auto">
+        <button id="btnCerrarModalFicha" class="absolute top-4 right-4 text-zinc-500 hover:text-cyan-400 text-2xl font-black">X</button>
+        
+        <div id="contenidoFichaAtleta">
+          <!-- Inyectado dinámicamente -->
+        </div>
+      </div>
+    </div>
+
   </main>
 </Layout>
 
 <script type="module">
   import { supabase } from '../lib/supabase.js';
+
+  let cacheAlumnos = [];
 
   document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -167,7 +180,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
         document.getElementById('inputTasa').value = tasaData.valor;
       }
 
-      // 2. Cargar listas dinámicas en paralelo
+      // 2. Cargar datos del panel
       await Promise.all([
         cargarPagosPendientes(),
         cargarAlumnosPorNiveles()
@@ -178,7 +191,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   });
 
-  // 1. Cargar Últimos Pagos
+  // 1. Cargar Últimos Pagos Reportados
   async function cargarPagosPendientes() {
     const tbody = document.getElementById('tablaPagosPendientes');
     tbody.innerHTML = '';
@@ -233,7 +246,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     });
   }
 
-  // --- LÓGICA DEL MODAL DE APROBACIÓN DE PAGOS ---
+  // --- LÓGICA DE APROBACIÓN DE PAGOS ---
   let pagoPendienteId = null;
   const modalConfirmar = document.getElementById('modalConfirmarPago');
   const btnConfirmar = document.getElementById('btnConfirmarAprobacion');
@@ -251,7 +264,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
 
   btnConfirmar.addEventListener('click', async () => {
     if (!pagoPendienteId) return;
-    
     btnConfirmar.textContent = 'PROCESANDO...';
     btnConfirmar.disabled = true;
 
@@ -269,9 +281,14 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
         cargarAlumnosPorNiveles()
       ]);
       
+      // Si la ficha del atleta está abierta, refrescarla
+      if (!modalFicha.classList.contains('hidden') && window.atletaActivoId) {
+        window.verFichaAtleta(window.atletaActivoId);
+      }
+      
     } catch (err) {
       console.error(err);
-      alert("Error al aprobar el pago. Verifica permisos de administrador.");
+      alert("Error al aprobar el pago. Verifica permisos.");
     } finally {
       btnConfirmar.textContent = 'SÍ, APROBAR';
       btnConfirmar.disabled = false;
@@ -279,7 +296,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   });
 
-  // --- LÓGICA DEL MODAL: DESHACER PAGO ---
+  // --- LÓGICA DE REVERSIÓN DE PAGOS ---
   let pagoRevertirId = null;
   const modalRevertir = document.getElementById('modalRevertirPago');
   const btnConfReversion = document.getElementById('btnConfirmarReversion');
@@ -313,10 +330,14 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
         cargarPagosPendientes(),
         cargarAlumnosPorNiveles()
       ]);
+
+      if (!modalFicha.classList.contains('hidden') && window.atletaActivoId) {
+        window.verFichaAtleta(window.atletaActivoId);
+      }
       
     } catch (err) {
       console.error(err);
-      alert("Error al revertir el pago. Verifica permisos de administrador.");
+      alert("Error al revertir el pago.");
     } finally {
       btnConfReversion.textContent = 'SÍ, DESHACER';
       btnConfReversion.disabled = false;
@@ -324,7 +345,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   });
 
-  // 2. Cargar Alumnos Agrupados por Niveles con Estatus Inteligente
+  // 2. Cargar Alumnos por Niveles (Sin columna de teléfono redundante)
   async function cargarAlumnosPorNiveles() {
     const contenedor = document.getElementById('contenedorNiveles');
     contenedor.innerHTML = '';
@@ -334,13 +355,13 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
 
-    const [{ data: alumnos, error: errorAlumnos }, { data: pagosMes, error: errorPagos }] = await Promise.all([
+    const [{ data: alumnos, error: errorAlumnos }, { data: pagos, error: errorPagos }] = await Promise.all([
       supabase.from('alumnos').select('*').order('nombre', { ascending: true }),
-      supabase.from('pagos').select('alumno_id, estado').eq('mes_correspondiente', mesActualStr)
+      supabase.from('pagos').select('alumno_id, estado, mes_correspondiente, created_at')
     ]);
 
     if (errorAlumnos || errorPagos) { 
-      console.error("Error cargando data de alumnos o pagos"); 
+      console.error("Error cargando data"); 
       return; 
     }
 
@@ -349,11 +370,14 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       return;
     }
 
+    cacheAlumnos = alumnos;
+
+    // Mapa de solvencia inteligente
     const pagosMap = {};
-    if (pagosMes) {
-      pagosMes.forEach(p => {
-        if (p.estado === 'aprobado') pagosMap[p.alumno_id] = 'aprobado';
-        else if (p.estado === 'revision' && pagosMap[p.alumno_id] !== 'aprobado') pagosMap[p.alumno_id] = 'revision';
+    if (pagos) {
+      pagos.forEach(p => {
+        if (!pagosMap[p.alumno_id]) pagosMap[p.alumno_id] = [];
+        pagosMap[p.alumno_id].push(p);
       });
     }
 
@@ -368,24 +392,27 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       let filasHtml = '';
       lista.forEach(alumno => {
         const telefonoLim = (alumno.telefono || '').replace(/\s+/g, '');
-        const estadoPago = pagosMap[alumno.id];
+        const listaPagosAlumno = pagosMap[alumno.id] || [];
         
+        const pagoMesActual = listaPagosAlumno.find(p => p.mes_correspondiente === mesActualStr);
+        const ultimoPago = listaPagosAlumno.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))[0];
+
         let badgeHtml = '';
         let mensajeWp = '';
 
-        if (estadoPago === 'aprobado') {
+        if (pagoMesActual?.estado === 'aprobado' || (!pagoMesActual && ultimoPago?.estado === 'aprobado')) {
           badgeHtml = `<span class="bg-lime-400 text-black px-3 py-1 text-xs font-black uppercase">✓ AL DÍA</span>`;
           mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Te escribimos de Pupi Bike Kids. ¡Gracias por estar al día! Te recordamos nuestros próximos eventos de la academia.`);
-        } else if (estadoPago === 'revision') {
+        } else if (pagoMesActual?.estado === 'revision' || (!pagoMesActual && ultimoPago?.estado === 'revision')) {
           badgeHtml = `<span class="bg-cyan-400 text-black px-3 py-1 text-xs font-black uppercase">⏳ REVISIÓN</span>`;
           mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recibimos tu comprobante de pago. Pronto lo validaremos en el sistema. ¡Gracias!`);
         } else {
           if (diaActual > 5) {
             badgeHtml = `<span class="bg-pink-600 text-white px-3 py-1 text-xs font-black uppercase animate-pulse">⚠️ MOROSO</span>`;
-            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recordatorio de Pupi Bike Kids: El plazo de pago (del 1 al 5) para la mensualidad de ${mesActualStr} ha vencido. Por favor, reporta tu pago lo antes posible en tu panel para evitar recargos.`);
+            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recordatorio de Pupi Bike Kids: El plazo de pago para la mensualidad de ${mesActualStr} ha vencido. Por favor, reporta tu pago lo antes posible en tu panel.`);
           } else {
             badgeHtml = `<span class="bg-yellow-400 text-black px-3 py-1 text-xs font-black uppercase">PENDIENTE</span>`;
-            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recuerda que estamos en los días de pago (del 1 al 5) para la mensualidad de ${mesActualStr}. ¡Evita recargos!`);
+            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recuerda que estamos en los días de pago (del 1 al 5) para la mensualidad de ${mesActualStr}.`);
           }
         }
 
@@ -393,12 +420,16 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
           <tr class="hover:bg-zinc-800/50">
             <td class="p-4 font-bold text-white uppercase">${alumno.nombre}</td>
             <td class="p-4">${badgeHtml}</td>
-            <td class="p-4 text-zinc-300 font-mono">${alumno.telefono}</td>
             <td class="p-4 text-zinc-400 text-xs">${alumno.email}</td>
             <td class="p-4 text-center">
-              <a href="https://wa.me/${telefonoLim}?text=${mensajeWp}" target="_blank" class="inline-block bg-emerald-600 text-white font-black px-3 py-1.5 text-xs uppercase hover:bg-emerald-500 transition shadow">
-                💬 WhatsApp
-              </a>
+              <div class="flex items-center justify-center gap-2">
+                <button onclick="window.verFichaAtleta('${alumno.id}')" class="bg-cyan-500 text-black font-black px-3 py-1.5 text-xs uppercase hover:bg-cyan-400 transition shadow">
+                  🔍 Ver Ficha
+                </button>
+                <a href="https://wa.me/${telefonoLim}?text=${mensajeWp}" target="_blank" class="bg-emerald-600 text-white font-black px-3 py-1.5 text-xs uppercase hover:bg-emerald-500 transition shadow">
+                  💬 WhatsApp
+                </a>
+              </div>
             </td>
           </tr>
         `;
@@ -416,9 +447,8 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
                 <tr class="bg-zinc-950 text-zinc-400 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
                   <th class="p-4">Atleta</th>
                   <th class="p-4">Estatus del Mes</th>
-                  <th class="p-4">Teléfono</th>
                   <th class="p-4">Correo</th>
-                  <th class="p-4 text-center">Gestión</th>
+                  <th class="p-4 text-center">Acciones</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-zinc-800 text-sm font-medium">
@@ -431,96 +461,181 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   }
 
-  // Actualizar Tasa del Dólar
+  // --- MODAL DE FICHA TÉCNICA E HISTORIAL DE PAGOS DEL ATLETA ---
+  const modalFicha = document.getElementById('modalFichaAtleta');
+  const contenidoFicha = document.getElementById('contenidoFichaAtleta');
+  document.getElementById('btnCerrarModalFicha').addEventListener('click', () => modalFicha.classList.add('hidden'));
+
+  window.verFichaAtleta = async function(alumnoId) {
+    window.atletaActivoId = alumnoId;
+    const alumno = cacheAlumnos.find(a => a.id === alumnoId);
+    if (!alumno) return;
+
+    modalFicha.classList.remove('hidden');
+    contenidoFicha.innerHTML = `<div class="p-8 text-center text-cyan-400 font-bold uppercase animate-pulse">Cargando ficha completa...</div>`;
+
+    // Cargar historial de pagos de este atleta
+    const { data: pagosAtleta } = await supabase
+      .from('pagos')
+      .select('*')
+      .eq('alumno_id', alumnoId)
+      .order('created_at', { ascending: false });
+
+    const foto = alumno.foto_url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80';
+    const bicis = alumno.tipos_bici || [];
+
+    let bicisHtml = '<p class="text-zinc-500 text-xs italic">No hay bicicletas registradas.</p>';
+    if (bicis.length > 0) {
+      bicisHtml = bicis.map((b, i) => `
+        <div class="bg-zinc-950 p-2.5 border border-zinc-800 text-xs text-white">
+          <span class="text-lime-400 font-bold">Bici ${i+1}:</span> ${b.tipo || 'MTB'} | Rin: ${b.rin || 'N/A'} | Marca: ${b.marca || 'N/A'} | Color: ${b.color || 'N/A'}
+        </div>
+      `).join('');
+    }
+
+    let pagosHtml = '<p class="text-zinc-500 text-xs italic p-4 text-center">No hay reportes de pagos para este atleta.</p>';
+    if (pagosAtleta && pagosAtleta.length > 0) {
+      pagosHtml = `
+        <table class="w-full text-left text-xs">
+          <thead class="bg-zinc-950 text-pink-500 uppercase font-black">
+            <tr>
+              <th class="p-2">Fecha</th>
+              <th class="p-2">Mes</th>
+              <th class="p-2">Método</th>
+              <th class="p-2">Ref</th>
+              <th class="p-2">Monto</th>
+              <th class="p-2 text-center">Acción</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-800">
+            ${pagosAtleta.map(p => {
+              const f = new Date(p.created_at).toLocaleDateString('es-ES');
+              let btn = '';
+              if (p.estado === 'revision') {
+                btn = `<button onclick="window.aprobarPago('${p.id}')" class="bg-lime-400 text-black px-2 py-1 font-black uppercase text-[10px] hover:bg-lime-300">✓ Aprobar</button>`;
+              } else {
+                btn = `<button onclick="window.revertirPago('${p.id}')" class="bg-zinc-800 text-lime-400 border border-lime-400 px-2 py-1 font-black uppercase text-[10px] hover:bg-pink-600 hover:text-white">✓ Aprobado</button>`;
+              }
+              return `
+                <tr class="hover:bg-zinc-800/40">
+                  <td class="p-2 text-zinc-400">${f}</td>
+                  <td class="p-2 font-bold text-white">${p.mes_correspondiente}</td>
+                  <td class="p-2 text-zinc-300">${p.metodo_pago}</td>
+                  <td class="p-2 font-mono text-cyan-400">${p.referencia}</td>
+                  <td class="p-2 font-black text-pink-500">${p.monto}$</td>
+                  <td class="p-2 text-center">${btn}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    contenidoFicha.innerHTML = `
+      <div class="flex flex-col gap-6">
+        <!-- Encabezado con Foto y Nombre -->
+        <div class="flex items-center gap-6 border-b border-zinc-800 pb-4">
+          <img src="${foto}" class="w-20 h-20 rounded-full object-cover border-2 border-cyan-400 bg-zinc-950" />
+          <div>
+            <h2 class="text-2xl font-black uppercase italic text-white">${alumno.nombre}</h2>
+            <p class="text-lime-400 font-bold text-xs uppercase">Nivel: ${alumno.nivel || 'GENERAL'}</p>
+          </div>
+        </div>
+
+        <!-- Ficha de Datos -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+          <div class="bg-zinc-950 p-3 border border-zinc-800">
+            <span class="text-zinc-500 block uppercase font-bold">Cédula:</span>
+            <span class="text-white font-bold">${alumno.cedula || 'N/A'}</span>
+          </div>
+          <div class="bg-zinc-950 p-3 border border-zinc-800">
+            <span class="text-zinc-500 block uppercase font-bold">Teléfono:</span>
+            <span class="text-white font-bold">${alumno.telefono || 'N/A'}</span>
+          </div>
+          <div class="bg-zinc-950 p-3 border border-zinc-800">
+            <span class="text-zinc-500 block uppercase font-bold">Tipo de Sangre:</span>
+            <span class="text-pink-500 font-black">${alumno.tipo_sangre || 'N/A'}</span>
+          </div>
+          <div class="bg-zinc-950 p-3 border border-zinc-800">
+            <span class="text-zinc-500 block uppercase font-bold">Nacimiento:</span>
+            <span class="text-white font-bold">${alumno.fecha_nacimiento || 'N/A'}</span>
+          </div>
+          <div class="col-span-2 md:col-span-4 bg-zinc-950 p-3 border border-zinc-800">
+            <span class="text-zinc-500 block uppercase font-bold">Dirección:</span>
+            <span class="text-white font-bold">${alumno.direccion || 'N/A'}</span>
+          </div>
+        </div>
+
+        <!-- Bicicletas -->
+        <div>
+          <h3 class="text-lime-400 font-black uppercase text-xs mb-2">Bicicletas Registradas</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            ${bicisHtml}
+          </div>
+        </div>
+
+        <!-- Historial y Aprobación de Pagos -->
+        <div class="border-t border-zinc-800 pt-4">
+          <h3 class="text-pink-500 font-black uppercase text-sm mb-3">Historial de Recibos y Pagos</h3>
+          <div class="bg-zinc-950 border border-zinc-800 overflow-x-auto">
+            ${pagosHtml}
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
+  // Guardar Tasa del Dólar (Persistente)
   document.getElementById('formTasa').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const nuevoValor = document.getElementById('inputTasa').value;
+    const nuevoValor = parseFloat(document.getElementById('inputTasa').value);
     const msg = document.getElementById('mensajeTasa');
 
     try {
       const { error } = await supabase
         .from('configuracion')
-        .update({ valor: nuevoValor, updated_at: new Date() })
-        .eq('clave', 'tasa_dolar');
+        .upsert({ clave: 'tasa_dolar', valor: String(nuevoValor), updated_at: new Date() }, { onConflict: 'clave' });
 
       if (error) throw error;
       msg.textContent = "¡Tasa actualizada con éxito!";
       msg.className = "text-xs font-bold mt-2 text-center text-lime-400 block";
     } catch (err) {
       console.error(err);
-      msg.textContent = "Error al actualizar la tasa (requiere permisos admin).";
+      msg.textContent = "Error al actualizar la tasa.";
       msg.className = "text-xs font-bold mt-2 text-center text-pink-500 block";
     }
   });
 
-  // Función de Correo Masivo (BCC)
-  const btnCorreoMasivo = document.getElementById('btnCorreoMasivo');
-  if (btnCorreoMasivo) {
-    btnCorreoMasivo.addEventListener('click', async () => {
-      btnCorreoMasivo.textContent = 'Generando...';
-      try {
-        const { data, error } = await supabase.from('alumnos').select('email');
-        if (error) throw error;
-        
-        const listaCorreos = data
-          .map(alumno => alumno.email)
-          .filter(email => email && email.trim() !== '')
-          .join(',');
-
-        if (listaCorreos.length === 0) {
-          alert("Aún no hay correos registrados en la base de datos.");
-          return;
-        }
-
-        const asunto = encodeURIComponent("Novedades y Eventos - Pupi Bike Kids");
-        const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&bcc=${listaCorreos}&su=${asunto}`;
-        window.open(gmailLink, '_blank');
-
-      } catch (err) {
-        console.error(err);
-        alert("Error al intentar generar la lista de correos.");
-      } finally {
-        btnCorreoMasivo.textContent = '✉️ Correo Masivo (BCC)';
-      }
-    });
-  }
-
-  // Exportar CSV
-  document.getElementById('btnExportarAlumnos').addEventListener('click', async () => {
-    const { data } = await supabase.from('alumnos').select('*');
-    exportarACSV(data, 'respaldo_alumnos_pupibike.csv');
+  // Exportar y Correo Masivo
+  document.getElementById('btnCorreoMasivo')?.addEventListener('click', async () => {
+    const { data } = await supabase.from('alumnos').select('email');
+    const emails = (data || []).map(a => a.email).filter(Boolean).join(',');
+    if (!emails) return alert("No hay correos registrados.");
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${emails}&su=Pupi%20Bike%20Kids`, '_blank');
   });
 
-  document.getElementById('btnExportarPagos').addEventListener('click', async () => {
+  document.getElementById('btnExportarAlumnos')?.addEventListener('click', async () => {
+    const { data } = await supabase.from('alumnos').select('*');
+    exportarACSV(data, 'alumnos_pupibike.csv');
+  });
+
+  document.getElementById('btnExportarPagos')?.addEventListener('click', async () => {
     const { data } = await supabase.from('pagos').select('*');
-    exportarACSV(data, 'respaldo_pagos_pupibike.csv');
+    exportarACSV(data, 'pagos_pupibike.csv');
   });
 
   function exportarACSV(arr, filename) {
-    if (!arr || !arr.length) { 
-      alert("No hay datos para exportar."); 
-      return; 
-    }
+    if (!arr || !arr.length) return alert("No hay datos para exportar.");
     const keys = Object.keys(arr[0]);
-    const csvContent = "\uFEFF" + [
-      keys.join(","), 
-      ...arr.map(row => keys.map(k => JSON.stringify(row[k] ?? "")).join(","))
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const csvContent = "\uFEFF" + [keys.join(","), ...arr.map(r => keys.map(k => JSON.stringify(r[k] ?? "")).join(","))].join("\n");
     const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-
-    link.setAttribute("href", url);
-    link.setAttribute("download", filename);
-    document.body.appendChild(link);
+    link.href = URL.createObjectURL(new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }));
+    link.download = filename;
     link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
   }
 
-  // Cierre de sesión
-  document.getElementById('btnAdminLogout').addEventListener('click', async () => {
+  document.getElementById('btnAdminLogout')?.addEventListener('click', async () => {
     await supabase.auth.signOut();
     window.location.href = '/login';
   });

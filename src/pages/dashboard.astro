@@ -7,7 +7,7 @@ import Layout from '../layouts/Layout.astro';
   <nav class="bg-black text-white p-4 border-b-4 border-cyan-400 sticky top-0 z-50">
     <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
       <a href="/" class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6 hover:opacity-80 transition">
-        PUPIBIKE 
+        PUPI BIKE 
         <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
       </a>
       <button id="btnLogout" class="text-pink-500 font-bold hover:text-white transition italic uppercase text-sm md:text-base border border-pink-500 px-4 py-1 hover:bg-pink-600">
@@ -36,61 +36,58 @@ import Layout from '../layouts/Layout.astro';
       <p class="text-zinc-400 italic font-medium text-lg">Este es tu panel de control y autogestión de la academia.</p>
     </div>
 
-    <!-- SECCIÓN SUPERIOR: Ficha Técnica + Estado de Pagos / Merch -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-16">
+    <!-- BLOQUE 1: Ficha Técnica (Izq) + Estado de Pagos y Pago Móvil (Der) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
       
-      <!-- COLUMNA 1: Ficha del Atleta -->
-      <div class="lg:col-span-2 flex flex-col gap-8">
-        <section class="bg-zinc-900 p-8 shadow-[8px_8px_0px_#a3e635] border-2 border-lime-400 relative">
-          
-          <!-- Foto, Título y Botón de Editar Atractivo Arriba -->
-          <div class="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8 border-b border-zinc-700 pb-6">
-            <div class="flex items-center gap-6">
-              <div class="w-28 h-28 rounded-full border-4 border-cyan-400 overflow-hidden bg-zinc-950 flex-shrink-0 shadow-lg">
-                <img id="uiFoto" src="" alt="Foto Atleta" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80'" />
+      <!-- COLUMNA IZQUIERDA: Ficha del Atleta (Ocupa 2/3) -->
+      <div class="lg:col-span-2">
+        <section class="bg-zinc-900 p-8 shadow-[8px_8px_0px_#a3e635] border-2 border-lime-400 h-full flex flex-col justify-between">
+          <div>
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8 border-b border-zinc-700 pb-6">
+              <div class="flex items-center gap-6">
+                <div class="w-28 h-28 rounded-full border-4 border-cyan-400 overflow-hidden bg-zinc-950 flex-shrink-0 shadow-lg">
+                  <img id="uiFoto" src="" alt="Foto Atleta" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80'" />
+                </div>
+                <div class="text-center sm:text-left">
+                  <h2 class="text-2xl font-black italic uppercase text-lime-400">Ficha Técnica</h2>
+                  <p id="uiNombreCompleto" class="text-white font-bold text-xl mt-1">...</p>
+                  <p id="uiNivel" class="text-cyan-400 font-bold uppercase italic text-sm mt-1">...</p>
+                </div>
               </div>
-              <div class="text-center sm:text-left">
-                <h2 class="text-2xl font-black italic uppercase text-lime-400">Ficha Técnica</h2>
-                <p id="uiNombreCompleto" class="text-white font-bold text-xl mt-1">...</p>
-                <p id="uiNivel" class="text-cyan-400 font-bold uppercase italic text-sm mt-1">...</p>
-              </div>
-            </div>
 
-            <!-- BOTÓN EDITAR FICHA -->
-            <button type="button" id="btnAbrirModalEditar" class="bg-cyan-400 text-black font-black italic uppercase px-5 py-3 hover:bg-cyan-300 transition-all transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] border-2 border-transparent text-sm flex-shrink-0">
-              ✏️ Editar Ficha
-            </button>
-          </div>
-          
-          <!-- Datos Personales -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div>
-              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Cédula (Atleta / Representante)</p>
-              <p id="uiCedula" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
+              <button type="button" id="btnAbrirModalEditar" class="bg-cyan-400 text-black font-black italic uppercase px-5 py-3 hover:bg-cyan-300 transition-all transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] border-2 border-transparent text-sm flex-shrink-0">
+                ✏️ Editar Ficha
+              </button>
             </div>
-            <div>
-              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Correo Electrónico</p>
-              <p id="uiEmail" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2 lowercase">...</p>
-            </div>
-            <div>
-              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Fecha de Nacimiento</p>
-              <p id="uiNacimiento" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
-            </div>
-            <div>
-              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Teléfono / WhatsApp</p>
-              <p id="uiTelefono" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
-            </div>
-            <div>
-              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Tipo de Sangre</p>
-              <p id="uiTipoSangre" class="text-pink-500 font-black bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
-            </div>
-            <div class="md:col-span-2">
-              <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Dirección / Residencia</p>
-              <p id="uiDireccion" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div>
+                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Cédula</p>
+                <p id="uiCedula" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
+              </div>
+              <div>
+                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Correo Electrónico</p>
+                <p id="uiEmail" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2 lowercase">...</p>
+              </div>
+              <div>
+                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Fecha de Nacimiento</p>
+                <p id="uiNacimiento" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
+              </div>
+              <div>
+                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Teléfono / WhatsApp</p>
+                <p id="uiTelefono" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
+              </div>
+              <div>
+                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Tipo de Sangre</p>
+                <p id="uiTipoSangre" class="text-pink-500 font-black bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
+              </div>
+              <div class="md:col-span-2">
+                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Dirección / Residencia</p>
+                <p id="uiDireccion" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
+              </div>
             </div>
           </div>
 
-          <!-- Inventario de Bicicletas -->
           <div class="border-t border-zinc-700 pt-6">
             <h3 class="text-lime-400 font-black italic uppercase text-lg mb-4">Inventario de Bicicletas</h3>
             <div id="contenedorBicicletasVisual" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -100,7 +97,7 @@ import Layout from '../layouts/Layout.astro';
         </section>
       </div>
 
-      <!-- COLUMNA 2: Finanzas + Merch Oficial -->
+      <!-- COLUMNA DERECHA: Estado de Pagos y Pago Móvil Dinámico (1/3) -->
       <div class="flex flex-col gap-8">
         
         <!-- Estado de Pagos -->
@@ -122,55 +119,139 @@ import Layout from '../layouts/Layout.astro';
           <a href="/historial" class="block text-center text-cyan-400 text-sm font-bold hover:text-white transition italic underline">Ver historial completo</a>
         </section>
 
-        <!-- Card de Merch / Maillot Oficial -->
-        <section class="bg-zinc-900 p-6 shadow-[8px_8px_0px_#00d2ff] border-2 border-cyan-400 relative overflow-hidden group">
-          <h3 class="text-xl font-black italic uppercase text-cyan-400 mb-2">Maillot Oficial</h3>
-          <p class="text-zinc-400 text-xs mb-4">Viste los colores extremos de Pupi Bike Kids.</p>
-          
-          <!-- Imagen del Maillot Ampliada -->
-          <div class="bg-zinc-950 p-3 border border-zinc-800 mb-4 rounded-xl overflow-hidden flex justify-center items-center h-72 shadow-inner">
-            <img src="/maillot.png" alt="Maillot Oficial" class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-300" />
+        <!-- TARJETA DINÁMICA: DATOS DE PAGO MÓVIL Y TASA DEL DÍA -->
+        <section class="bg-zinc-900 p-6 shadow-[8px_8px_0px_#00d2ff] border-2 border-cyan-400">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b-2 border-zinc-800 pb-3">
+            <h3 class="text-2xl font-black italic uppercase text-cyan-400 tracking-wide">Datos Pago Móvil</h3>
+            <div class="bg-zinc-950 text-lime-400 border-2 border-lime-400 px-3 py-1 font-mono font-black text-sm text-center shadow">
+              TASA DEL DÍA: <span id="uiTasaValor" class="text-white text-base">--</span> Bs/$
+            </div>
           </div>
 
-          <div class="bg-zinc-950 p-3 border border-zinc-800 mb-4 text-center">
-            <span class="text-white font-black italic text-lg">Edición Pro 2026</span>
-            <p class="text-lime-400 font-bold text-sm">35$ (Todas las tallas)</p>
+          <!-- Monto sugerido convertido a Bs -->
+          <div class="bg-zinc-950 p-4 border-2 border-zinc-800 mb-4 text-center shadow-inner">
+            <span class="text-xs md:text-sm text-zinc-300 font-black uppercase tracking-wider block mb-1">
+              Mensualidad (30$) al cambio de hoy:
+            </span>
+            <span id="uiTotalBs" class="text-3xl md:text-4xl font-black italic text-lime-400 tracking-tight">
+              Calculando...
+            </span>
           </div>
 
-          <a href="https://wa.me/584248781128?text=Hola%20Cesar,%20quiero%20comprar%20el%20maillot%20oficial%20de%20la%20academia." target="_blank" class="block text-center bg-cyan-400 text-black font-black italic uppercase py-3 hover:bg-cyan-300 transition-all shadow-[4px_4px_0px_rgba(0,0,0,0.5)] transform -skew-x-4">
-            Comprar Ahora
-          </a>
+          <!-- Datos de Pago Móvil destacados -->
+          <div class="space-y-3 bg-zinc-950 p-4 border border-zinc-800">
+            <div class="flex justify-between items-center border-b border-zinc-800/80 pb-2">
+              <span class="text-xs font-black uppercase text-zinc-400">Banco:</span>
+              <span class="text-white text-base font-black">Bco. de Venezuela (0102)</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-zinc-800/80 pb-2">
+              <span class="text-xs font-black uppercase text-zinc-400">Teléfono:</span>
+              <span class="text-cyan-400 text-lg font-mono font-black tracking-wider">0424-8781128</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-zinc-800/80 pb-2">
+              <span class="text-xs font-black uppercase text-zinc-400">Cédula:</span>
+              <span class="text-white text-base font-mono font-black">V-24.469.073</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-black uppercase text-zinc-400">Titular:</span>
+              <span class="text-lime-400 text-base font-black uppercase">Cesar Barrios</span>
+            </div>
+          </div>
+
+          <p class="text-xs text-zinc-400 font-medium italic mt-3 text-center leading-relaxed">
+            Luego de transferir, haz clic en <strong class="text-pink-500 uppercase">"Reportar Pago"</strong> arriba.
+          </p>
         </section>
 
       </div>
     </div>
 
-    <!-- SECCIÓN INFERIOR: Calendario de Actividades -->
-    <section class="bg-zinc-900 p-8 border-t-4 border-lime-400 shadow-xl relative">
-      <div class="text-center mb-10">
-        <div class="bg-black inline-block px-8 py-2 transform -skew-x-6 shadow-[6px_6px_0px_#a3e635] border border-zinc-800">
-          <h2 class="text-2xl md:text-3xl font-black uppercase italic text-white tracking-wider">Calendario de <span class="text-lime-400">Actividades</span></h2>
+    <!-- BLOQUE 2: MAILLOT OFICIAL (Izq) + CALENDARIO DE ACTIVIDADES EN VERTICAL (Der) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      
+      <!-- 1. Card de Merch / Maillot Oficial -->
+      <section class="bg-zinc-900 p-8 shadow-[8px_8px_0px_#a3e635] border-2 border-lime-400 flex flex-col justify-between group">
+        <div>
+          <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
+            <div>
+              <h3 class="text-2xl font-black italic uppercase text-lime-400">Maillot Oficial</h3>
+              <p class="text-zinc-400 text-xs">Viste los colores extremos de Pupi Bike Kids.</p>
+            </div>
+            <span class="bg-lime-400 text-black font-black italic px-3 py-1 text-sm uppercase transform -skew-x-6">Edición Pro 2026</span>
+          </div>
+          
+          <div class="bg-zinc-950 p-4 border border-zinc-800 mb-6 rounded-xl overflow-hidden flex justify-center items-center h-80 shadow-inner">
+            <img src="/maillot.png" alt="Maillot Oficial" class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-300" />
+          </div>
         </div>
-      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-zinc-950 p-5 border-l-4 border-cyan-400 shadow-lg">
-          <div class="text-cyan-400 font-black text-xl mb-1">15 OCT</div>
-          <h3 class="text-base font-bold text-white mb-2 uppercase italic">Ruta Nocturna Familiar</h3>
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-zinc-950 p-4 border border-zinc-800">
+          <div>
+            <span class="text-zinc-400 text-xs uppercase font-bold block">Precio de lanzamiento:</span>
+            <span class="text-2xl font-black italic text-lime-400">35$ <span class="text-xs text-white font-normal">(Todas las tallas)</span></span>
+          </div>
+          <a href="https://wa.me/584248781128?text=Hola%20Cesar,%20quiero%20comprar%20el%20maillot%20oficial%20de%20la%20academia." target="_blank" class="w-full sm:w-auto text-center bg-lime-400 text-black font-black italic uppercase px-8 py-3 hover:bg-lime-300 transition-all shadow-[4px_4px_0px_#db2777] transform -skew-x-4">
+            Comprar Ahora
+          </a>
         </div>
-        <div class="bg-zinc-950 p-5 border-l-4 border-pink-500 shadow-lg">
-          <div class="text-pink-500 font-black text-xl mb-1">22 OCT</div>
-          <h3 class="text-base font-bold text-white mb-2 uppercase italic">Clínica de Saltos</h3>
+      </section>
+
+      <!-- 2. Calendario de Actividades en Lista Vertical -->
+      <section class="bg-zinc-900 p-8 shadow-[8px_8px_0px_#00d2ff] border-2 border-cyan-400 flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-3">
+            <h3 class="text-2xl font-black italic uppercase text-cyan-400 tracking-wide">Calendario del Mes</h3>
+            <span class="text-zinc-400 text-xs font-bold uppercase italic">Próximos Eventos</span>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <!-- Evento 1 -->
+            <div class="bg-zinc-950 p-4 border-l-4 border-cyan-400 shadow flex items-center gap-4 hover:translate-x-1 transition-transform">
+              <div class="bg-cyan-400 text-black font-black text-center px-3 py-2 flex flex-col justify-center min-w-[65px] transform -skew-x-3">
+                <span class="text-xs leading-none">OCT</span>
+                <span class="text-xl leading-none">15</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-base font-bold text-white uppercase italic">Ruta Nocturna Familiar</h4>
+                <p class="text-zinc-400 text-xs">Recorrido por la ciudad para todas las edades. Trae tus luces.</p>
+              </div>
+            </div>
+
+            <!-- Evento 2 -->
+            <div class="bg-zinc-950 p-4 border-l-4 border-pink-500 shadow flex items-center gap-4 hover:translate-x-1 transition-transform">
+              <div class="bg-pink-500 text-white font-black text-center px-3 py-2 flex flex-col justify-center min-w-[65px] transform -skew-x-3">
+                <span class="text-xs leading-none">OCT</span>
+                <span class="text-xl leading-none">22</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-base font-bold text-white uppercase italic">Clínica de Saltos</h4>
+                <p class="text-zinc-400 text-xs">Técnicas de despegue y aterrizaje en pista para intermedio y avanzado.</p>
+              </div>
+            </div>
+
+            <!-- Evento 3 -->
+            <div class="bg-zinc-950 p-4 border-l-4 border-lime-400 shadow flex items-center gap-4 hover:translate-x-1 transition-transform">
+              <div class="bg-lime-400 text-black font-black text-center px-3 py-2 flex flex-col justify-center min-w-[65px] transform -skew-x-3">
+                <span class="text-xs leading-none">OCT</span>
+                <span class="text-xl leading-none">30</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-base font-bold text-white uppercase italic">Competencia Halloween</h4>
+                <p class="text-zinc-400 text-xs">Ven con tu mejor disfraz a rodar. Premios sorpresa para los atletas.</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="bg-zinc-950 p-5 border-l-4 border-lime-400 shadow-lg">
-          <div class="text-lime-400 font-black text-xl mb-1">30 OCT</div>
-          <h3 class="text-base font-bold text-white mb-2 uppercase italic">Competencia Halloween</h3>
+
+        <div class="mt-6 pt-4 border-t border-zinc-800 text-center">
+          <p class="text-xs text-zinc-500 italic">¿Tienes dudas sobre los eventos? Consulta a los entrenadores en pista.</p>
         </div>
-      </div>
-    </section>
+      </section>
+
+    </div>
   </main>
 
-  <!-- MODAL REPORTAR PAGO OPTIMIZADO -->
+  <!-- MODAL REPORTAR PAGO -->
   <div id="modalPago" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-2 md:p-4">
     <div class="bg-zinc-900 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] p-4 md:p-8 w-full max-w-md mx-auto relative transform md:-skew-x-2 max-h-[95vh] overflow-y-auto">
       <button type="button" id="btnCerrarModal" class="absolute top-3 right-4 text-zinc-500 hover:text-pink-500 transform md:skew-x-2 text-2xl font-black z-10">X</button>
@@ -212,7 +293,7 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </div>
 
-  <!-- MODAL EDITAR FICHA OPTIMIZADO -->
+  <!-- MODAL EDITAR FICHA -->
   <div id="modalEditar" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-2 md:p-4">
     <div class="bg-zinc-900 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] p-4 md:p-8 w-full max-w-3xl mx-auto relative transform md:-skew-x-2 h-[95vh] md:h-auto md:max-h-[90vh] overflow-y-auto">
       <button type="button" id="btnCerrarModalEditar" class="absolute top-3 right-4 text-zinc-500 hover:text-lime-400 transform md:skew-x-2 text-2xl font-black z-10">X</button>
@@ -221,8 +302,6 @@ import Layout from '../layouts/Layout.astro';
         <h2 class="text-2xl font-black uppercase italic text-lime-400 mb-6 border-b border-zinc-800 pb-2">Actualizar Ficha del Atleta</h2>
         
         <form id="formEditar" class="flex flex-col gap-6">
-          
-          <!-- Datos Personales -->
           <div>
             <h3 class="text-cyan-400 font-black italic uppercase text-sm mb-3">1. Datos Personales</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -231,7 +310,7 @@ import Layout from '../layouts/Layout.astro';
                 <input type="text" id="editNombre" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Cédula (Atleta / Representante)</label>
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Cédula</label>
                 <input type="text" id="editCedula" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
               </div>
               <div>
@@ -270,21 +349,18 @@ import Layout from '../layouts/Layout.astro';
               </div>
               <div class="md:col-span-2">
                 <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Dirección / Residencia</label>
-                <input type="text" id="editDireccion" placeholder="Ciudad, Urbanización, Calle..." required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+                <input type="text" id="editDireccion" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
               </div>
               <div class="md:col-span-2">
                 <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Actualizar Fotografía (Opcional)</label>
-                <input type="file" id="editFotoFile" accept="image/*,image/jpeg,image/jpg,image/png,image/webp,image/heif" class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold file:mr-4 file:py-1 file:px-3 file:border-0 file:text-xs file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer">
+                <input type="file" id="editFotoFile" accept="image/*" class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold file:mr-4 file:py-1 file:px-3 file:border-0 file:text-xs file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer">
               </div>
             </div>
           </div>
 
-          <!-- Inventario de Bicicletas -->
           <div class="border-t border-zinc-800 pt-4">
             <h3 class="text-cyan-400 font-black italic uppercase text-sm mb-3">2. Inventario de Bicicletas</h3>
-            
             <div class="space-y-4">
-              <!-- Bici 1 -->
               <div class="bg-zinc-950 p-4 border border-zinc-800">
                 <span class="text-lime-400 font-black text-xs uppercase italic mb-2 block">Bicicleta 1 (Principal)</span>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -299,44 +375,15 @@ import Layout from '../layouts/Layout.astro';
                   </div>
                   <div>
                     <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Rin</label>
-                    <input type="text" id="editBici1Rin" placeholder="Ej: 29" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                    <input type="text" id="editBici1Rin" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
                   </div>
                   <div>
                     <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Marca</label>
-                    <input type="text" id="editBici1Marca" placeholder="Ej: Giant" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                    <input type="text" id="editBici1Marca" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
                   </div>
                   <div>
                     <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Color</label>
-                    <input type="text" id="editBici1Color" placeholder="Ej: Verde" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
-                  </div>
-                </div>
-              </div>
-
-              <!-- Bici 2 -->
-              <div class="bg-zinc-950 p-4 border border-zinc-800">
-                <span class="text-cyan-400 font-black text-xs uppercase italic mb-2 block">Bicicleta 2 (Opcional)</span>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                  <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Tipo</label>
-                    <select id="editBici2Tipo" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold">
-                      <option value="">-- Ninguna --</option>
-                      <option value="MTB">MTB</option>
-                      <option value="RUTA">RUTA</option>
-                      <option value="GRAVEL">GRAVEL</option>
-                      <option value="BALANCE">BALANCE</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Rin</label>
-                    <input type="text" id="editBici2Rin" placeholder="Ej: 20" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
-                  </div>
-                  <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Marca</label>
-                    <input type="text" id="editBici2Marca" placeholder="Ej: Trek" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
-                  </div>
-                  <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Color</label>
-                    <input type="text" id="editBici2Color" placeholder="Ej: Negro" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                    <input type="text" id="editBici1Color" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
                   </div>
                 </div>
               </div>
@@ -351,19 +398,15 @@ import Layout from '../layouts/Layout.astro';
   </div>
 </Layout>
 
-<!-- MODAL RECORDATORIO DE PAGO (COBRO AMISTOSO) -->
+<!-- MODAL RECORDATORIO DE PAGO (NO INVASIVO) -->
 <div id="modalRecordatorioDeuda" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
   <div class="bg-zinc-900 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] p-8 w-full max-w-md mx-auto relative transform -skew-x-2 text-center">
     <button type="button" id="btnCerrarRecordatorio" class="absolute top-3 right-4 text-zinc-500 hover:text-pink-500 transform skew-x-2 text-2xl font-black z-10">X</button>
-    
     <div class="transform skew-x-2">
       <div class="text-pink-500 text-6xl mb-4 animate-bounce">⚠️</div>
       <h2 class="text-2xl font-black uppercase italic text-pink-500 mb-4 tracking-wider">Recordatorio Amistoso</h2>
       <p class="text-zinc-300 font-medium mb-4 text-sm leading-relaxed">
-        ¡Hola! Esperamos que estés excelente. Te recordamos que los días regulares de pago son del <span class="text-white font-black">1 al 5 de cada mes</span>, y el sistema nos indica que tienes pendiente tu mensualidad.
-      </p>
-      <p class="text-lime-400 font-black italic uppercase mb-8">
-        ¡Ponte al día para seguir rodando con nosotros sin interrupciones!
+        ¡Hola! Recuerda que los días regulares de pago son del <span class="text-white font-black">1 al 5 de cada mes</span>.
       </p>
       <button type="button" id="btnIrAPagarDeuda" class="w-full bg-pink-600 text-white font-black italic uppercase text-lg py-4 hover:bg-pink-500 transition-all shadow-[4px_4px_0px_rgba(0,0,0,0.5)] border-2 border-transparent">
         Reportar Pago Ahora
@@ -392,18 +435,31 @@ import Layout from '../layouts/Layout.astro';
 
       currentUser = session.user;
 
-      // 2. Cargar perfil del atleta
-      const { data: alumno, error } = await supabase
-        .from('alumnos')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .single();
+      // 2. Cargar perfil del atleta y Tasa del Día en paralelo
+      const [{ data: alumno, error }, { data: tasaConfig }] = await Promise.all([
+        supabase.from('alumnos').select('*').eq('user_id', currentUser.id).single(),
+        supabase.from('configuracion').select('valor').eq('clave', 'tasa_dolar').single()
+      ]);
 
       if (error || !alumno) throw new Error("No se encontró la ficha del alumno.");
 
       currentAlumno = alumno;
 
-      // Variables auxiliares para el modal de edición
+      // 3. Renderizar Tasa y Conversión en Bolívares
+      const tasaValor = parseFloat(tasaConfig?.valor || 0);
+      const uiTasa = document.getElementById('uiTasaValor');
+      const uiTotalBs = document.getElementById('uiTotalBs');
+
+      if (tasaValor > 0) {
+        uiTasa.textContent = tasaValor.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const mensualidadBs = (30 * tasaValor).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        uiTotalBs.textContent = `${mensualidadBs} Bs.`;
+      } else {
+        uiTasa.textContent = "Pendiente";
+        uiTotalBs.textContent = "Consultar con el club";
+      }
+
+      // Variables auxiliares para modal de edición
       window.currentCedula = alumno.cedula || '';
       window.currentEmail = alumno.email || currentUser.email;
       window.currentDireccion = alumno.direccion || '';
@@ -411,7 +467,7 @@ import Layout from '../layouts/Layout.astro';
       window.currentTipoSangre = alumno.tipo_sangre || '';
       window.currentBicicletas = alumno.tipos_bici || [];
 
-      // 3. Renderizar ficha en pantalla
+      // Renderizar datos en pantalla
       document.getElementById('uiNombre').textContent = (alumno.nombre || 'ATLETA').split(' ')[0];
       document.getElementById('uiNombreCompleto').textContent = alumno.nombre || 'Atleta';
       document.getElementById('uiNivel').textContent = alumno.nivel || 'NIVEL GENERAL';
@@ -421,7 +477,6 @@ import Layout from '../layouts/Layout.astro';
       
       const [anio, mes, dia] = alumno.fecha_nacimiento ? alumno.fecha_nacimiento.split('-') : ['--', '--', '--'];
       document.getElementById('uiNacimiento').textContent = `${dia}/${mes}/${anio}`;
-      
       document.getElementById('uiTelefono').textContent = alumno.telefono || 'NO REGISTRADO';
       document.getElementById('uiDireccion').textContent = alumno.direccion || 'NO REGISTRADA';
 
@@ -429,7 +484,7 @@ import Layout from '../layouts/Layout.astro';
         document.getElementById('uiFoto').src = alumno.foto_url;
       }
 
-      // 4. Renderizar bicicletas
+      // Renderizar bicicletas
       const contenedorBicis = document.getElementById('contenedorBicicletasVisual');
       contenedorBicis.innerHTML = '';
       const bicisList = alumno.tipos_bici || []; 
@@ -450,12 +505,11 @@ import Layout from '../layouts/Layout.astro';
         contenedorBicis.innerHTML = `<p class="text-zinc-500 text-sm italic">No hay bicicletas registradas.</p>`;
       }
 
-      // 5. Verificación de Solvencia Inteligente
+      // 4. Verificación de Solvencia Inteligente
       const fechaActual = new Date();
       const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
       const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
 
-      // Consultamos los últimos pagos del atleta
       const { data: ultimosPagos } = await supabase
         .from('pagos')
         .select('*')
@@ -465,7 +519,6 @@ import Layout from '../layouts/Layout.astro';
       const uiEstatus = document.getElementById('uiEstatus');
       const uiIcono = document.getElementById('uiIconoEstatus');
 
-      // Evaluamos el estatus: primero del mes corriente, o el más reciente reportado
       const pagoMesActual = ultimosPagos?.find(p => p.mes_correspondiente === mesActualStr);
       const ultimoPago = ultimosPagos?.[0];
 
@@ -473,9 +526,8 @@ import Layout from '../layouts/Layout.astro';
 
       if (pagoMesActual) {
         estatusFinal = pagoMesActual.estado;
-      } else if (ultimoPago && ultimoPago.estado === 'revision') {
-        // Si reportó otro mes (ej. Diciembre) y está en revisión
-        estatusFinal = 'revision';
+      } else if (ultimoPago) {
+        estatusFinal = ultimoPago.estado;
       }
 
       if (estatusFinal === 'aprobado') {
@@ -494,11 +546,6 @@ import Layout from '../layouts/Layout.astro';
         uiIcono.className = "w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center text-white text-2xl shadow-[0_0_15px_#db2777] animate-pulse";
         uiIcono.textContent = "!";
         
-        // MODAL NO INVASIVO:
-        // Solo se muestra si:
-        // 1. Pasan del día 5
-        // 2. NO tiene ningún pago en revisión
-        // 3. No lo ha cerrado ya en esta sesión de navegador
         const yaVistoEnSesion = sessionStorage.getItem('recordatorio_visto');
         if (fechaActual.getDate() > 5 && estatusFinal !== 'revision' && !yaVistoEnSesion) {
           document.getElementById('modalRecordatorioDeuda')?.classList.remove('hidden');
@@ -515,14 +562,13 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // Control del Modal de Deuda (Amigable con sessionStorage)
+  // Modal Recordatorio
   const modalDeuda = document.getElementById('modalRecordatorioDeuda');
   if (modalDeuda) {
     const cerrarModal = () => {
       modalDeuda.classList.add('hidden');
-      sessionStorage.setItem('recordatorio_visto', 'true'); // No vuelve a molestar en esta sesión
+      sessionStorage.setItem('recordatorio_visto', 'true');
     };
-
     document.getElementById('btnCerrarRecordatorio')?.addEventListener('click', cerrarModal);
     document.getElementById('btnIrAPagarDeuda')?.addEventListener('click', () => {
       cerrarModal();
@@ -530,7 +576,7 @@ import Layout from '../layouts/Layout.astro';
     });
   }
 
-  // Cierre de Sesión
+  // Logout
   document.getElementById('btnLogout')?.addEventListener('click', async () => {
     sessionStorage.clear();
     await supabase.auth.signOut();
@@ -555,9 +601,7 @@ import Layout from '../layouts/Layout.astro';
     msg.classList.add('hidden');
 
     try {
-      if (!currentUser || !currentAlumno?.id) {
-        throw new Error("Sesión no válida. Por favor recarga la página.");
-      }
+      if (!currentUser || !currentAlumno?.id) throw new Error("Sesión no válida.");
 
       const metodo = document.getElementById('inputMetodo').value;
       const referencia = document.getElementById('inputReferencia').value.trim();
@@ -565,7 +609,7 @@ import Layout from '../layouts/Layout.astro';
       const mes = document.getElementById('inputMes').value;
 
       if (!referencia || isNaN(monto) || monto <= 0) {
-        throw new Error("Por favor ingresa un monto y referencia válidos.");
+        throw new Error("Ingresa monto y referencia válidos.");
       }
 
       const { error } = await supabase.from('pagos').insert([{ 
@@ -583,13 +627,11 @@ import Layout from '../layouts/Layout.astro';
       msg.textContent = "¡Pago reportado con éxito!";
       msg.className = "text-sm font-bold uppercase italic text-center p-2 border border-lime-400 bg-lime-400/20 text-lime-400 block mt-2";
       
-      setTimeout(() => { 
-        window.location.reload();
-      }, 1200);
+      setTimeout(() => { window.location.reload(); }, 1200);
 
     } catch (err) {
-      console.error("Error al reportar pago:", err);
-      msg.textContent = err.message || "Error al reportar el pago.";
+      console.error(err);
+      msg.textContent = err.message || "Error al reportar pago.";
       msg.className = "text-sm font-bold uppercase italic text-center p-2 border border-pink-500 bg-pink-500/20 text-pink-500 block mt-2";
       msg.classList.remove('hidden');
       btn.textContent = "Enviar Reporte"; 
@@ -597,7 +639,7 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // Modal Edición de Ficha
+  // Modal Edición
   const modalEditar = document.getElementById('modalEditar');
   document.getElementById('btnAbrirModalEditar')?.addEventListener('click', () => {
     document.getElementById('editNombre').value = (document.getElementById('uiNombreCompleto')?.textContent || '').toUpperCase();
@@ -611,25 +653,12 @@ import Layout from '../layouts/Layout.astro';
     document.getElementById('editFotoFile').value = '';
 
     const bicis = window.currentBicicletas || [];
-    
     if (bicis[0]) {
       document.getElementById('editBici1Tipo').value = bicis[0].tipo || 'MTB';
       document.getElementById('editBici1Rin').value = bicis[0].rin || '';
       document.getElementById('editBici1Marca').value = bicis[0].marca || '';
       document.getElementById('editBici1Color').value = bicis[0].color || '';
     }
-    if (bicis[1]) {
-      document.getElementById('editBici2Tipo').value = bicis[1].tipo || '';
-      document.getElementById('editBici2Rin').value = bicis[1].rin || '';
-      document.getElementById('editBici2Marca').value = bicis[1].marca || '';
-      document.getElementById('editBici2Color').value = bicis[1].color || '';
-    } else {
-      document.getElementById('editBici2Tipo').value = '';
-      document.getElementById('editBici2Rin').value = '';
-      document.getElementById('editBici2Marca').value = '';
-      document.getElementById('editBici2Color').value = '';
-    }
-    
     modalEditar.classList.remove('hidden');
   });
 
@@ -638,35 +667,21 @@ import Layout from '../layouts/Layout.astro';
   document.getElementById('formEditar')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnGuardarEdicion');
-    btn.textContent = "GUARDANDO CAMBIOS..."; 
+    btn.textContent = "GUARDANDO..."; 
     btn.disabled = true;
 
     try {
       const userId = currentUser.id;
-
-      const { data: alumnoActual } = await supabase
-        .from('alumnos')
-        .select('foto_url')
-        .eq('user_id', userId)
-        .single();
-
+      const { data: alumnoActual } = await supabase.from('alumnos').select('foto_url').eq('user_id', userId).single();
       let fotoUrlFinal = alumnoActual?.foto_url || '';
       const fotoFile = document.getElementById('editFotoFile').files[0];
 
       if (fotoFile) {
         const fileExt = fotoFile.name.split('.').pop();
         const fileName = `${userId}-${Date.now()}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('fotos-atletas')
-          .upload(fileName, fotoFile, { upsert: true });
-
+        const { error: uploadError } = await supabase.storage.from('fotos-atletas').upload(fileName, fotoFile, { upsert: true });
         if (uploadError) throw uploadError;
-
-        const { data: publicUrlData } = supabase.storage
-          .from('fotos-atletas')
-          .getPublicUrl(fileName);
-
+        const { data: publicUrlData } = supabase.storage.from('fotos-atletas').getPublicUrl(fileName);
         fotoUrlFinal = publicUrlData.publicUrl;
       }
 
@@ -681,39 +696,21 @@ import Layout from '../layouts/Layout.astro';
         });
       }
 
-      const b2Tipo = document.getElementById('editBici2Tipo').value;
-      if (b2Tipo && b2Tipo !== "") {
-        listaBicicletas.push({
-          tipo: b2Tipo,
-          rin: document.getElementById('editBici2Rin').value.trim().toUpperCase(),
-          marca: document.getElementById('editBici2Marca').value.trim().toUpperCase(),
-          color: document.getElementById('editBici2Color').value.trim().toUpperCase()
-        });
-      }
-
-      const { error } = await supabase
-        .from('alumnos')
-        .update({
-          nombre: document.getElementById('editNombre').value.trim().toUpperCase(),
-          cedula: document.getElementById('editCedula').value.trim().toUpperCase(),
-          fecha_nacimiento: document.getElementById('editNacimiento').value,
-          email: document.getElementById('editEmail').value.trim().toLowerCase(),
-          direccion: document.getElementById('editDireccion').value.trim().toUpperCase(),
-          telefono: document.getElementById('editTelefono').value.trim().toUpperCase(),
-          tipo_sangre: document.getElementById('editTipoSangre').value,
-          nivel: document.getElementById('editNivel').value.toUpperCase(),
-          foto_url: fotoUrlFinal,
-          tipos_bici: listaBicicletas
-        })
-        .eq('user_id', userId);
+      const { error } = await supabase.from('alumnos').update({
+        nombre: document.getElementById('editNombre').value.trim().toUpperCase(),
+        cedula: document.getElementById('editCedula').value.trim().toUpperCase(),
+        fecha_nacimiento: document.getElementById('editNacimiento').value,
+        email: document.getElementById('editEmail').value.trim().toLowerCase(),
+        direccion: document.getElementById('editDireccion').value.trim().toUpperCase(),
+        telefono: document.getElementById('editTelefono').value.trim().toUpperCase(),
+        tipo_sangre: document.getElementById('editTipoSangre').value,
+        nivel: document.getElementById('editNivel').value.toUpperCase(),
+        foto_url: fotoUrlFinal,
+        tipos_bici: listaBicicletas
+      }).eq('user_id', userId);
 
       if (error) throw error;
-
-      const msg = document.getElementById('mensajeEditar');
-      msg.textContent = "¡Ficha actualizada con éxito! Recargando...";
-      msg.className = "text-sm font-bold uppercase italic text-center p-2 border border-lime-400 bg-lime-400/20 text-lime-400 block mt-2";
-      
-      setTimeout(() => { window.location.reload(); }, 1200);
+      setTimeout(() => { window.location.reload(); }, 1000);
     } catch (err) {
       console.error(err);
       alert("Error al actualizar la ficha.");
