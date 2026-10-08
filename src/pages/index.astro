@@ -4,37 +4,37 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout>
   <!-- Navegación Principal Responsiva -->
-<nav class="bg-black text-white p-4 border-b-4 border-lime-400 sticky top-0 z-50">
-  <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
-    <a href="/" class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6 hover:opacity-80 transition">
-      PUPIBIKE 
-      <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
-    </a>
+  <nav class="bg-black text-white p-4 border-b-4 border-lime-400 sticky top-0 z-50">
+    <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
+      <a href="/" class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6 hover:opacity-80 transition">
+        PUPIBIKE 
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
+      </a>
 
-    <!-- Enlaces para Escritorio -->
-    <ul class="hidden md:flex space-x-6 items-center">
-      <li><a href="#niveles" class="font-bold hover:text-cyan-400 transition uppercase italic text-sm">Niveles</a></li>
-      <li><a href="#equipo" class="font-bold hover:text-cyan-400 transition uppercase italic text-sm">Equipo</a></li>
-      <li><a href="/login" class="text-cyan-400 border-2 border-cyan-400 px-6 py-2 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition transform hover:scale-105 shadow-[4px_4px_0px_#00d2ff]">Ingresar</a></li>
-      <li><a href="/registro" class="bg-lime-400 text-black px-6 py-2 font-black italic uppercase tracking-wide hover:bg-lime-300 transition transform hover:scale-105 shadow-[4px_4px_0px_#db2777]">¡Inscríbete!</a></li>
-    </ul>
+      <!-- Enlaces para Escritorio -->
+      <ul class="hidden md:flex space-x-6 items-center">
+        <li><a href="#niveles" class="font-bold hover:text-cyan-400 transition uppercase italic text-sm">Niveles</a></li>
+        <li><a href="#equipo" class="font-bold hover:text-cyan-400 transition uppercase italic text-sm">Equipo</a></li>
+        <li><a href="/login" class="text-cyan-400 border-2 border-cyan-400 px-6 py-2 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition transform hover:scale-105 shadow-[4px_4px_0px_#00d2ff]">Ingresar</a></li>
+        <li><a href="/registro" class="bg-lime-400 text-black px-6 py-2 font-black italic uppercase tracking-wide hover:bg-lime-300 transition transform hover:scale-105 shadow-[4px_4px_0px_#db2777]">¡Inscríbete!</a></li>
+      </ul>
 
-    <!-- Botón Hamburguesa para Móvil -->
-    <button id="btnMenuMobile" class="md:hidden text-lime-400 focus:outline-none p-2 border border-lime-400">
-      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-      </svg>
-    </button>
-  </div>
+      <!-- Botón Hamburguesa para Móvil -->
+      <button id="btnMenuMobile" class="md:hidden text-lime-400 focus:outline-none p-2 border border-lime-400">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
 
-  <!-- Menú Desplegable Móvil (Oculto por defecto) -->
-  <div id="menuMobile" class="hidden md:hidden bg-zinc-950 border-t border-zinc-800 px-4 pt-4 pb-6 flex flex-col gap-4 mt-4 shadow-xl">
-    <a href="#niveles" class="text-white font-bold uppercase italic text-lg hover:text-cyan-400 transition">Niveles</a>
-    <a href="#equipo" class="text-white font-bold uppercase italic text-lg hover:text-cyan-400 transition">Equipo</a>
-    <a href="/login" class="text-center text-cyan-400 border-2 border-cyan-400 py-3 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition shadow-[4px_4px_0px_#00d2ff]">Ingresar</a>
-    <a href="/registro" class="text-center bg-lime-400 text-black py-3 font-black italic uppercase tracking-wide hover:bg-lime-300 transition shadow-[4px_4px_0px_#db2777]">¡Inscríbete!</a>
-  </div>
-</nav>
+    <!-- Menú Desplegable Móvil (Oculto por defecto) -->
+    <div id="menuMobile" class="hidden md:hidden bg-zinc-950 border-t border-zinc-800 px-4 pt-4 pb-6 flex flex-col gap-4 mt-4 shadow-xl">
+      <a href="#niveles" class="text-white font-bold uppercase italic text-lg hover:text-cyan-400 transition">Niveles</a>
+      <a href="#equipo" class="text-white font-bold uppercase italic text-lg hover:text-cyan-400 transition">Equipo</a>
+      <a href="/login" class="text-center text-cyan-400 border-2 border-cyan-400 py-3 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition shadow-[4px_4px_0px_#00d2ff]">Ingresar</a>
+      <a href="/registro" class="text-center bg-lime-400 text-black py-3 font-black italic uppercase tracking-wide hover:bg-lime-300 transition shadow-[4px_4px_0px_#db2777]">¡Inscríbete!</a>
+    </div>
+  </nav>
 
   <!-- Hero Section -->
   <header class="bg-zinc-950 pt-32 pb-24 lg:min-h-[85vh] flex items-center justify-center text-center relative overflow-hidden">
@@ -226,7 +226,6 @@ import Layout from '../layouts/Layout.astro';
         <!-- Sarah -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635] transform skew-x-2 group hover:-translate-y-2 transition-transform">
           <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform -skew-x-2 flex items-center justify-center bg-zinc-800">
-            <!-- Imagen genérica o archivo de Sarah si lo agregas luego -->
             <span class="text-3xl font-black text-lime-400">S</span>
           </div>
           <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform -skew-x-2">Sarah</h3>
@@ -237,7 +236,6 @@ import Layout from '../layouts/Layout.astro';
         <!-- Carolina Alvarado -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform skew-x-2 group hover:-translate-y-2 transition-transform">
           <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform -skew-x-2 flex items-center justify-center bg-zinc-800">
-            <!-- Imagen genérica o archivo de Carolina si lo agregas luego -->
             <span class="text-3xl font-black text-cyan-400">C</span>
           </div>
           <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform -skew-x-2">Carolina Alvarado</h3>
@@ -348,8 +346,9 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script type="module">
+  import { supabase } from '../lib/supabase.js';
 
-// Script rápido para alternar el menú en celulares
+  // Alternar el menú en celulares
   const btnMenuMobile = document.getElementById('btnMenuMobile');
   const menuMobile = document.getElementById('menuMobile');
 
@@ -359,9 +358,7 @@ import Layout from '../layouts/Layout.astro';
     });
   }
 
-  import { supabase } from '../lib/supabase.js';
-
-  // LÓGICA DEL FORMULARIO DE LEADS
+  // Lógica del formulario de leads
   const form = document.getElementById('leadForm');
   const mensaje = document.getElementById('leadMensaje');
   const btnLead = document.getElementById('btnLead');
@@ -372,9 +369,12 @@ import Layout from '../layouts/Layout.astro';
       btnLead.textContent = "...";
       btnLead.disabled = true;
 
-      const email = document.getElementById('leadEmail').value;
+      const emailInput = document.getElementById('leadEmail');
+      const email = emailInput?.value?.trim().toLowerCase();
 
       try {
+        if (!email) throw new Error('Por favor ingresa un correo válido.');
+
         const { error } = await supabase.from('leads_eventos').insert([{ email }]);
         if (error) {
           if (error.code === '23505') throw new Error('Este correo ya está registrado.');
@@ -393,23 +393,23 @@ import Layout from '../layouts/Layout.astro';
     });
   }
 
-  // LÓGICA DEL SLIDER FOTOGRÁFICO
+  // Lógica del slider fotográfico
   let currentSlide = 0;
   const totalSlides = 5;
 
   setInterval(() => {
     const oldSlide = document.getElementById(`slide-${currentSlide}`);
-    if(oldSlide) {
-        oldSlide.classList.remove('opacity-100', 'z-10');
-        oldSlide.classList.add('opacity-0', 'z-0');
+    if (oldSlide) {
+      oldSlide.classList.remove('opacity-100', 'z-10');
+      oldSlide.classList.add('opacity-0', 'z-0');
     }
 
     currentSlide = (currentSlide + 1) % totalSlides;
 
     const newSlide = document.getElementById(`slide-${currentSlide}`);
-    if(newSlide) {
-        newSlide.classList.remove('opacity-0', 'z-0');
-        newSlide.classList.add('opacity-100', 'z-10');
+    if (newSlide) {
+      newSlide.classList.remove('opacity-0', 'z-0');
+      newSlide.classList.add('opacity-100', 'z-10');
     }
   }, 8000);
 </script>
