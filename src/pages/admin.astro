@@ -2,25 +2,22 @@
 import Layout from '../layouts/Layout.astro';
 import { supabaseServer } from '../lib/supabase-server.js';
 
-// 1. Inicializamos 
+// 1. Inicializamos cliente de servidor
 const supabase = supabaseServer(Astro);
 
-// 2. Verificamos la sesión directamente en la base de datos
-const { data: { session }, error } = await supabase.auth.getSession();
+// 2. Verificamos la autenticidad del usuario en el servidor (método seguro)
+const { data: { user }, error } = await supabase.auth.getUser();
 
-// 3. Si no hay sesión (no está logueado), lo pateamos al login
-if (!session || error) {
+// 3. Si no hay sesión válida, redirigimos al login
+if (!user || error) {
   return Astro.redirect('/login');
 }
 
-// 4. Verificamos si tiene permisos de Administrador
+// 4. Verificamos autorización administrativa
 const correosAutorizados = ["pathdawann@gmail.com", "cesar@gmail.com"];
-if (!correosAutorizados.includes(session.user.email)) {
-  // Si un atleta intenta entrar al admin, lo mandamos a su panel
+if (!user.email || !correosAutorizados.includes(user.email)) {
   return Astro.redirect('/dashboard');
 }
-
-// Si el código llega hasta aquí, significa que es administrador y es seguro mostrarle el HTML
 ---
 
 <Layout title="Panel Administrativo | Pupi Bike Kids">
@@ -119,8 +116,7 @@ if (!correosAutorizados.includes(session.user.email)) {
       </div>
     </div>
 
-  
-<!-- MODAL CONFIRMAR PAGO -->
+    <!-- MODAL CONFIRMAR PAGO -->
     <div id="modalConfirmarPago" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
       <div class="bg-zinc-900 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] p-6 md:p-8 w-full max-w-md mx-auto relative transform -skew-x-2 text-center">
         <h2 class="text-2xl font-black uppercase italic text-lime-400 mb-4 tracking-wider">Aprobar Pago</h2>
@@ -152,7 +148,7 @@ if (!correosAutorizados.includes(session.user.email)) {
       </div>
     </div>
 
-    </main>
+  </main>
 </Layout>
 
 <script type="module">
@@ -182,7 +178,7 @@ if (!correosAutorizados.includes(session.user.email)) {
     }
   });
 
-  // 1. Cargar Últimos Pagos (Pendientes y Aprobados)
+  // 1. Cargar Últimos Pagos
   async function cargarPagosPendientes() {
     const tbody = document.getElementById('tablaPagosPendientes');
     tbody.innerHTML = '';
@@ -209,13 +205,13 @@ if (!correosAutorizados.includes(session.user.email)) {
 
       if (pago.estado === 'revision' || !pago.estado) {
         accionHtml = `
-          <button onclick="aprobarPago('${pago.id}')" class="bg-lime-400 text-black font-black italic uppercase px-4 py-2 text-xs hover:bg-lime-300 shadow transform skew-x-2 transition">
+          <button onclick="window.aprobarPago('${pago.id}')" class="bg-lime-400 text-black font-black italic uppercase px-4 py-2 text-xs hover:bg-lime-300 shadow transform skew-x-2 transition">
             ✓ Aprobar
           </button>
         `;
       } else if (pago.estado === 'aprobado') {
         accionHtml = `
-          <button onclick="revertirPago('${pago.id}')" class="bg-zinc-950 text-lime-400 font-black italic uppercase px-4 py-2 text-xs border border-lime-400 shadow transform skew-x-2 hover:bg-pink-600 hover:text-white hover:border-pink-500 transition group relative w-32" title="Clic para deshacer">
+          <button onclick="window.revertirPago('${pago.id}')" class="bg-zinc-950 text-lime-400 font-black italic uppercase px-4 py-2 text-xs border border-lime-400 shadow transform skew-x-2 hover:bg-pink-600 hover:text-white hover:border-pink-500 transition group relative w-32" title="Clic para deshacer">
             <span class="group-hover:hidden">✓ Aprobado</span>
             <span class="hidden group-hover:inline">⟲ Deshacer</span>
           </button>
@@ -275,7 +271,7 @@ if (!correosAutorizados.includes(session.user.email)) {
       
     } catch (err) {
       console.error(err);
-      alert("Error al aprobar el pago. Revisa tu conexión.");
+      alert("Error al aprobar el pago. Verifica permisos de administrador.");
     } finally {
       btnConfirmar.textContent = 'SÍ, APROBAR';
       btnConfirmar.disabled = false;
@@ -320,7 +316,7 @@ if (!correosAutorizados.includes(session.user.email)) {
       
     } catch (err) {
       console.error(err);
-      alert("Error al revertir el pago.");
+      alert("Error al revertir el pago. Verifica permisos de administrador.");
     } finally {
       btnConfReversion.textContent = 'SÍ, DESHACER';
       btnConfReversion.disabled = false;
@@ -344,7 +340,7 @@ if (!correosAutorizados.includes(session.user.email)) {
     ]);
 
     if (errorAlumnos || errorPagos) { 
-      console.error("Error cargando data"); 
+      console.error("Error cargando data de alumnos o pagos"); 
       return; 
     }
 
@@ -386,7 +382,7 @@ if (!correosAutorizados.includes(session.user.email)) {
         } else {
           if (diaActual > 5) {
             badgeHtml = `<span class="bg-pink-600 text-white px-3 py-1 text-xs font-black uppercase animate-pulse">⚠️ MOROSO</span>`;
-            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recordatorio amistoso de Pupi Bike Kids: El plazo de pago (del 1 al 5) para la mensualidad de ${mesActualStr} ha vencido. Por favor, reporta tu pago lo antes posible en tu panel para evitar recargos.`);
+            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recordatorio de Pupi Bike Kids: El plazo de pago (del 1 al 5) para la mensualidad de ${mesActualStr} ha vencido. Por favor, reporta tu pago lo antes posible en tu panel para evitar recargos.`);
           } else {
             badgeHtml = `<span class="bg-yellow-400 text-black px-3 py-1 text-xs font-black uppercase">PENDIENTE</span>`;
             mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recuerda que estamos en los días de pago (del 1 al 5) para la mensualidad de ${mesActualStr}. ¡Evita recargos!`);
@@ -442,13 +438,17 @@ if (!correosAutorizados.includes(session.user.email)) {
     const msg = document.getElementById('mensajeTasa');
 
     try {
-      const { error } = await supabase.from('configuracion').update({ valor: nuevoValor, updated_at: new Date() }).eq('clave', 'tasa_dolar');
+      const { error } = await supabase
+        .from('configuracion')
+        .update({ valor: nuevoValor, updated_at: new Date() })
+        .eq('clave', 'tasa_dolar');
+
       if (error) throw error;
       msg.textContent = "¡Tasa actualizada con éxito!";
       msg.className = "text-xs font-bold mt-2 text-center text-lime-400 block";
     } catch (err) {
       console.error(err);
-      msg.textContent = "Error al actualizar la tasa.";
+      msg.textContent = "Error al actualizar la tasa (requiere permisos admin).";
       msg.className = "text-xs font-bold mt-2 text-center text-pink-500 block";
     }
   });
