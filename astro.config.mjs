@@ -4,7 +4,10 @@ import tailwindcss from '@tailwindcss/vite';
 import vercel from '@astrojs/vercel';
 
 export default defineConfig({
-  output: 'server', // <--- Agregamos esta línea
+  output: 'server',
+  security: {
+    checkOrigin: true // Activa un escudo para que nadie envíe formularios a tu web desde sitios maliciosos
+  },
   vite: {
     plugins: [tailwindcss()]
   },
