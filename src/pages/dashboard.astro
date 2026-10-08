@@ -10,7 +10,7 @@ import Layout from '../layouts/Layout.astro';
         PUPI BIKE 
         <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
       </a>
-      <button id="btnLogout" class="text-pink-500 font-bold hover:text-white transition italic uppercase text-sm md:text-base border border-pink-500 px-4 py-1 hover:bg-pink-600">
+      <button id="btnLogout" class="text-pink-400 font-bold hover:text-white transition italic uppercase text-sm md:text-base border border-pink-500 px-4 py-1 hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-400">
         Cerrar Sesión
       </button>
     </div>
@@ -33,13 +33,13 @@ import Layout from '../layouts/Layout.astro';
           HOLA, <span id="uiNombre" class="text-cyan-400">ATLETA</span>
         </h1>
       </div>
-      <p class="text-zinc-400 italic font-medium text-lg">Este es tu panel de control y autogestión de la academia.</p>
+      <p class="text-zinc-300 italic font-medium text-lg">Este es tu panel de control y autogestión de la academia.</p>
     </div>
 
     <!-- BLOQUE 1: Ficha Técnica (Izq) + Estado de Pagos y Pago Móvil (Der) -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
       
-      <!-- COLUMNA IZQUIERDA: Ficha del Atleta (Ocupa 2/3) -->
+      <!-- COLUMNA IZQUIERDA: Ficha del Atleta (2/3) -->
       <div class="lg:col-span-2">
         <section class="bg-zinc-900 p-8 shadow-[8px_8px_0px_#a3e635] border-2 border-lime-400 h-full flex flex-col justify-between">
           <div>
@@ -55,34 +55,34 @@ import Layout from '../layouts/Layout.astro';
                 </div>
               </div>
 
-              <button type="button" id="btnAbrirModalEditar" class="bg-cyan-400 text-black font-black italic uppercase px-5 py-3 hover:bg-cyan-300 transition-all transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] border-2 border-transparent text-sm flex-shrink-0">
+              <button type="button" id="btnAbrirModalEditar" class="bg-cyan-400 text-black font-black italic uppercase px-5 py-3 hover:bg-cyan-300 transition-all transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] border-2 border-transparent text-sm flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-white">
                 ✏️ Editar Ficha
               </button>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div>
-                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Cédula</p>
+                <p class="text-zinc-200 text-xs font-black uppercase tracking-wider mb-1">Cédula</p>
                 <p id="uiCedula" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
               </div>
               <div>
-                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Correo Electrónico</p>
+                <p class="text-zinc-200 text-xs font-black uppercase tracking-wider mb-1">Correo Electrónico</p>
                 <p id="uiEmail" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2 lowercase">...</p>
               </div>
               <div>
-                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Fecha de Nacimiento</p>
+                <p class="text-zinc-200 text-xs font-black uppercase tracking-wider mb-1">Fecha de Nacimiento</p>
                 <p id="uiNacimiento" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
               </div>
               <div>
-                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Teléfono / WhatsApp</p>
+                <p class="text-zinc-200 text-xs font-black uppercase tracking-wider mb-1">Teléfono / WhatsApp</p>
                 <p id="uiTelefono" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
               </div>
               <div>
-                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Tipo de Sangre</p>
-                <p id="uiTipoSangre" class="text-pink-500 font-black bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
+                <p class="text-zinc-200 text-xs font-black uppercase tracking-wider mb-1">Tipo de Sangre</p>
+                <p id="uiTipoSangre" class="text-pink-400 font-black bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
               </div>
               <div class="md:col-span-2">
-                <p class="text-zinc-500 text-xs font-black uppercase tracking-wider mb-1">Dirección / Residencia</p>
+                <p class="text-zinc-200 text-xs font-black uppercase tracking-wider mb-1">Dirección / Residencia</p>
                 <p id="uiDireccion" class="text-white font-bold bg-zinc-950 px-4 py-2 border border-zinc-800 transform -skew-x-2">...</p>
               </div>
             </div>
@@ -106,17 +106,17 @@ import Layout from '../layouts/Layout.astro';
           
           <div class="bg-zinc-950 p-4 border border-zinc-800 mb-4 flex items-center justify-between">
             <div>
-              <p class="text-zinc-400 text-xs font-bold uppercase tracking-wider">Estatus del Mes</p>
-              <p id="uiEstatus" class="text-xl font-black italic uppercase text-zinc-500">CARGANDO...</p>
+              <p class="text-zinc-300 text-xs font-black uppercase tracking-wider">Estatus del Mes</p>
+              <p id="uiEstatus" class="text-xl font-black italic uppercase text-zinc-400">CARGANDO...</p>
             </div>
-            <div id="uiIconoEstatus" class="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center text-zinc-500 text-2xl animate-pulse">?</div>
+            <div id="uiIconoEstatus" class="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center text-zinc-400 text-2xl animate-pulse">?</div>
           </div>
 
-          <button id="btnAbrirModalPago" class="w-full bg-pink-600 text-white font-black italic uppercase text-lg py-3 hover:bg-pink-500 transition-all transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] hover:translate-y-1 mb-3 border-2 border-transparent">
+          <button id="btnAbrirModalPago" class="w-full bg-pink-600 text-white font-black italic uppercase text-lg py-3 hover:bg-pink-500 transition-all transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] hover:translate-y-1 mb-3 border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-white">
             Reportar Pago
           </button>
           
-          <a href="/historial" class="block text-center text-cyan-400 text-sm font-bold hover:text-white transition italic underline">Ver historial completo</a>
+          <a href="/historial" class="block text-center text-cyan-400 text-sm font-bold hover:text-white transition italic underline focus:outline-none focus:text-white">Ver historial completo</a>
         </section>
 
         <!-- TARJETA DINÁMICA: DATOS DE PAGO MÓVIL Y TASA DEL DÍA -->
@@ -130,7 +130,7 @@ import Layout from '../layouts/Layout.astro';
 
           <!-- Monto sugerido convertido a Bs -->
           <div class="bg-zinc-950 p-4 border-2 border-zinc-800 mb-4 text-center shadow-inner">
-            <span class="text-xs md:text-sm text-zinc-300 font-black uppercase tracking-wider block mb-1">
+            <span class="text-xs md:text-sm text-zinc-200 font-black uppercase tracking-wider block mb-1">
               Mensualidad (30$) al cambio de hoy:
             </span>
             <span id="uiTotalBs" class="text-3xl md:text-4xl font-black italic text-lime-400 tracking-tight">
@@ -141,25 +141,25 @@ import Layout from '../layouts/Layout.astro';
           <!-- Datos de Pago Móvil destacados -->
           <div class="space-y-3 bg-zinc-950 p-4 border border-zinc-800">
             <div class="flex justify-between items-center border-b border-zinc-800/80 pb-2">
-              <span class="text-xs font-black uppercase text-zinc-400">Banco:</span>
+              <span class="text-xs font-black uppercase text-zinc-300">Banco:</span>
               <span class="text-white text-base font-black">Bco. de Venezuela (0102)</span>
             </div>
             <div class="flex justify-between items-center border-b border-zinc-800/80 pb-2">
-              <span class="text-xs font-black uppercase text-zinc-400">Teléfono:</span>
+              <span class="text-xs font-black uppercase text-zinc-300">Teléfono:</span>
               <span class="text-cyan-400 text-lg font-mono font-black tracking-wider">0424-8781128</span>
             </div>
             <div class="flex justify-between items-center border-b border-zinc-800/80 pb-2">
-              <span class="text-xs font-black uppercase text-zinc-400">Cédula:</span>
+              <span class="text-xs font-black uppercase text-zinc-300">Cédula:</span>
               <span class="text-white text-base font-mono font-black">V-24.469.073</span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-xs font-black uppercase text-zinc-400">Titular:</span>
+              <span class="text-xs font-black uppercase text-zinc-300">Titular:</span>
               <span class="text-lime-400 text-base font-black uppercase">Cesar Barrios</span>
             </div>
           </div>
 
-          <p class="text-xs text-zinc-400 font-medium italic mt-3 text-center leading-relaxed">
-            Luego de transferir, haz clic en <strong class="text-pink-500 uppercase">"Reportar Pago"</strong> arriba.
+          <p class="text-xs text-zinc-300 font-medium italic mt-3 text-center leading-relaxed">
+            Luego de transferir, haz clic en <strong class="text-pink-400 uppercase">"Reportar Pago"</strong> arriba.
           </p>
         </section>
 
@@ -175,7 +175,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
             <div>
               <h3 class="text-2xl font-black italic uppercase text-lime-400">Maillot Oficial</h3>
-              <p class="text-zinc-400 text-xs">Viste los colores extremos de Pupi Bike Kids.</p>
+              <p class="text-zinc-300 text-xs">Viste los colores extremos de Pupi Bike Kids.</p>
             </div>
             <span class="bg-lime-400 text-black font-black italic px-3 py-1 text-sm uppercase transform -skew-x-6">Edición Pro 2026</span>
           </div>
@@ -187,10 +187,10 @@ import Layout from '../layouts/Layout.astro';
 
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-zinc-950 p-4 border border-zinc-800">
           <div>
-            <span class="text-zinc-400 text-xs uppercase font-bold block">Precio de lanzamiento:</span>
+            <span class="text-zinc-300 text-xs uppercase font-bold block">Precio de lanzamiento:</span>
             <span class="text-2xl font-black italic text-lime-400">35$ <span class="text-xs text-white font-normal">(Todas las tallas)</span></span>
           </div>
-          <a href="https://wa.me/584248781128?text=Hola%20Cesar,%20quiero%20comprar%20el%20maillot%20oficial%20de%20la%20academia." target="_blank" class="w-full sm:w-auto text-center bg-lime-400 text-black font-black italic uppercase px-8 py-3 hover:bg-lime-300 transition-all shadow-[4px_4px_0px_#db2777] transform -skew-x-4">
+          <a href="https://wa.me/584248781128?text=Hola%20Cesar,%20quiero%20comprar%20el%20maillot%20oficial%20de%20la%20academia." target="_blank" class="w-full sm:w-auto text-center bg-lime-400 text-black font-black italic uppercase px-8 py-3 hover:bg-lime-300 transition-all shadow-[4px_4px_0px_#db2777] transform -skew-x-4 focus:outline-none focus:ring-2 focus:ring-white">
             Comprar Ahora
           </a>
         </div>
@@ -201,7 +201,7 @@ import Layout from '../layouts/Layout.astro';
         <div>
           <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-3">
             <h3 class="text-2xl font-black italic uppercase text-cyan-400 tracking-wide">Calendario del Mes</h3>
-            <span class="text-zinc-400 text-xs font-bold uppercase italic">Próximos Eventos</span>
+            <span class="text-zinc-300 text-xs font-bold uppercase italic">Próximos Eventos</span>
           </div>
 
           <div class="flex flex-col gap-4">
@@ -213,7 +213,7 @@ import Layout from '../layouts/Layout.astro';
               </div>
               <div class="flex-1">
                 <h4 class="text-base font-bold text-white uppercase italic">Ruta Nocturna Familiar</h4>
-                <p class="text-zinc-400 text-xs">Recorrido por la ciudad para todas las edades. Trae tus luces.</p>
+                <p class="text-zinc-300 text-xs">Recorrido por la ciudad para todas las edades. Trae tus luces.</p>
               </div>
             </div>
 
@@ -225,7 +225,7 @@ import Layout from '../layouts/Layout.astro';
               </div>
               <div class="flex-1">
                 <h4 class="text-base font-bold text-white uppercase italic">Clínica de Saltos</h4>
-                <p class="text-zinc-400 text-xs">Técnicas de despegue y aterrizaje en pista para intermedio y avanzado.</p>
+                <p class="text-zinc-300 text-xs">Técnicas de despegue y aterrizaje en pista para intermedio y avanzado.</p>
               </div>
             </div>
 
@@ -237,14 +237,14 @@ import Layout from '../layouts/Layout.astro';
               </div>
               <div class="flex-1">
                 <h4 class="text-base font-bold text-white uppercase italic">Competencia Halloween</h4>
-                <p class="text-zinc-400 text-xs">Ven con tu mejor disfraz a rodar. Premios sorpresa para los atletas.</p>
+                <p class="text-zinc-300 text-xs">Ven con tu mejor disfraz a rodar. Premios sorpresa para los atletas.</p>
               </div>
             </div>
           </div>
         </div>
 
         <div class="mt-6 pt-4 border-t border-zinc-800 text-center">
-          <p class="text-xs text-zinc-500 italic">¿Tienes dudas sobre los eventos? Consulta a los entrenadores en pista.</p>
+          <p class="text-xs text-zinc-400 italic">¿Tienes dudas sobre los eventos? Consulta a los entrenadores en pista.</p>
         </div>
       </section>
 
@@ -254,14 +254,14 @@ import Layout from '../layouts/Layout.astro';
   <!-- MODAL REPORTAR PAGO -->
   <div id="modalPago" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-2 md:p-4">
     <div class="bg-zinc-900 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] p-4 md:p-8 w-full max-w-md mx-auto relative transform md:-skew-x-2 max-h-[95vh] overflow-y-auto">
-      <button type="button" id="btnCerrarModal" class="absolute top-3 right-4 text-zinc-500 hover:text-pink-500 transform md:skew-x-2 text-2xl font-black z-10">X</button>
+      <button type="button" id="btnCerrarModal" aria-label="Cerrar modal" class="absolute top-3 right-4 text-zinc-400 hover:text-pink-500 transform md:skew-x-2 text-2xl font-black z-10 focus:outline-none focus:text-white">X</button>
       
       <div class="transform skew-x-2">
         <h2 class="text-2xl font-black uppercase italic text-pink-500 mb-6 border-b border-zinc-800 pb-2">Reportar Transferencia</h2>
         <form id="formPago" class="flex flex-col gap-4">
           <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Método de Pago</label>
-            <select id="inputMetodo" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold">
+            <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Método de Pago</label>
+            <select id="inputMetodo" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
               <option value="Pago Movil">Pago Móvil</option>
               <option value="Transferencia Banesco">Transferencia Banesco</option>
               <option value="Zelle">Zelle</option>
@@ -269,17 +269,17 @@ import Layout from '../layouts/Layout.astro';
             </select>
           </div>
           <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Número de Referencia</label>
-            <input type="text" id="inputReferencia" required placeholder="Ej: 12345678" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold">
+            <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Número de Referencia</label>
+            <input type="text" id="inputReferencia" required placeholder="Ej: 12345678" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold placeholder-zinc-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Monto ($)</label>
-              <input type="number" id="inputMonto" required placeholder="30" min="1" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold">
+              <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Monto ($)</label>
+              <input type="number" id="inputMonto" required placeholder="30" min="1" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold placeholder-zinc-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
             </div>
             <div>
-              <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Mes que Cancela</label>
-              <select id="inputMes" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold">
+              <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Mes que Cancela</label>
+              <select id="inputMes" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
                 <option value="Octubre 2026">Octubre 2026</option>
                 <option value="Noviembre 2026">Noviembre 2026</option>
                 <option value="Diciembre 2026">Diciembre 2026</option>
@@ -287,7 +287,7 @@ import Layout from '../layouts/Layout.astro';
             </div>
           </div>
           <div id="mensajePago" class="hidden text-sm font-bold uppercase italic text-center p-2 border mt-2"></div>
-          <button type="submit" id="btnEnviarPago" class="w-full bg-pink-600 text-white font-black italic uppercase text-lg py-3 hover:bg-pink-500 transition-all mt-2">Enviar Reporte</button>
+          <button type="submit" id="btnEnviarPago" class="w-full bg-pink-600 text-white font-black italic uppercase text-lg py-3 hover:bg-pink-500 transition-all mt-2 focus:outline-none focus:ring-2 focus:ring-white">Enviar Reporte</button>
         </form>
       </div>
     </div>
@@ -296,7 +296,7 @@ import Layout from '../layouts/Layout.astro';
   <!-- MODAL EDITAR FICHA -->
   <div id="modalEditar" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-2 md:p-4">
     <div class="bg-zinc-900 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] p-4 md:p-8 w-full max-w-3xl mx-auto relative transform md:-skew-x-2 h-[95vh] md:h-auto md:max-h-[90vh] overflow-y-auto">
-      <button type="button" id="btnCerrarModalEditar" class="absolute top-3 right-4 text-zinc-500 hover:text-lime-400 transform md:skew-x-2 text-2xl font-black z-10">X</button>
+      <button type="button" id="btnCerrarModalEditar" aria-label="Cerrar modal de edición" class="absolute top-3 right-4 text-zinc-400 hover:text-lime-400 transform md:skew-x-2 text-2xl font-black z-10 focus:outline-none focus:text-white">X</button>
       
       <div class="transform skew-x-2">
         <h2 class="text-2xl font-black uppercase italic text-lime-400 mb-6 border-b border-zinc-800 pb-2">Actualizar Ficha del Atleta</h2>
@@ -306,36 +306,36 @@ import Layout from '../layouts/Layout.astro';
             <h3 class="text-cyan-400 font-black italic uppercase text-sm mb-3">1. Datos Personales</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Nombre y Apellido</label>
-                <input type="text" id="editNombre" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Nombre y Apellido</label>
+                <input type="text" id="editNombre" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Cédula</label>
-                <input type="text" id="editCedula" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Cédula</label>
+                <input type="text" id="editCedula" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Fecha de Nacimiento</label>
-                <input type="date" id="editNacimiento" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold">
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Fecha de Nacimiento</label>
+                <input type="date" id="editNacimiento" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Correo Electrónico</label>
-                <input type="email" id="editEmail" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold lowercase">
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Correo Electrónico</label>
+                <input type="email" id="editEmail" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold lowercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Teléfono / WhatsApp</label>
-                <input type="text" id="editTelefono" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Teléfono / WhatsApp</label>
+                <input type="text" id="editTelefono" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Nivel Actual</label>
-                <select id="editNivel" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Nivel Actual</label>
+                <select id="editNivel" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
                   <option value="PRINCIPIANTE">PRINCIPIANTE</option>
                   <option value="INTERMEDIO">INTERMEDIO</option>
                   <option value="AVANZADO">AVANZADO</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Tipo de Sangre</label>
-                <select id="editTipoSangre" class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Tipo de Sangre</label>
+                <select id="editTipoSangre" class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
                   <option value="">-- NO ESPECIFICADO --</option>
                   <option value="O+">O+</option>
                   <option value="O-">O-</option>
@@ -348,11 +348,11 @@ import Layout from '../layouts/Layout.astro';
                 </select>
               </div>
               <div class="md:col-span-2">
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Dirección / Residencia</label>
-                <input type="text" id="editDireccion" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase">
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Dirección / Residencia</label>
+                <input type="text" id="editDireccion" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div class="md:col-span-2">
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Actualizar Fotografía (Opcional)</label>
+                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Actualizar Fotografía (Opcional)</label>
                 <input type="file" id="editFotoFile" accept="image/*" class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold file:mr-4 file:py-1 file:px-3 file:border-0 file:text-xs file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer">
               </div>
             </div>
@@ -365,8 +365,8 @@ import Layout from '../layouts/Layout.astro';
                 <span class="text-lime-400 font-black text-xs uppercase italic mb-2 block">Bicicleta 1 (Principal)</span>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                   <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Tipo</label>
-                    <select id="editBici1Tipo" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold">
+                    <label class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Tipo</label>
+                    <select id="editBici1Tipo" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold focus:outline-none focus:border-lime-400">
                       <option value="MTB">MTB</option>
                       <option value="RUTA">RUTA</option>
                       <option value="GRAVEL">GRAVEL</option>
@@ -374,16 +374,16 @@ import Layout from '../layouts/Layout.astro';
                     </select>
                   </div>
                   <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Rin</label>
-                    <input type="text" id="editBici1Rin" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                    <label class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Rin</label>
+                    <input type="text" id="editBici1Rin" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase focus:outline-none focus:border-lime-400">
                   </div>
                   <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Marca</label>
-                    <input type="text" id="editBici1Marca" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                    <label class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Marca</label>
+                    <input type="text" id="editBici1Marca" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase focus:outline-none focus:border-lime-400">
                   </div>
                   <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Color</label>
-                    <input type="text" id="editBici1Color" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase">
+                    <label class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Color</label>
+                    <input type="text" id="editBici1Color" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase focus:outline-none focus:border-lime-400">
                   </div>
                 </div>
               </div>
@@ -391,7 +391,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
 
           <div id="mensajeEditar" class="hidden text-sm font-bold uppercase italic text-center p-2 border mt-2"></div>
-          <button type="submit" id="btnGuardarEdicion" class="w-full bg-lime-400 text-black font-black italic uppercase text-lg py-3 hover:bg-lime-300 transition-all mt-2 shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">Guardar Cambios</button>
+          <button type="submit" id="btnGuardarEdicion" class="w-full bg-lime-400 text-black font-black italic uppercase text-lg py-3 hover:bg-lime-300 transition-all mt-2 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] focus:outline-none focus:ring-2 focus:ring-white">Guardar Cambios</button>
         </form>
       </div>
     </div>
@@ -401,14 +401,14 @@ import Layout from '../layouts/Layout.astro';
 <!-- MODAL RECORDATORIO DE PAGO (NO INVASIVO) -->
 <div id="modalRecordatorioDeuda" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
   <div class="bg-zinc-900 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] p-8 w-full max-w-md mx-auto relative transform -skew-x-2 text-center">
-    <button type="button" id="btnCerrarRecordatorio" class="absolute top-3 right-4 text-zinc-500 hover:text-pink-500 transform skew-x-2 text-2xl font-black z-10">X</button>
+    <button type="button" id="btnCerrarRecordatorio" aria-label="Cerrar recordatorio" class="absolute top-3 right-4 text-zinc-400 hover:text-pink-500 transform skew-x-2 text-2xl font-black z-10 focus:outline-none focus:text-white">X</button>
     <div class="transform skew-x-2">
       <div class="text-pink-500 text-6xl mb-4 animate-bounce">⚠️</div>
       <h2 class="text-2xl font-black uppercase italic text-pink-500 mb-4 tracking-wider">Recordatorio Amistoso</h2>
-      <p class="text-zinc-300 font-medium mb-4 text-sm leading-relaxed">
+      <p class="text-zinc-200 font-medium mb-4 text-sm leading-relaxed">
         ¡Hola! Recuerda que los días regulares de pago son del <span class="text-white font-black">1 al 5 de cada mes</span>.
       </p>
-      <button type="button" id="btnIrAPagarDeuda" class="w-full bg-pink-600 text-white font-black italic uppercase text-lg py-4 hover:bg-pink-500 transition-all shadow-[4px_4px_0px_rgba(0,0,0,0.5)] border-2 border-transparent">
+      <button type="button" id="btnIrAPagarDeuda" class="w-full bg-pink-600 text-white font-black italic uppercase text-lg py-4 hover:bg-pink-500 transition-all shadow-[4px_4px_0px_rgba(0,0,0,0.5)] border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-white">
         Reportar Pago Ahora
       </button>
     </div>
@@ -502,7 +502,7 @@ import Layout from '../layouts/Layout.astro';
           `;
         });
       } else {
-        contenedorBicis.innerHTML = `<p class="text-zinc-500 text-sm italic">No hay bicicletas registradas.</p>`;
+        contenedorBicis.innerHTML = `<p class="text-zinc-400 text-sm italic">No hay bicicletas registradas.</p>`;
       }
 
       // 4. Verificación de Solvencia Inteligente

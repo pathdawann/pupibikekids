@@ -145,6 +145,16 @@ import Layout from '../layouts/Layout.astro';
   const mensaje = document.getElementById('mensaje');
   const btnSubmit = document.getElementById('btnSubmit');
 
+  // 👉 AQUÍ AGREGAS LA PRESELECCIÓN:
+  const urlParams = new URLSearchParams(window.location.search);
+  const nivelUrl = urlParams.get('nivel');
+  if (nivelUrl) {
+    const selectNivel = document.getElementById('nivel');
+    if (selectNivel) {
+      selectNivel.value = nivelUrl.toUpperCase();
+    }
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault(); 
     

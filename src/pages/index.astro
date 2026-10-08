@@ -3,38 +3,56 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
-  <!-- Navegación Principal Responsiva -->
-  <nav class="bg-black text-white p-4 border-b-4 border-lime-400 sticky top-0 z-50">
-    <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
-      <a href="/" class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6 hover:opacity-80 transition">
-        PUPIBIKE 
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
-      </a>
+  <!-- Navegación Principal Responsiva y Adaptada -->
+<nav class="bg-black text-white p-4 border-b-4 border-lime-400 sticky top-0 z-50">
+  <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center gap-4">
+    
+    <!-- Logo con flex-shrink-0 para evitar aplastamiento -->
+    <a href="/" class="text-2xl lg:text-3xl font-black italic tracking-wider text-white transform -skew-x-6 hover:opacity-80 transition flex-shrink-0">
+      PUPIBIKE 
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
+    </a>
 
-      <!-- Enlaces para Escritorio -->
-      <ul class="hidden md:flex space-x-6 items-center">
-        <li><a href="#niveles" class="font-bold hover:text-cyan-400 transition uppercase italic text-sm">Niveles</a></li>
-        <li><a href="#equipo" class="font-bold hover:text-cyan-400 transition uppercase italic text-sm">Equipo</a></li>
-        <li><a href="/login" class="text-cyan-400 border-2 border-cyan-400 px-6 py-2 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition transform hover:scale-105 shadow-[4px_4px_0px_#00d2ff]">Ingresar</a></li>
-        <li><a href="/registro" class="bg-lime-400 text-black px-6 py-2 font-black italic uppercase tracking-wide hover:bg-lime-300 transition transform hover:scale-105 shadow-[4px_4px_0px_#db2777]">¡Inscríbete!</a></li>
-      </ul>
+    <!-- Enlaces de Escritorio (Visibles solo a partir de 1024px / lg) -->
+    <ul class="hidden lg:flex space-x-3 xl:space-x-4 items-center flex-shrink-0">
+      <li>
+        <a href="#niveles" class="bg-zinc-900 border border-zinc-700 hover:border-cyan-400 text-zinc-200 hover:text-cyan-400 px-3.5 py-2 font-black italic uppercase text-xs tracking-wider transition transform -skew-x-6 hover:-translate-y-0.5">
+          Niveles
+        </a>
+      </li>
+      <li>
+        <a href="#equipo" class="bg-zinc-900 border border-zinc-700 hover:border-lime-400 text-zinc-200 hover:text-lime-400 px-3.5 py-2 font-black italic uppercase text-xs tracking-wider transition transform -skew-x-6 hover:-translate-y-0.5">
+          Equipo
+        </a>
+      </li>
+      <li>
+        <a href="/login" class="text-cyan-400 border-2 border-cyan-400 px-5 py-2 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition transform hover:scale-105 shadow-[4px_4px_0px_#00d2ff] text-xs">
+          Ingresar
+        </a>
+      </li>
+      <li>
+        <a href="/registro" class="bg-lime-400 text-black px-5 py-2 font-black italic uppercase tracking-wide hover:bg-lime-300 transition transform hover:scale-105 shadow-[4px_4px_0px_#db2777] text-xs">
+          ¡Inscríbete!
+        </a>
+      </li>
+    </ul>
 
-      <!-- Botón Hamburguesa para Móvil -->
-      <button id="btnMenuMobile" class="md:hidden text-lime-400 focus:outline-none p-2 border border-lime-400">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-    </div>
+    <!-- Botón Hamburguesa (Visible en Móvil y Tablet: hasta 1023px) -->
+    <button id="btnMenuMobile" aria-label="Abrir menú" class="lg:hidden text-lime-400 focus:outline-none p-2 border border-lime-400 flex items-center justify-center">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </div>
 
-    <!-- Menú Desplegable Móvil (Oculto por defecto) -->
-    <div id="menuMobile" class="hidden md:hidden bg-zinc-950 border-t border-zinc-800 px-4 pt-4 pb-6 flex flex-col gap-4 mt-4 shadow-xl">
-      <a href="#niveles" class="text-white font-bold uppercase italic text-lg hover:text-cyan-400 transition">Niveles</a>
-      <a href="#equipo" class="text-white font-bold uppercase italic text-lg hover:text-cyan-400 transition">Equipo</a>
-      <a href="/login" class="text-center text-cyan-400 border-2 border-cyan-400 py-3 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition shadow-[4px_4px_0px_#00d2ff]">Ingresar</a>
-      <a href="/registro" class="text-center bg-lime-400 text-black py-3 font-black italic uppercase tracking-wide hover:bg-lime-300 transition shadow-[4px_4px_0px_#db2777]">¡Inscríbete!</a>
-    </div>
-  </nav>
+  <!-- Menú Desplegable (Móvil y Tablet) -->
+  <div id="menuMobile" class="hidden lg:hidden bg-zinc-950 border-t border-zinc-800 px-4 pt-4 pb-6 flex flex-col gap-3 mt-4 shadow-xl">
+    <a href="#niveles" class="text-white font-black uppercase italic text-base hover:text-lime-400 transition py-1">Niveles</a>
+    <a href="#equipo" class="text-white font-black uppercase italic text-base hover:text-cyan-400 transition py-1">Equipo</a>
+    <a href="/login" class="text-center text-cyan-400 border-2 border-cyan-400 py-3 font-black italic uppercase tracking-wide hover:bg-cyan-400 hover:text-black transition shadow-[4px_4px_0px_#00d2ff]">Ingresar</a>
+    <a href="/registro" class="text-center bg-lime-400 text-black py-3 font-black italic uppercase tracking-wide hover:bg-lime-300 transition shadow-[4px_4px_0px_#db2777]">¡Inscríbete!</a>
+  </div>
+</nav>
 
   <!-- Hero Section -->
   <header class="bg-zinc-950 pt-32 pb-24 lg:min-h-[85vh] flex items-center justify-center text-center relative overflow-hidden">
@@ -43,9 +61,14 @@ import Layout from '../layouts/Layout.astro';
     <div class="absolute bottom-0 right-0 w-80 h-80 bg-lime-500 rounded-full mix-blend-screen filter blur-[120px] opacity-20 z-10"></div>
 
     <div class="container mx-auto px-4 max-w-7xl relative z-20 w-full">
+      <!-- 1. Texto pequeño superior ("REGRESO A CLASES") -->
       <h3 class="text-lime-400 font-black text-2xl md:text-4xl italic uppercase tracking-widest mb-4 transform -skew-x-12 drop-shadow-md">Regreso a Clases</h3>
-      <h2 class="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 uppercase italic tracking-tighter leading-tight">Formando a los futuros <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-cyan-400 to-lime-400">campeones del MTB</span></h2>
-      <p class="text-xl lg:text-2xl text-zinc-300 mb-8 max-w-3xl mx-auto font-medium bg-black/50 p-4 rounded-xl border border-zinc-800 backdrop-blur-sm">Temporada 2026-2027. Enseñamos técnica, disciplina y pasión por el ciclismo para niños y jóvenes en un ambiente seguro y extremo.</p>
+
+      <!-- 2. Título principal ("FORMANDO A LOS FUTUROS CAMPEONES DEL MTB") -->
+      <h2 class="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 uppercase italic tracking-tighter leading-tight">Formando futuros <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-cyan-400 to-lime-400">Campeones de MTB</span></h2>
+      
+      <!-- 3. Párrafo descriptivo -->
+      <p class="text-xl lg:text-2xl text-white mb-8 max-w-3xl mx-auto italic font-medium bg-black/60 p-4 rounded-xl border border-zinc-800 backdrop-blur-sm">Enseñamos técnica, disciplina y pasión por el Ciclismo en un ambiente Seguro y Divertido.</p>
       
       <div class="flex flex-col sm:flex-row justify-center items-center gap-8 mt-12">
         <a href="/registro" class="bg-blue-600 text-white text-2xl font-black italic uppercase px-10 py-5 shadow-[6px_6px_0px_#a3e635] hover:translate-y-1 hover:shadow-[2px_2px_0px_#a3e635] transition-all transform -skew-x-6 border-2 border-transparent">Únete a la Academia</a>
@@ -65,39 +88,51 @@ import Layout from '../layouts/Layout.astro';
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-        <!-- Nivel 1 -->
-        <div class="bg-zinc-950 p-8 border-2 border-cyan-400 transform -skew-x-2 shadow-[8px_8px_0px_#00d2ff] hover:-translate-y-2 transition-transform">
-          <h3 class="text-2xl font-black italic uppercase text-cyan-400 mb-4 tracking-wider">Principiante</h3>
-          <ul class="text-zinc-300 font-medium space-y-3 mb-6">
-            <li>✓ Dominio de rueditas y equilibrio.</li>
-            <li>✓ Fundamentos de seguridad y frenado.</li>
-            <li>✓ Juegos y adaptación a la bicicleta.</li>
-          </ul>
-          <div class="bg-zinc-900 p-3 text-sm font-bold italic text-center border border-zinc-800 text-white">Ideal para los más pequeños</div>
-        </div>
+  <!-- Nivel 1: Principiante -->
+  <div class="bg-zinc-950 p-8 border-2 border-cyan-400 transform -skew-x-2 shadow-[8px_8px_0px_#00d2ff] hover:-translate-y-2 transition-transform flex flex-col justify-between">
+    <div>
+      <h3 class="text-2xl font-black italic uppercase text-cyan-400 mb-4 tracking-wider">Principiante</h3>
+      <ul class="text-zinc-200 font-medium space-y-3 mb-6">
+        <li>✓ Dominio de rueditas y equilibrio.</li>
+        <li>✓ Fundamentos de seguridad y frenado.</li>
+        <li>✓ Juegos y adaptación a la bicicleta.</li>
+      </ul>
+    </div>
+    <a href="/registro?nivel=PRINCIPIANTE" class="block bg-zinc-950 hover:bg-cyan-400 hover:text-black p-3 text-sm font-black uppercase italic text-center border-2 border-cyan-400 text-cyan-400 shadow-[3px_3px_0px_#00d2ff] transition-colors">
+      Inscribirse en Principiante →
+    </a>
+  </div>
 
-        <!-- Nivel 2 -->
-        <div class="bg-zinc-950 p-8 border-2 border-lime-400 transform -skew-x-2 shadow-[8px_8px_0px_#a3e635] hover:-translate-y-2 transition-transform md:-mt-4">
-          <h3 class="text-2xl font-black italic uppercase text-lime-400 mb-4 tracking-wider">Intermedio</h3>
-          <ul class="text-zinc-300 font-medium space-y-3 mb-6">
-            <li>✓ Iniciación al Mountain Bike (MTB).</li>
-            <li>✓ Postura y superación de obstáculos.</li>
-            <li>✓ Rutas guiadas de resistencia media.</li>
-          </ul>
-          <div class="bg-zinc-900 p-3 text-sm font-bold italic text-center border border-zinc-800 text-white">Desarrollo de resistencia y técnica</div>
-        </div>
+  <!-- Nivel 2: Intermedio -->
+  <div class="bg-zinc-950 p-8 border-2 border-lime-400 transform -skew-x-2 shadow-[8px_8px_0px_#a3e635] hover:-translate-y-2 transition-transform md:-mt-4 flex flex-col justify-between">
+    <div>
+      <h3 class="text-2xl font-black italic uppercase text-lime-400 mb-4 tracking-wider">Intermedio</h3>
+      <ul class="text-zinc-200 font-medium space-y-3 mb-6">
+        <li>✓ Iniciación al Mountain Bike (MTB).</li>
+        <li>✓ Postura y superación de obstáculos.</li>
+        <li>✓ Rutas guiadas de resistencia media.</li>
+      </ul>
+    </div>
+    <a href="/registro?nivel=INTERMEDIO" class="block bg-zinc-950 hover:bg-lime-400 hover:text-black p-3 text-sm font-black uppercase italic text-center border-2 border-lime-400 text-lime-400 shadow-[3px_3px_0px_#a3e635] transition-colors">
+      Inscribirse en Intermedio →
+    </a>
+  </div>
 
-        <!-- Nivel 3 -->
-        <div class="bg-zinc-950 p-8 border-2 border-pink-500 transform -skew-x-2 shadow-[8px_8px_0px_#db2777] hover:-translate-y-2 transition-transform">
-          <h3 class="text-2xl font-black italic uppercase text-pink-500 mb-4 tracking-wider">Avanzado</h3>
-          <ul class="text-zinc-300 font-medium space-y-3 mb-6">
-            <li>✓ Preparación física para competencia.</li>
-            <li>✓ Técnicas avanzadas de ruta y descenso.</li>
-            <li>✓ Turno académico: <span class="text-yellow-400">Lunes a Viernes</span>.</li>
-          </ul>
-          <div class="bg-pink-600 p-3 text-sm font-black uppercase italic text-center text-white">Horario: 4:00 pm a 6:00 pm</div>
-        </div>
-      </div>
+  <!-- Nivel 3: Avanzado -->
+  <div class="bg-zinc-950 p-8 border-2 border-pink-500 transform -skew-x-2 shadow-[8px_8px_0px_#db2777] hover:-translate-y-2 transition-transform flex flex-col justify-between">
+    <div>
+      <h3 class="text-2xl font-black italic uppercase text-pink-500 mb-4 tracking-wider">Avanzado</h3>
+      <ul class="text-zinc-200 font-medium space-y-3 mb-6">
+        <li>✓ Preparación física para competencia.</li>
+        <li>✓ Técnicas avanzadas de ruta y descenso.</li>
+        <li>✓ Turno académico: <span class="text-yellow-400 font-bold">Lunes a Viernes</span>.</li>
+      </ul>
+    </div>
+    <a href="/registro?nivel=AVANZADO" class="block bg-pink-600 hover:bg-pink-500 text-white p-3 text-sm font-black uppercase italic text-center shadow-[3px_3px_0px_#db2777] transition-colors">
+      Inscribirse en Avanzado →
+    </a>
+  </div>
+</div> 
     </div>
   </section>
 
@@ -125,156 +160,213 @@ import Layout from '../layouts/Layout.astro';
     </div>
 
     <!-- 1. FUNDADORES -->
-    <div class="container mx-auto px-4 max-w-7xl relative z-10 mb-20">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <!-- Fundador 1 -->
-        <div class="bg-zinc-900 p-8 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] transform -skew-x-2 flex flex-col xl:flex-row items-center gap-8 group hover:-translate-y-2 transition-transform">
-          <div class="w-48 h-48 flex-shrink-0 rounded-full overflow-hidden border-4 border-cyan-400 transform skew-x-2 shadow-lg">
-            <img src="/instructores/cesarbarrios.png" alt="Cesar Barrios" class="w-full h-full object-cover bg-zinc-800" />
-          </div>
-          <div class="text-center xl:text-left transform skew-x-2 flex-1">
-            <h3 class="text-3xl font-black italic uppercase text-white mb-1">Cesar "Pupi" Barrios</h3>
-            <p class="text-cyan-400 font-bold italic uppercase text-sm mb-4">CEO Entrenador Principal</p>
-            <p class="text-zinc-400 text-sm mb-6 leading-relaxed">Líder y guía principal de la academia. Apasionado del MTB con amplia trayectoria formando a los futuros campeones con disciplina y técnica rigurosa.</p>
-            <div class="inline-block bg-black px-6 py-2 border border-zinc-800">
-              <p class="text-lime-400 font-black text-xs tracking-wider">@pupibike_kids</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Fundador 2 -->
-        <div class="bg-zinc-900 p-8 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] transform -skew-x-2 flex flex-col xl:flex-row items-center gap-8 group hover:-translate-y-2 transition-transform">
-          <div class="w-48 h-48 flex-shrink-0 rounded-full overflow-hidden border-4 border-cyan-400 transform skew-x-2 shadow-lg">
-            <img src="/instructores/jesusdiaz.png" alt="Jesus Diaz" class="w-full h-full object-cover bg-zinc-800" />
-          </div>
-          <div class="text-center xl:text-left transform skew-x-2 flex-1">
-            <h3 class="text-3xl font-black italic uppercase text-white mb-1">Jesús "Chumbo" Díaz</h3>
-            <p class="text-pink-500 font-bold italic uppercase text-sm mb-4">Entrenador Supervisor</p>
-            <p class="text-zinc-400 text-sm mb-6 leading-relaxed">Especialista encargado de supervisar el desarrollo deportivo, asegurando el cumplimiento de las metodologías de seguridad y rendimiento en cada clase.</p>
-            <div class="inline-block bg-black px-6 py-2 border border-zinc-800">
-              <p class="text-cyan-400 font-black text-xs tracking-wider">@chumbobike4</p>
-            </div>
-          </div>
+<div class="container mx-auto px-4 max-w-7xl relative z-10 mb-20">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+    <!-- Fundador 1: Cesar Barrios -->
+    <div class="bg-zinc-900 p-8 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] transform -skew-x-2 flex flex-col xl:flex-row items-center gap-8 group hover:-translate-y-2 transition-transform">
+      <div class="w-48 h-48 flex-shrink-0 rounded-full overflow-hidden border-4 border-cyan-400 transform skew-x-2 shadow-lg">
+        <img src="/instructores/cesarbarrios.png" alt="Cesar Barrios" class="w-full h-full object-cover bg-zinc-800" />
+      </div>
+      <div class="text-center xl:text-left transform skew-x-2 flex-1">
+        <h3 class="text-3xl font-black italic uppercase text-white mb-1">Cesar "Pupi" Barrios</h3>
+        <p class="text-cyan-400 font-black italic uppercase text-sm md:text-base mb-4 tracking-wide">CEO Entrenador Principal</p>
+        <p class="text-zinc-100 text-base md:text-lg mb-6 leading-relaxed font-medium">
+          Líder y guía principal de la academia. Apasionado del MTB con amplia trayectoria formando a los futuros campeones con disciplina y técnica rigurosa.
+        </p>
+        <div class="inline-block bg-black px-6 py-2 border border-zinc-700 shadow">
+          <p class="text-lime-400 font-black text-sm tracking-wider">@pupibike_kids</p>
         </div>
       </div>
     </div>
 
-    <!-- 2. INSTRUCTORES Y STAFF -->
+    <!-- Fundador 2: Jesús Díaz -->
+    <div class="bg-zinc-900 p-8 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] transform -skew-x-2 flex flex-col xl:flex-row items-center gap-8 group hover:-translate-y-2 transition-transform">
+      <div class="w-48 h-48 flex-shrink-0 rounded-full overflow-hidden border-4 border-cyan-400 transform skew-x-2 shadow-lg">
+        <img src="/instructores/jesusdiaz.png" alt="Jesus Diaz" class="w-full h-full object-cover bg-zinc-800" />
+      </div>
+      <div class="text-center xl:text-left transform skew-x-2 flex-1">
+        <h3 class="text-3xl font-black italic uppercase text-white mb-1">Jesús "Chumbo" Díaz</h3>
+        <p class="text-pink-400 font-black italic uppercase text-sm md:text-base mb-4 tracking-wide">Entrenador Supervisor</p>
+        <p class="text-zinc-100 text-base md:text-lg mb-6 leading-relaxed font-medium">
+          Especialista encargado de supervisar el desarrollo deportivo, asegurando el cumplimiento de las metodologías de seguridad y rendimiento en cada clase.
+        </p>
+        <div class="inline-block bg-black px-6 py-2 border border-zinc-700 shadow">
+          <p class="text-cyan-400 font-black text-sm tracking-wider">@chumbobike4</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- 2. INSTRUCTORES Y STAFF COMPLETO -->
     <div class="container mx-auto px-4 max-w-7xl relative z-10">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         
-        <!-- David Mata -->
+        <!-- 1. David Mata -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
-          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform skew-x-2">
-            <img src="/equipo/david.png" alt="David Mata" class="w-full h-full object-cover bg-zinc-800" />
+          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
+            <img src="/equipo/david.png" alt="David Mata" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span class="hidden w-full h-full flex items-center justify-center text-3xl font-black text-pink-400 bg-zinc-950">D</span>
           </div>
-          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">David Mata</h3>
-          <p class="text-lime-400 font-bold italic uppercase transform skew-x-2 text-xs mb-3 text-center">Nivel Avanzado - Prospecto</p>
-          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800"><p class="text-pink-500 font-black text-xs tracking-wider">@matadavid_07</p></div>
+          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">David Mata</h3>
+          <p class="text-lime-400 font-black italic uppercase transform skew-x-2 text-xs md:text-sm mb-4 text-center">Nivel Avanzado - Prospecto</p>
+          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-700">
+            <p class="text-pink-400 font-black text-xs tracking-wider">@matadavid_07</p>
+          </div>
         </div>
 
-        <!-- Luis Blanco -->
+        <!-- 2. Luis Blanco -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
-          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform skew-x-2">
-            <img src="/equipo/adrian.png" alt="Luis Blanco" class="w-full h-full object-cover bg-zinc-800" />
+          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
+            <img src="/equipo/adrian.png" alt="Luis Blanco" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span class="hidden w-full h-full flex items-center justify-center text-3xl font-black text-lime-400 bg-zinc-950">L</span>
           </div>
-          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Luis Blanco</h3>
-          <p class="text-cyan-400 font-bold italic uppercase transform skew-x-2 text-xs mb-3 text-center">Nivel Básico - Intermedio</p>
-          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800"><p class="text-lime-400 font-black text-xs tracking-wider">Instructor</p></div>
+          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Luis Blanco</h3>
+          <p class="text-cyan-400 font-black italic uppercase transform skew-x-2 text-xs md:text-sm mb-4 text-center">Nivel Básico - Intermedio</p>
+          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-700">
+            <p class="text-lime-400 font-black text-xs tracking-wider">Instructor</p>
+          </div>
         </div>
 
-        <!-- Junior -->
+        <!-- 3. Junior -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-pink-500 shadow-[6px_6px_0px_#db2777] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
-          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-cyan-400 mb-4 transform skew-x-2">
-            <img src="/equipo/junior.png" alt="Junior" class="w-full h-full object-cover bg-zinc-800" />
+          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-cyan-400 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
+            <img src="/equipo/junior.png" alt="Junior" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span class="hidden w-full h-full flex items-center justify-center text-3xl font-black text-cyan-400 bg-zinc-950">J</span>
           </div>
-          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Junior</h3>
-          <p class="text-pink-500 font-bold italic uppercase transform skew-x-2 text-xs mb-3 text-center">Nivel Balance / Estimulación</p>
-          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800"><p class="text-cyan-400 font-black text-xs tracking-wider">@jr.juniortalentoficial</p></div>
+          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Junior</h3>
+          <p class="text-pink-400 font-black italic uppercase transform skew-x-2 text-xs md:text-sm mb-4 text-center">Nivel Balance / Estimulación</p>
+          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-700">
+            <p class="text-cyan-400 font-black text-xs tracking-wider">@jr.juniortalentoficial</p>
+          </div>
         </div>
 
-        <!-- Luis David -->
+        <!-- 4. Luis David -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
-          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform skew-x-2">
-            <img src="/equipo/jesus.png" alt="Luis David" class="w-full h-full object-cover bg-zinc-800" />
+          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
+            <img src="/equipo/jesus.png" alt="Luis David" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span class="hidden w-full h-full flex items-center justify-center text-3xl font-black text-pink-400 bg-zinc-950">L</span>
           </div>
-          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2">Luis David</h3>
-          <p class="text-lime-400 font-bold italic uppercase transform skew-x-2 text-xs mb-3 text-center">Auxiliar (Balance - Básico)</p>
-          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-800"><p class="text-pink-500 font-black text-xs tracking-wider">Auxiliar</p></div>
+          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Luis David</h3>
+          <p class="text-lime-400 font-black italic uppercase transform skew-x-2 text-xs md:text-sm mb-4 text-center">Auxiliar (Balance - Básico)</p>
+          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-700">
+            <p class="text-pink-400 font-black text-xs tracking-wider">Auxiliar</p>
+          </div>
         </div>
         
-        <!-- Yusdeilis -->
-        <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform skew-x-2 group hover:-translate-y-2 transition-transform">
-          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform -skew-x-2">
-            <img src="/equipo/yuliandrys.png" alt="Yusdeilis" class="w-full h-full object-cover bg-zinc-800" />
+        <!-- 5. Yusdeilis -->
+        <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
+          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
+            <img src="/equipo/yuliandrys.png" alt="Yusdeilis" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span class="hidden w-full h-full flex items-center justify-center text-3xl font-black text-lime-400 bg-zinc-950">Y</span>
           </div>
-          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform -skew-x-2">Yusdeilis</h3>
-          <p class="text-cyan-400 font-bold italic uppercase transform -skew-x-2 text-xs mb-3 text-center">Instructora (Balance - Básico)</p>
-          <div class="bg-black px-4 py-2 transform -skew-x-2 w-full text-center border border-zinc-800"><p class="text-lime-400 font-black text-xs tracking-wider">@yuli22012009</p></div>
+          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Yusdeilis</h3>
+          <p class="text-cyan-400 font-black italic uppercase transform skew-x-2 text-xs md:text-sm mb-4 text-center">Instructora (Balance - Básico)</p>
+          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-700">
+            <p class="text-lime-400 font-black text-xs tracking-wider">@yuli22012009</p>
+          </div>
         </div>
 
-        <!-- Manzul -->
-        <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-pink-500 shadow-[6px_6px_0px_#db2777] transform skew-x-2 group hover:-translate-y-2 transition-transform">
-          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-cyan-400 mb-4 transform -skew-x-2">
-            <img src="/equipo/manzul.png" alt="Manzul" class="w-full h-full object-cover bg-zinc-800" />
+        <!-- 6. Manzul -->
+        <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-pink-500 shadow-[6px_6px_0px_#db2777] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
+          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-cyan-400 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
+            <img src="/equipo/manzul.png" alt="Manzul" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span class="hidden w-full h-full flex items-center justify-center text-3xl font-black text-cyan-400 bg-zinc-950">M</span>
           </div>
-          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform -skew-x-2">Manzul</h3>
-          <p class="text-pink-500 font-bold italic uppercase transform -skew-x-2 text-xs mb-3 text-center">Nivel Intermedio - Avanzado</p>
-          <div class="bg-black px-4 py-2 transform -skew-x-2 w-full text-center border border-zinc-800"><p class="text-cyan-400 font-black text-xs tracking-wider">@manzul_jos</p></div>
+          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Manzul</h3>
+          <p class="text-pink-400 font-black italic uppercase transform skew-x-2 text-xs md:text-sm mb-4 text-center">Nivel Intermedio - Avanzado</p>
+          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-700">
+            <p class="text-cyan-400 font-black text-xs tracking-wider">@manzul_jos</p>
+          </div>
         </div>
 
-        <!-- Sarah -->
-        <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635] transform skew-x-2 group hover:-translate-y-2 transition-transform">
-          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform -skew-x-2 flex items-center justify-center bg-zinc-800">
-            <span class="text-3xl font-black text-lime-400">S</span>
+        <!-- 7. Sarah -->
+        <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
+          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
+            <img src="/equipo/sarah.png" alt="Sarah" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span class="w-full h-full flex items-center justify-center text-3xl font-black text-lime-400 bg-zinc-950">S</span>
           </div>
-          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform -skew-x-2">Sarah</h3>
-          <p class="text-lime-400 font-bold italic uppercase transform -skew-x-2 text-xs mb-3 text-center">Community Supervisora</p>
-          <div class="bg-black px-4 py-2 transform -skew-x-2 w-full text-center border border-zinc-800"><p class="text-pink-500 font-black text-xs tracking-wider">Staff</p></div>
+          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Sarah</h3>
+          <p class="text-lime-400 font-black italic uppercase transform skew-x-2 text-xs md:text-sm mb-4 text-center">Community Supervisora</p>
+          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-700">
+            <p class="text-pink-400 font-black text-xs tracking-wider">Staff</p>
+          </div>
         </div>
 
-        <!-- Carolina Alvarado -->
-        <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform skew-x-2 group hover:-translate-y-2 transition-transform">
-          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform -skew-x-2 flex items-center justify-center bg-zinc-800">
-            <span class="text-3xl font-black text-cyan-400">C</span>
+        <!-- 8. Carolina Alvarado -->
+        <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
+          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
+            <img src="/equipo/carolina.png" alt="Carolina Alvarado" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span class="w-full h-full flex items-center justify-center text-3xl font-black text-cyan-400 bg-zinc-950">C</span>
           </div>
-          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform -skew-x-2">Carolina Alvarado</h3>
-          <p class="text-cyan-400 font-bold italic uppercase transform -skew-x-2 text-xs mb-3 text-center">Psicopedagoga</p>
-          <div class="bg-black px-4 py-2 transform -skew-x-2 w-full text-center border border-zinc-800"><p class="text-lime-400 font-black text-xs tracking-wider">Especialista</p></div>
+          <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Carolina Alvarado</h3>
+          <p class="text-cyan-400 font-black italic uppercase transform skew-x-2 text-xs md:text-sm mb-4 text-center">Psicopedagoga</p>
+          <div class="bg-black px-4 py-2 transform skew-x-2 w-full text-center border border-zinc-700">
+            <p class="text-lime-400 font-black text-xs tracking-wider">Especialista</p>
+          </div>
         </div>
 
       </div>
     </div>
   </section>
 
-  <!-- NUEVA SECCIÓN: Actividades del Mes -->
+  <!-- SECCIÓN: Actividades del Mes (Optimizada en Contraste) -->
   <section id="actividades" class="py-24 bg-zinc-900 relative border-t-4 border-lime-400">
     <div class="container mx-auto px-4 max-w-7xl relative z-10">
       <div class="text-center mb-16">
         <div class="bg-black inline-block px-10 py-3 transform -skew-x-6 shadow-[6px_6px_0px_#a3e635] border border-zinc-800">
-          <h2 class="text-4xl font-black uppercase italic text-white tracking-wider">Actividades del <span class="text-lime-400">Mes</span></h2>
+          <h2 class="text-4xl md:text-5xl font-black uppercase italic text-white tracking-wider">Actividades del <span class="text-lime-400">Mes</span></h2>
         </div>
-        <p class="text-zinc-400 mt-6 font-bold italic text-lg">No te pierdas nuestros próximos eventos y rutas especiales.</p>
+        <p class="text-zinc-200 mt-6 font-bold italic text-lg md:text-xl">No te pierdas nuestros próximos eventos y rutas especiales.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div class="bg-zinc-950 p-6 border-l-4 border-cyan-400 shadow-lg transform hover:-translate-y-2 transition-transform">
-          <div class="text-cyan-400 font-black text-2xl mb-2">15 OCT</div>
-          <h3 class="text-xl font-bold text-white mb-2 uppercase italic">Ruta Nocturna Familiar</h3>
-          <p class="text-zinc-400 text-sm mb-4">Un recorrido seguro y divertido por la ciudad para todas las edades. ¡Trae tus luces!</p>
-          <span class="inline-block bg-zinc-800 text-xs px-3 py-1 font-bold text-white rounded">Nivel: Todos</span>
+        <!-- Tarjeta 1 -->
+        <div class="bg-zinc-950 p-7 border-l-4 border-cyan-400 border-y border-r border-zinc-800 shadow-[6px_6px_0px_rgba(0,0,0,0.6)] transform hover:-translate-y-2 transition-transform flex flex-col justify-between">
+          <div>
+            <div class="text-cyan-400 font-black text-2xl mb-2 tracking-wider">15 OCT</div>
+            <h3 class="text-xl font-black text-white mb-3 uppercase italic">Ruta Nocturna Familiar</h3>
+            <p class="text-zinc-200 text-sm md:text-base leading-relaxed mb-6 font-medium">
+              Un recorrido seguro y divertido por la ciudad para todas las edades. ¡Trae tus luces y buena energía!
+            </p>
+          </div>
+          <div>
+            <span class="inline-block bg-zinc-900 border border-cyan-400/60 text-cyan-300 text-xs px-3.5 py-1.5 font-black uppercase tracking-wider">
+              Nivel: Todos
+            </span>
+          </div>
         </div>
-        <div class="bg-zinc-950 p-6 border-l-4 border-pink-500 shadow-lg transform hover:-translate-y-2 transition-transform">
-          <div class="text-pink-500 font-black text-2xl mb-2">22 OCT</div>
-          <h3 class="text-xl font-bold text-white mb-2 uppercase italic">Clínica de Saltos</h3>
-          <p class="text-zinc-400 text-sm mb-4">Aprende la técnica correcta para despegar y aterrizar con seguridad en nuestra pista.</p>
-          <span class="inline-block bg-zinc-800 text-xs px-3 py-1 font-bold text-white rounded">Nivel: Inter/Avanzado</span>
+
+        <!-- Tarjeta 2 -->
+        <div class="bg-zinc-950 p-7 border-l-4 border-pink-500 border-y border-r border-zinc-800 shadow-[6px_6px_0px_rgba(0,0,0,0.6)] transform hover:-translate-y-2 transition-transform flex flex-col justify-between">
+          <div>
+            <div class="text-pink-400 font-black text-2xl mb-2 tracking-wider">22 OCT</div>
+            <h3 class="text-xl font-black text-white mb-3 uppercase italic">Clínica de Saltos</h3>
+            <p class="text-zinc-200 text-sm md:text-base leading-relaxed mb-6 font-medium">
+              Aprende y perfecciona la técnica correcta para despegar y aterrizar con total seguridad en nuestra pista.
+            </p>
+          </div>
+          <div>
+            <span class="inline-block bg-zinc-900 border border-pink-500/60 text-pink-300 text-xs px-3.5 py-1.5 font-black uppercase tracking-wider">
+              Nivel: Inter / Avanzado
+            </span>
+          </div>
         </div>
-        <div class="bg-zinc-950 p-6 border-l-4 border-lime-400 shadow-lg transform hover:-translate-y-2 transition-transform md:col-span-2 lg:col-span-1">
-          <div class="text-lime-400 font-black text-2xl mb-2">30 OCT</div>
-          <h3 class="text-xl font-bold text-white mb-2 uppercase italic">Competencia Halloween</h3>
-          <p class="text-zinc-400 text-sm mb-4">Ven disfrazado y demuestra lo que has aprendido. Premios sorpresa para los mejores.</p>
-          <span class="inline-block bg-zinc-800 text-xs px-3 py-1 font-bold text-white rounded">Nivel: Todos</span>
+
+        <!-- Tarjeta 3 -->
+        <div class="bg-zinc-950 p-7 border-l-4 border-lime-400 border-y border-r border-zinc-800 shadow-[6px_6px_0px_rgba(0,0,0,0.6)] transform hover:-translate-y-2 transition-transform md:col-span-2 lg:col-span-1 flex flex-col justify-between">
+          <div>
+            <div class="text-lime-400 font-black text-2xl mb-2 tracking-wider">30 OCT</div>
+            <h3 class="text-xl font-black text-white mb-3 uppercase italic">Competencia Halloween</h3>
+            <p class="text-zinc-200 text-sm md:text-base leading-relaxed mb-6 font-medium">
+              Ven disfrazado a rodar y demuestra todo lo aprendido durante la temporada. Premios sorpresa para los atletas.
+            </p>
+          </div>
+          <div>
+            <span class="inline-block bg-zinc-900 border border-lime-400/60 text-lime-300 text-xs px-3.5 py-1.5 font-black uppercase tracking-wider">
+              Nivel: Todos
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -298,47 +390,105 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </section>
 
-  <!-- SECCIÓN: Footer -->
-  <footer class="bg-black py-12 border-t-2 border-zinc-800">
+  <!-- SECCIÓN: Footer Optimizado en Contraste y Responsividad -->
+  <footer class="bg-black py-16 border-t-4 border-zinc-800">
     <div class="container mx-auto px-4 max-w-7xl">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-        <!-- Marca -->
-        <div>
-          <h2 class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6 mb-4">
-            PUPI BIKE 
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
-          </h2>
-          <p class="text-zinc-400 text-sm mb-4">Formando a los futuros campeones del MTB con técnica, disciplina y pasión en un ambiente seguro.</p>
-          <div class="flex gap-4">
-            <a href="#" class="w-10 h-10 bg-zinc-900 flex items-center justify-center rounded-full hover:bg-pink-600 transition text-white">Ig</a>
-            <a href="#" class="w-10 h-10 bg-zinc-900 flex items-center justify-center rounded-full hover:bg-cyan-500 transition text-white">Fb</a>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
+        
+        <!-- Columna 1: Marca y Redes -->
+        <div class="flex flex-col justify-between">
+          <div>
+            <h2 class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6 mb-4">
+              PUPIBIKE 
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
+            </h2>
+            <p class="text-zinc-200 text-sm md:text-base leading-relaxed mb-6 font-medium max-w-sm">
+              Formando a los futuros campeones del MTB con técnica, disciplina y pasión en un ambiente seguro para niños y jóvenes.
+            </p>
           </div>
+          
+          <div class="flex gap-4 items-center">
+  <!-- Instagram -->
+  <a 
+    href="https://instagram.com/pupibike_kids" 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    aria-label="Instagram de Pupi Bike Kids" 
+    class="w-11 h-11 bg-zinc-900 border-2 border-pink-500/80 flex items-center justify-center rounded-lg hover:bg-pink-600 hover:text-white transition-all transform -skew-x-6 shadow-[3px_3px_0px_rgba(219,39,119,0.4)] text-white font-black text-sm"
+  >
+    Ig
+  </a>
+
+  <!-- WhatsApp -->
+  <a 
+    href="https://wa.me/584248781128?text=Hola%2C%20quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre%20la%20academia%20Pupi%20Bike%20Kids." 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    aria-label="Escribir al WhatsApp de Pupi Bike Kids" 
+    class="w-11 h-11 bg-zinc-900 border-2 border-emerald-400 flex items-center justify-center rounded-lg hover:bg-emerald-500 hover:text-black transition-all transform -skew-x-6 shadow-[3px_3px_0px_#10b981] text-emerald-400 font-black text-sm"
+  >
+    Wa
+  </a>
+</div>
         </div>
 
-        <!-- Contacto -->
+        <!-- Columna 2: Información de Contacto -->
         <div>
-          <h4 class="text-white font-black uppercase italic mb-4 border-b-2 border-zinc-800 pb-2">Información</h4>
-          <ul class="text-zinc-400 text-sm space-y-3">
-            <li><strong class="text-lime-400">Sede:</strong> Pista Principal, Ciudad</li>
-            <li><strong class="text-lime-400">Horario:</strong> Lunes a Viernes 4:00 PM a 6:00 PM</li>
-            <li><strong class="text-lime-400">WhatsApp:</strong> +58 424-8781128</li>
-            <li><strong class="text-lime-400">Email:</strong> info@pupibike.com</li>
+          <h4 class="text-white text-lg font-black uppercase italic mb-5 border-b-2 border-zinc-800 pb-2 tracking-wide">
+            Información y Sede
+          </h4>
+          <ul class="text-zinc-200 text-sm md:text-base space-y-3.5 font-medium">
+            <li class="flex flex-col sm:flex-row sm:items-center gap-1">
+              <strong class="text-lime-400 uppercase font-black tracking-wide min-w-[95px]">Sede:</strong>
+              <span>Parque Virgen del Valle, Circuito PupiBikeKids, Lecheria.</span>
+            </li>
+            <li class="flex flex-col sm:flex-row sm:items-center gap-1">
+              <strong class="text-lime-400 uppercase font-black tracking-wide min-w-[95px]">Horario:</strong>
+              <span class="text-white">Lunes a Viernes 4:00 PM a 6:00 PM</span>
+            </li>
+            <li class="flex flex-col sm:flex-row sm:items-center gap-1">
+              <strong class="text-lime-400 uppercase font-black tracking-wide min-w-[95px]">WhatsApp:</strong>
+              <a href="https://wa.me/584248781128" target="_blank" class="text-cyan-400 font-bold hover:underline font-mono">
+                +58 424-8781128
+              </a>
+            </li>
+            <li class="flex flex-col sm:flex-row sm:items-center gap-1">
+              <strong class="text-lime-400 uppercase font-black tracking-wide min-w-[95px]">Email:</strong>
+              <a href="mailto:info@pupibike.com" class="text-zinc-200 hover:text-white hover:underline">
+                info@pupibike.com
+              </a>
+            </li>
           </ul>
         </div>
 
-        <!-- Pagos -->
+        <!-- Columna 3: Métodos de Pago y Reporte -->
         <div>
-          <h4 class="text-white font-black uppercase italic mb-4 border-b-2 border-zinc-800 pb-2">Métodos de Pago</h4>
-          <ul class="text-zinc-400 text-sm space-y-3 mb-6">
-            <li>✓ Pago Móvil</li>
-            <li>✓ Transferencia Nacional</li>
-            <li>✓ Zelle / Efectivo</li>
+          <h4 class="text-white text-lg font-black uppercase italic mb-5 border-b-2 border-zinc-800 pb-2 tracking-wide">
+            Métodos de Pago
+          </h4>
+          <ul class="text-zinc-200 text-sm md:text-base space-y-2.5 mb-6 font-medium">
+            <li class="flex items-center gap-2">
+              <span class="text-lime-400 font-black">✓</span> Pago Móvil (Bco. Venezuela)
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-lime-400 font-black">✓</span> Transferencia Nacional
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-lime-400 font-black">✓</span> Zelle / Efectivo en Pista
+            </li>
           </ul>
-          <a href="/registro" class="inline-block bg-zinc-900 text-white border border-zinc-700 px-6 py-2 text-sm font-bold uppercase hover:bg-zinc-800 transition">Reportar Pago</a>
+          
+          <a href="/login" class="inline-block bg-lime-400 text-black px-6 py-3 font-black italic uppercase tracking-wider text-xs md:text-sm hover:bg-lime-300 transition-all transform -skew-x-6 shadow-[4px_4px_0px_#db2777] hover:translate-y-0.5">
+            Reportar Pago →
+          </a>
         </div>
+
       </div>
-      <div class="mt-12 pt-8 border-t border-zinc-900 text-center text-zinc-500 text-sm font-mono">
-        &copy; 2026 Pupi Bike Kids. Todos los derechos reservados.
+
+      <!-- Barra de Copyright -->
+      <div class="mt-14 pt-8 border-t border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-zinc-300 text-xs md:text-sm">
+        <p>&copy; 2026 Pupi Bike Kids. Todos los derechos reservados.</p>
+        <p class="font-mono text-zinc-400 text-[11px]">Creado por @patriciamagodev</p>
       </div>
     </div>
   </footer>
