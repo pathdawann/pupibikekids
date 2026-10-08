@@ -43,7 +43,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635]">
       <div>
         <h1 class="text-3xl font-black text-white uppercase italic tracking-wider">Centro de Control y <span class="text-lime-400">Academia</span></h1>
-        <p class="text-zinc-400 text-sm mt-1">Aprobación de pagos, gestión por niveles y notificaciones directas.</p>
+        <p class="text-zinc-400 text-sm mt-1">Gestión integral de atletas, aprobación de mensualidades y tasa del día.</p>
       </div>
       <div class="flex flex-wrap gap-3">
         <button id="btnCorreoMasivo" class="bg-lime-400 text-black font-black italic uppercase px-4 py-2 text-sm hover:bg-lime-300 shadow-[3px_3px_0px_rgba(0,0,0,0.5)]">
@@ -73,9 +73,9 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       </div>
 
       <div class="md:col-span-2 bg-zinc-900 p-6 border-2 border-zinc-700 flex flex-col justify-center">
-        <h3 class="text-lg font-black italic uppercase text-white mb-2">💡 Control Operativo y Facturación</h3>
+        <h3 class="text-lg font-black italic uppercase text-white mb-2">💡 Control Operativo</h3>
         <p class="text-zinc-400 text-sm leading-relaxed">
-          La tasa establecida aquí se reflejará automáticamente en el portal de cada atleta, convirtiendo la mensualidad en Bolívares para facilitar sus pagos móviles. Puedes ver y gestionar la ficha técnica y pagos de cada atleta haciendo clic en "Ver Ficha".
+          Haz clic en cualquiera de las tarjetas de nivel para ver a los atletas activos, o en "NO ACTIVOS" para ver a los retirados. Desde la ficha puedes modificar bicicletas, niveles, estados de matrícula y pagos.
         </p>
       </div>
     </div>
@@ -105,14 +105,20 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       </div>
     </div>
 
-    <!-- SECCIÓN: Listado de Alumnos Agrupado por Niveles -->
+    <!-- SECCIÓN: Selector por Tarjetas de Nivel y Estado -->
     <div class="mb-12">
       <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#a3e635] mb-6">
-        <h2 class="text-2xl font-black uppercase italic text-lime-400 tracking-wider">Atletas Inscritos por Niveles</h2>
+        <h2 class="text-2xl font-black uppercase italic text-lime-400 tracking-wider">Atletas Inscritos por Niveles y Estatus</h2>
       </div>
 
-      <div id="contenedorNiveles" class="flex flex-col gap-8">
-        <!-- Las tablas por niveles se inyectarán dinámicamente aquí -->
+      <!-- CARDS DE RESUMEN (INTERACTIVAS) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="cardsNivelesResumen">
+        <!-- Inyectado por JS -->
+      </div>
+
+      <!-- TABLA DETALLADA DEL GRUPO SELECCIONADO -->
+      <div id="contenedorNivelActivo" class="hidden">
+        <!-- Inyectado dinámicamente -->
       </div>
     </div>
 
@@ -148,11 +154,10 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       </div>
     </div>
 
-    <!-- MODAL DETALLE DE FICHA Y PAGOS DEL ATLETA -->
+    <!-- MODAL EDICIÓN Y GESTIÓN TOTAL DEL ATLETA -->
     <div id="modalFichaAtleta" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-3 md:p-6">
       <div class="bg-zinc-900 border-2 border-cyan-400 shadow-[8px_8px_0px_#00d2ff] p-6 md:p-8 w-full max-w-4xl mx-auto relative max-h-[92vh] overflow-y-auto">
         <button id="btnCerrarModalFicha" class="absolute top-4 right-4 text-zinc-500 hover:text-cyan-400 text-2xl font-black">X</button>
-        
         <div id="contenidoFichaAtleta">
           <!-- Inyectado dinámicamente -->
         </div>
@@ -166,6 +171,8 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
   import { supabase } from '../lib/supabase.js';
 
   let cacheAlumnos = [];
+  let cachePagos = [];
+  let grupoSeleccionado = 'AVANZADO'; // 'AVANZADO', 'INTERMEDIO', 'PRINCIPIANTE', 'INACTIVO'
 
   document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -183,15 +190,15 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       // 2. Cargar datos del panel
       await Promise.all([
         cargarPagosPendientes(),
-        cargarAlumnosPorNiveles()
+        cargarDatosAtletas()
       ]);
 
     } catch (err) {
-      console.error("Error al cargar los datos del panel:", err);
+      console.error("Error al cargar panel admin:", err);
     }
   });
 
-  // 1. Cargar Últimos Pagos Reportados
+  // 1. Cargar Últimos Pagos
   async function cargarPagosPendientes() {
     const tbody = document.getElementById('tablaPagosPendientes');
     tbody.innerHTML = '';
@@ -200,15 +207,10 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       .from('pagos')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(30);
+      .limit(20);
 
-    if (error) { 
-      console.error(error); 
-      return; 
-    }
-
-    if (!pagos || pagos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-500 italic">No hay pagos registrados aún.</td></tr>`;
+    if (error || !pagos || pagos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-500 italic">No hay pagos registrados.</td></tr>`;
       return;
     }
 
@@ -238,181 +240,116 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
           <td class="p-4 font-mono text-cyan-400">${pago.referencia}</td>
           <td class="p-4 font-black text-pink-500">${pago.monto}$</td>
           <td class="p-4 text-zinc-300">${pago.mes_correspondiente}</td>
-          <td class="p-4 text-center">
-            ${accionHtml}
-          </td>
+          <td class="p-4 text-center">${accionHtml}</td>
         </tr>
       `;
     });
   }
 
-  // --- LÓGICA DE APROBACIÓN DE PAGOS ---
-  let pagoPendienteId = null;
-  const modalConfirmar = document.getElementById('modalConfirmarPago');
-  const btnConfirmar = document.getElementById('btnConfirmarAprobacion');
-  const btnCancelar = document.getElementById('btnCancelarAprobacion');
+  // 2. Cargar Datos Globales y Construir Cards
+  async function cargarDatosAtletas() {
+    const [{ data: alumnos, error: errAlumnos }, { data: pagos, error: errPagos }] = await Promise.all([
+      supabase.from('alumnos').select('*').order('nombre', { ascending: true }),
+      supabase.from('pagos').select('*').order('created_at', { ascending: false })
+    ]);
 
-  window.aprobarPago = function(pagoId) {
-    pagoPendienteId = pagoId;
-    modalConfirmar.classList.remove('hidden');
+    if (errAlumnos || errPagos) return console.error("Error cargando atletas");
+
+    cacheAlumnos = alumnos || [];
+    cachePagos = pagos || [];
+
+    renderizarCardsResumen();
+    renderizarTablaGrupo(grupoSeleccionado);
+  }
+
+  function renderizarCardsResumen() {
+    const contenedorCards = document.getElementById('cardsNivelesResumen');
+    contenedorCards.innerHTML = '';
+
+    const grupos = [
+      { id: 'AVANZADO', titulo: 'Avanzado', borde: 'border-cyan-400', texto: 'text-cyan-400', tipo: 'nivel' },
+      { id: 'INTERMEDIO', titulo: 'Intermedio', borde: 'border-lime-400', texto: 'text-lime-400', tipo: 'nivel' },
+      { id: 'PRINCIPIANTE', titulo: 'Principiante', borde: 'border-pink-500', texto: 'text-pink-500', tipo: 'nivel' },
+      { id: 'INACTIVO', titulo: 'No Activos', borde: 'border-zinc-600', texto: 'text-zinc-400', tipo: 'estatus' }
+    ];
+
+    grupos.forEach(g => {
+      let total = 0;
+      if (g.tipo === 'nivel') {
+        total = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === g.id && (a.estatus || 'activo').toLowerCase() !== 'inactivo').length;
+      } else {
+        total = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() === 'inactivo').length;
+      }
+
+      const esActivo = grupoSeleccionado === g.id;
+
+      contenedorCards.innerHTML += `
+        <div onclick="window.seleccionarGrupo('${g.id}')" class="bg-zinc-900 p-5 border-2 ${g.borde} cursor-pointer hover:-translate-y-1 transition transform -skew-x-2 shadow-[6px_6px_0px_rgba(0,0,0,0.5)] ${esActivo ? 'ring-4 ring-white' : ''}">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-xl font-black italic uppercase ${g.texto}">${g.titulo}</h3>
+            <span class="bg-black text-white font-mono font-black text-xs px-2.5 py-1 border border-zinc-700">${total}</span>
+          </div>
+          <p class="text-zinc-500 text-[11px]">Ver listado de atletas</p>
+        </div>
+      `;
+    });
+  }
+
+  window.seleccionarGrupo = function(grupo) {
+    grupoSeleccionado = grupo;
+    renderizarCardsResumen();
+    renderizarTablaGrupo(grupo);
   };
 
-  btnCancelar.addEventListener('click', () => {
-    pagoPendienteId = null;
-    modalConfirmar.classList.add('hidden');
-  });
+  function renderizarTablaGrupo(grupo) {
+    const contenedor = document.getElementById('contenedorNivelActivo');
+    contenedor.classList.remove('hidden');
 
-  btnConfirmar.addEventListener('click', async () => {
-    if (!pagoPendienteId) return;
-    btnConfirmar.textContent = 'PROCESANDO...';
-    btnConfirmar.disabled = true;
+    let lista = [];
+    let tituloGrupo = '';
 
-    try {
-      const { error } = await supabase
-        .from('pagos')
-        .update({ estado: 'aprobado' })
-        .eq('id', pagoPendienteId);
-
-      if (error) throw error;
-      
-      modalConfirmar.classList.add('hidden');
-      await Promise.all([
-        cargarPagosPendientes(),
-        cargarAlumnosPorNiveles()
-      ]);
-      
-      // Si la ficha del atleta está abierta, refrescarla
-      if (!modalFicha.classList.contains('hidden') && window.atletaActivoId) {
-        window.verFichaAtleta(window.atletaActivoId);
-      }
-      
-    } catch (err) {
-      console.error(err);
-      alert("Error al aprobar el pago. Verifica permisos.");
-    } finally {
-      btnConfirmar.textContent = 'SÍ, APROBAR';
-      btnConfirmar.disabled = false;
-      pagoPendienteId = null;
+    if (grupo === 'INACTIVO') {
+      lista = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() === 'inactivo');
+      tituloGrupo = 'Atletas No Activos / Retirados';
+    } else {
+      lista = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === grupo && (a.estatus || 'activo').toLowerCase() !== 'inactivo');
+      tituloGrupo = `Atletas Activos en Nivel: ${grupo}`;
     }
-  });
-
-  // --- LÓGICA DE REVERSIÓN DE PAGOS ---
-  let pagoRevertirId = null;
-  const modalRevertir = document.getElementById('modalRevertirPago');
-  const btnConfReversion = document.getElementById('btnConfirmarReversion');
-  const btnCancReversion = document.getElementById('btnCancelarReversion');
-
-  window.revertirPago = function(pagoId) {
-    pagoRevertirId = pagoId;
-    modalRevertir.classList.remove('hidden');
-  };
-
-  btnCancReversion.addEventListener('click', () => {
-    pagoRevertirId = null;
-    modalRevertir.classList.add('hidden');
-  });
-
-  btnConfReversion.addEventListener('click', async () => {
-    if (!pagoRevertirId) return;
-    btnConfReversion.textContent = 'PROCESANDO...';
-    btnConfReversion.disabled = true;
-
-    try {
-      const { error } = await supabase
-        .from('pagos')
-        .update({ estado: 'revision' })
-        .eq('id', pagoRevertirId);
-
-      if (error) throw error;
-      
-      modalRevertir.classList.add('hidden');
-      await Promise.all([
-        cargarPagosPendientes(),
-        cargarAlumnosPorNiveles()
-      ]);
-
-      if (!modalFicha.classList.contains('hidden') && window.atletaActivoId) {
-        window.verFichaAtleta(window.atletaActivoId);
-      }
-      
-    } catch (err) {
-      console.error(err);
-      alert("Error al revertir el pago.");
-    } finally {
-      btnConfReversion.textContent = 'SÍ, DESHACER';
-      btnConfReversion.disabled = false;
-      pagoRevertirId = null;
-    }
-  });
-
-  // 2. Cargar Alumnos por Niveles (Sin columna de teléfono redundante)
-  async function cargarAlumnosPorNiveles() {
-    const contenedor = document.getElementById('contenedorNiveles');
-    contenedor.innerHTML = '';
 
     const fechaActual = new Date();
     const diaActual = fechaActual.getDate();
     const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
 
-    const [{ data: alumnos, error: errorAlumnos }, { data: pagos, error: errorPagos }] = await Promise.all([
-      supabase.from('alumnos').select('*').order('nombre', { ascending: true }),
-      supabase.from('pagos').select('alumno_id, estado, mes_correspondiente, created_at')
-    ]);
-
-    if (errorAlumnos || errorPagos) { 
-      console.error("Error cargando data"); 
-      return; 
-    }
-
-    if (!alumnos || alumnos.length === 0) {
-      contenedor.innerHTML = `<p class="text-zinc-500 italic">No hay alumnos inscritos.</p>`;
-      return;
-    }
-
-    cacheAlumnos = alumnos;
-
-    // Mapa de solvencia inteligente
-    const pagosMap = {};
-    if (pagos) {
-      pagos.forEach(p => {
-        if (!pagosMap[p.alumno_id]) pagosMap[p.alumno_id] = [];
-        pagosMap[p.alumno_id].push(p);
-      });
-    }
-
-    const nivelesMap = {};
-    alumnos.forEach(alumno => {
-      const niv = (alumno.nivel || 'SIN NIVEL').toUpperCase();
-      if (!nivelesMap[niv]) nivelesMap[niv] = [];
-      nivelesMap[niv].push(alumno);
-    });
-
-    for (const [nivel, lista] of Object.entries(nivelesMap)) {
-      let filasHtml = '';
+    let filasHtml = '';
+    if (lista.length === 0) {
+      filasHtml = `<tr><td colspan="4" class="p-6 text-center text-zinc-500 italic">No hay atletas en esta categoría.</td></tr>`;
+    } else {
       lista.forEach(alumno => {
         const telefonoLim = (alumno.telefono || '').replace(/\s+/g, '');
-        const listaPagosAlumno = pagosMap[alumno.id] || [];
-        
-        const pagoMesActual = listaPagosAlumno.find(p => p.mes_correspondiente === mesActualStr);
-        const ultimoPago = listaPagosAlumno.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))[0];
+        const pagosAlumno = cachePagos.filter(p => p.alumno_id === alumno.id);
+        const pagoMes = pagosAlumno.find(p => p.mes_correspondiente === mesActualStr);
+        const ultimoPago = pagosAlumno[0];
 
         let badgeHtml = '';
         let mensajeWp = '';
 
-        if (pagoMesActual?.estado === 'aprobado' || (!pagoMesActual && ultimoPago?.estado === 'aprobado')) {
+        if ((alumno.estatus || 'activo').toLowerCase() === 'inactivo') {
+          badgeHtml = `<span class="bg-zinc-800 text-zinc-400 px-3 py-1 text-xs font-black uppercase border border-zinc-700">INACTIVO</span>`;
+          mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Te saludamos de Pupi Bike Kids. ¿Cómo estás?`);
+        } else if (pagoMes?.estado === 'aprobado' || (!pagoMes && ultimoPago?.estado === 'aprobado')) {
           badgeHtml = `<span class="bg-lime-400 text-black px-3 py-1 text-xs font-black uppercase">✓ AL DÍA</span>`;
-          mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Te escribimos de Pupi Bike Kids. ¡Gracias por estar al día! Te recordamos nuestros próximos eventos de la academia.`);
-        } else if (pagoMesActual?.estado === 'revision' || (!pagoMesActual && ultimoPago?.estado === 'revision')) {
+          mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Te escribimos de Pupi Bike Kids. ¡Gracias por estar al día! Te recordamos nuestros próximos eventos.`);
+        } else if (pagoMes?.estado === 'revision' || (!pagoMes && ultimoPago?.estado === 'revision')) {
           badgeHtml = `<span class="bg-cyan-400 text-black px-3 py-1 text-xs font-black uppercase">⏳ REVISIÓN</span>`;
-          mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recibimos tu comprobante de pago. Pronto lo validaremos en el sistema. ¡Gracias!`);
+          mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recibimos tu comprobante de pago. Pronto lo validaremos en el sistema.`);
         } else {
           if (diaActual > 5) {
             badgeHtml = `<span class="bg-pink-600 text-white px-3 py-1 text-xs font-black uppercase animate-pulse">⚠️ MOROSO</span>`;
-            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recordatorio de Pupi Bike Kids: El plazo de pago para la mensualidad de ${mesActualStr} ha vencido. Por favor, reporta tu pago lo antes posible en tu panel.`);
+            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recordatorio de Pupi Bike Kids: El plazo de pago para la mensualidad de ${mesActualStr} ha vencido. Por favor, reporta tu pago lo antes posible.`);
           } else {
             badgeHtml = `<span class="bg-yellow-400 text-black px-3 py-1 text-xs font-black uppercase">PENDIENTE</span>`;
-            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recuerda que estamos en los días de pago (del 1 al 5) para la mensualidad de ${mesActualStr}.`);
+            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recuerda que estamos en los días de pago (del 1 al 5) para la mensualidad.`);
           }
         }
 
@@ -434,64 +371,51 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
           </tr>
         `;
       });
-
-      contenedor.innerHTML += `
-        <div class="bg-zinc-900 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] overflow-hidden">
-          <div class="bg-black px-6 py-3 border-b border-zinc-800 flex justify-between items-center">
-            <h3 class="text-xl font-black italic uppercase text-cyan-400">Nivel: ${nivel}</h3>
-            <span class="bg-cyan-400 text-black font-black text-xs px-3 py-1 uppercase">${lista.length} Atletas</span>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-zinc-950 text-zinc-400 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
-                  <th class="p-4">Atleta</th>
-                  <th class="p-4">Estatus del Mes</th>
-                  <th class="p-4">Correo</th>
-                  <th class="p-4 text-center">Acciones</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-zinc-800 text-sm font-medium">
-                ${filasHtml}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      `;
     }
+
+    contenedor.innerHTML = `
+      <div class="bg-zinc-900 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] overflow-hidden">
+        <div class="bg-black px-6 py-4 border-b border-zinc-800 flex justify-between items-center">
+          <h3 class="text-xl font-black italic uppercase text-cyan-400">${tituloGrupo}</h3>
+          <span class="bg-cyan-400 text-black font-black text-xs px-3 py-1 uppercase">${lista.length} Atletas</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-zinc-950 text-zinc-400 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
+                <th class="p-4">Atleta</th>
+                <th class="p-4">Estatus del Mes</th>
+                <th class="p-4">Correo</th>
+                <th class="p-4 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-800 text-sm font-medium">
+              ${filasHtml}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
   }
 
-  // --- MODAL DE FICHA TÉCNICA E HISTORIAL DE PAGOS DEL ATLETA ---
+  // --- MODAL DE GESTIÓN TOTAL DE LA FICHA DEL ATLETA ---
   const modalFicha = document.getElementById('modalFichaAtleta');
   const contenidoFicha = document.getElementById('contenidoFichaAtleta');
   document.getElementById('btnCerrarModalFicha').addEventListener('click', () => modalFicha.classList.add('hidden'));
 
-  window.verFichaAtleta = async function(alumnoId) {
+  window.verFichaAtleta = function(alumnoId) {
     window.atletaActivoId = alumnoId;
     const alumno = cacheAlumnos.find(a => a.id === alumnoId);
     if (!alumno) return;
 
     modalFicha.classList.remove('hidden');
-    contenidoFicha.innerHTML = `<div class="p-8 text-center text-cyan-400 font-bold uppercase animate-pulse">Cargando ficha completa...</div>`;
 
-    // Cargar historial de pagos de este atleta
-    const { data: pagosAtleta } = await supabase
-      .from('pagos')
-      .select('*')
-      .eq('alumno_id', alumnoId)
-      .order('created_at', { ascending: false });
-
+    const pagosAtleta = cachePagos.filter(p => p.alumno_id === alumnoId);
     const foto = alumno.foto_url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80';
     const bicis = alumno.tipos_bici || [];
-
-    let bicisHtml = '<p class="text-zinc-500 text-xs italic">No hay bicicletas registradas.</p>';
-    if (bicis.length > 0) {
-      bicisHtml = bicis.map((b, i) => `
-        <div class="bg-zinc-950 p-2.5 border border-zinc-800 text-xs text-white">
-          <span class="text-lime-400 font-bold">Bici ${i+1}:</span> ${b.tipo || 'MTB'} | Rin: ${b.rin || 'N/A'} | Marca: ${b.marca || 'N/A'} | Color: ${b.color || 'N/A'}
-        </div>
-      `).join('');
-    }
+    const b1 = bicis[0] || {};
+    const b2 = bicis[1] || {};
+    const esInactivo = (alumno.estatus || 'activo').toLowerCase() === 'inactivo';
 
     let pagosHtml = '<p class="text-zinc-500 text-xs italic p-4 text-center">No hay reportes de pagos para este atleta.</p>';
     if (pagosAtleta && pagosAtleta.length > 0) {
@@ -534,46 +458,146 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
 
     contenidoFicha.innerHTML = `
       <div class="flex flex-col gap-6">
-        <!-- Encabezado con Foto y Nombre -->
-        <div class="flex items-center gap-6 border-b border-zinc-800 pb-4">
-          <img src="${foto}" class="w-20 h-20 rounded-full object-cover border-2 border-cyan-400 bg-zinc-950" />
-          <div>
-            <h2 class="text-2xl font-black uppercase italic text-white">${alumno.nombre}</h2>
-            <p class="text-lime-400 font-bold text-xs uppercase">Nivel: ${alumno.nivel || 'GENERAL'}</p>
+        <!-- Encabezado con Foto y Botones de Estatus -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-zinc-800 pb-4">
+          <div class="flex items-center gap-4">
+            <img src="${foto}" class="w-20 h-20 rounded-full object-cover border-2 border-cyan-400 bg-zinc-950" />
+            <div>
+              <h2 class="text-2xl font-black uppercase italic text-white">${alumno.nombre}</h2>
+              <p class="text-zinc-400 text-xs">${alumno.email}</p>
+              <span class="inline-block px-2.5 py-0.5 text-[10px] font-black uppercase mt-1 ${esInactivo ? 'bg-zinc-800 text-zinc-400 border border-zinc-700' : 'bg-lime-400 text-black'}">
+                ${esInactivo ? 'NO ACTIVO / RETIRADO' : 'MATRÍCULA ACTIVA'}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="window.alternarEstatusAtleta('${alumno.id}', '${esInactivo ? 'activo' : 'inactivo'}')" class="px-4 py-2 text-xs font-black uppercase italic transition border ${esInactivo ? 'bg-lime-400 text-black hover:bg-lime-300 border-lime-400' : 'bg-zinc-800 text-yellow-400 hover:bg-zinc-700 border-yellow-500'}">
+              ${esInactivo ? '✓ Reactivar Atleta' : '📁 Mover a No Activos'}
+            </button>
+            <button type="button" onclick="window.eliminarAtletaDefinitivo('${alumno.id}', '${alumno.nombre}')" class="px-3 py-2 text-xs font-black uppercase italic bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white border border-red-500 transition">
+              🗑️ Eliminar
+            </button>
           </div>
         </div>
 
-        <!-- Ficha de Datos -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-          <div class="bg-zinc-950 p-3 border border-zinc-800">
-            <span class="text-zinc-500 block uppercase font-bold">Cédula:</span>
-            <span class="text-white font-bold">${alumno.cedula || 'N/A'}</span>
+        <!-- FORMULARIO DE EDICIÓN TOTAL -->
+        <form id="formAdminEditarAtleta" class="flex flex-col gap-5">
+          <h3 class="text-cyan-400 font-black uppercase text-sm border-b border-zinc-800 pb-2">1. Datos Personales y Nivel</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div>
+              <label class="block text-zinc-400 uppercase font-bold mb-1">Nivel de Aprendizaje</label>
+              <select id="adminEditNivel" class="w-full bg-zinc-950 border border-zinc-700 text-lime-400 font-black p-2 uppercase">
+                <option value="PRINCIPIANTE" ${alumno.nivel === 'PRINCIPIANTE' ? 'selected' : ''}>PRINCIPIANTE</option>
+                <option value="INTERMEDIO" ${alumno.nivel === 'INTERMEDIO' ? 'selected' : ''}>INTERMEDIO</option>
+                <option value="AVANZADO" ${alumno.nivel === 'AVANZADO' ? 'selected' : ''}>AVANZADO</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-zinc-400 uppercase font-bold mb-1">Nombre Completo</label>
+              <input type="text" id="adminEditNombre" value="${alumno.nombre || ''}" class="w-full bg-zinc-950 border border-zinc-700 text-white font-bold p-2 uppercase">
+            </div>
+            <div>
+              <label class="block text-zinc-400 uppercase font-bold mb-1">Cédula</label>
+              <input type="text" id="adminEditCedula" value="${alumno.cedula || ''}" class="w-full bg-zinc-950 border border-zinc-700 text-white font-bold p-2 uppercase">
+            </div>
+            <div>
+              <label class="block text-zinc-400 uppercase font-bold mb-1">Teléfono</label>
+              <input type="text" id="adminEditTelefono" value="${alumno.telefono || ''}" class="w-full bg-zinc-950 border border-zinc-700 text-white font-bold p-2 uppercase">
+            </div>
+            <div>
+              <label class="block text-zinc-400 uppercase font-bold mb-1">Tipo de Sangre</label>
+              <select id="adminEditSangre" class="w-full bg-zinc-950 border border-zinc-700 text-pink-500 font-black p-2 uppercase">
+                <option value="">-- No especificado --</option>
+                <option value="O+" ${alumno.tipo_sangre === 'O+' ? 'selected' : ''}>O+</option>
+                <option value="O-" ${alumno.tipo_sangre === 'O-' ? 'selected' : ''}>O-</option>
+                <option value="A+" ${alumno.tipo_sangre === 'A+' ? 'selected' : ''}>A+</option>
+                <option value="A-" ${alumno.tipo_sangre === 'A-' ? 'selected' : ''}>A-</option>
+                <option value="B+" ${alumno.tipo_sangre === 'B+' ? 'selected' : ''}>B+</option>
+                <option value="B-" ${alumno.tipo_sangre === 'B-' ? 'selected' : ''}>B-</option>
+                <option value="AB+" ${alumno.tipo_sangre === 'AB+' ? 'selected' : ''}>AB+</option>
+                <option value="AB-" ${alumno.tipo_sangre === 'AB-' ? 'selected' : ''}>AB-</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-zinc-400 uppercase font-bold mb-1">Fecha de Nacimiento</label>
+              <input type="date" id="adminEditNacimiento" value="${alumno.fecha_nacimiento || ''}" class="w-full bg-zinc-950 border border-zinc-700 text-white font-bold p-2">
+            </div>
+            <div class="col-span-1 md:col-span-3">
+              <label class="block text-zinc-400 uppercase font-bold mb-1">Dirección de Residencia</label>
+              <input type="text" id="adminEditDireccion" value="${alumno.direccion || ''}" class="w-full bg-zinc-950 border border-zinc-700 text-white font-bold p-2 uppercase">
+            </div>
           </div>
-          <div class="bg-zinc-950 p-3 border border-zinc-800">
-            <span class="text-zinc-500 block uppercase font-bold">Teléfono:</span>
-            <span class="text-white font-bold">${alumno.telefono || 'N/A'}</span>
-          </div>
-          <div class="bg-zinc-950 p-3 border border-zinc-800">
-            <span class="text-zinc-500 block uppercase font-bold">Tipo de Sangre:</span>
-            <span class="text-pink-500 font-black">${alumno.tipo_sangre || 'N/A'}</span>
-          </div>
-          <div class="bg-zinc-950 p-3 border border-zinc-800">
-            <span class="text-zinc-500 block uppercase font-bold">Nacimiento:</span>
-            <span class="text-white font-bold">${alumno.fecha_nacimiento || 'N/A'}</span>
-          </div>
-          <div class="col-span-2 md:col-span-4 bg-zinc-950 p-3 border border-zinc-800">
-            <span class="text-zinc-500 block uppercase font-bold">Dirección:</span>
-            <span class="text-white font-bold">${alumno.direccion || 'N/A'}</span>
-          </div>
-        </div>
 
-        <!-- Bicicletas -->
-        <div>
-          <h3 class="text-lime-400 font-black uppercase text-xs mb-2">Bicicletas Registradas</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-            ${bicisHtml}
+          <!-- EDICIÓN DE BICICLETAS -->
+          <h3 class="text-lime-400 font-black uppercase text-sm border-b border-zinc-800 pb-2 mt-2">2. Inventario de Bicicletas</h3>
+          
+          <div class="space-y-3 text-xs">
+            <!-- Bici 1 -->
+            <div class="bg-zinc-950 p-3 border border-zinc-800">
+              <span class="text-lime-400 font-black uppercase text-[11px] block mb-2">Bicicleta 1 (Principal)</span>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div>
+                  <label class="block text-zinc-500 text-[10px] uppercase font-bold mb-1">Tipo</label>
+                  <select id="adminBici1Tipo" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 font-bold">
+                    <option value="MTB" ${b1.tipo === 'MTB' ? 'selected' : ''}>MTB</option>
+                    <option value="RUTA" ${b1.tipo === 'RUTA' ? 'selected' : ''}>RUTA</option>
+                    <option value="GRAVEL" ${b1.tipo === 'GRAVEL' ? 'selected' : ''}>GRAVEL</option>
+                    <option value="BALANCE" ${b1.tipo === 'BALANCE' ? 'selected' : ''}>BALANCE</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-zinc-500 text-[10px] uppercase font-bold mb-1">Rin</label>
+                  <input type="text" id="adminBici1Rin" value="${b1.rin || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold">
+                </div>
+                <div>
+                  <label class="block text-zinc-500 text-[10px] uppercase font-bold mb-1">Marca</label>
+                  <input type="text" id="adminBici1Marca" value="${b1.marca || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold">
+                </div>
+                <div>
+                  <label class="block text-zinc-500 text-[10px] uppercase font-bold mb-1">Color</label>
+                  <input type="text" id="adminBici1Color" value="${b1.color || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold">
+                </div>
+              </div>
+            </div>
+
+            <!-- Bici 2 -->
+            <div class="bg-zinc-950 p-3 border border-zinc-800">
+              <span class="text-cyan-400 font-black uppercase text-[11px] block mb-2">Bicicleta 2 (Opcional)</span>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div>
+                  <label class="block text-zinc-500 text-[10px] uppercase font-bold mb-1">Tipo</label>
+                  <select id="adminBici2Tipo" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 font-bold">
+                    <option value="">-- Ninguna --</option>
+                    <option value="MTB" ${b2.tipo === 'MTB' ? 'selected' : ''}>MTB</option>
+                    <option value="RUTA" ${b2.tipo === 'RUTA' ? 'selected' : ''}>RUTA</option>
+                    <option value="GRAVEL" ${b2.tipo === 'GRAVEL' ? 'selected' : ''}>GRAVEL</option>
+                    <option value="BALANCE" ${b2.tipo === 'BALANCE' ? 'selected' : ''}>BALANCE</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-zinc-500 text-[10px] uppercase font-bold mb-1">Rin</label>
+                  <input type="text" id="adminBici2Rin" value="${b2.rin || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold">
+                </div>
+                <div>
+                  <label class="block text-zinc-500 text-[10px] uppercase font-bold mb-1">Marca</label>
+                  <input type="text" id="adminBici2Marca" value="${b2.marca || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold">
+                </div>
+                <div>
+                  <label class="block text-zinc-500 text-[10px] uppercase font-bold mb-1">Color</label>
+                  <input type="text" id="adminBici2Color" value="${b2.color || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold">
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+
+          <div class="flex justify-end gap-3 mt-2">
+            <button type="submit" id="btnAdminGuardarAtleta" class="bg-lime-400 text-black font-black italic uppercase px-6 py-2.5 text-xs hover:bg-lime-300 transition shadow">
+              💾 Guardar Todos los Cambios
+            </button>
+          </div>
+        </form>
 
         <!-- Historial y Aprobación de Pagos -->
         <div class="border-t border-zinc-800 pt-4">
@@ -584,9 +608,208 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
         </div>
       </div>
     `;
+
+    // Guardar cambios totales desde el admin
+    document.getElementById('formAdminEditarAtleta').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnAdminGuardarAtleta');
+      btn.textContent = 'GUARDANDO...';
+      btn.disabled = true;
+
+      try {
+        const nuevoNivel = document.getElementById('adminEditNivel').value.toUpperCase();
+        const nuevoNombre = document.getElementById('adminEditNombre').value.trim().toUpperCase();
+        const nuevaCedula = document.getElementById('adminEditCedula').value.trim().toUpperCase();
+        const nuevoTel = document.getElementById('adminEditTelefono').value.trim().toUpperCase();
+        const nuevaSangre = document.getElementById('adminEditSangre').value;
+        const nuevoNacimiento = document.getElementById('adminEditNacimiento').value;
+        const nuevaDir = document.getElementById('adminEditDireccion').value.trim().toUpperCase();
+
+        const listaBicis = [];
+        const b1Tipo = document.getElementById('adminBici1Tipo').value;
+        if (b1Tipo) {
+          listaBicis.push({
+            tipo: b1Tipo,
+            rin: document.getElementById('adminBici1Rin').value.trim().toUpperCase(),
+            marca: document.getElementById('adminBici1Marca').value.trim().toUpperCase(),
+            color: document.getElementById('adminBici1Color').value.trim().toUpperCase()
+          });
+        }
+
+        const b2Tipo = document.getElementById('adminBici2Tipo').value;
+        if (b2Tipo) {
+          listaBicis.push({
+            tipo: b2Tipo,
+            rin: document.getElementById('adminBici2Rin').value.trim().toUpperCase(),
+            marca: document.getElementById('adminBici2Marca').value.trim().toUpperCase(),
+            color: document.getElementById('adminBici2Color').value.trim().toUpperCase()
+          });
+        }
+
+        const { error } = await supabase
+          .from('alumnos')
+          .update({
+            nivel: nuevoNivel,
+            nombre: nuevoNombre,
+            cedula: nuevaCedula,
+            telefono: nuevoTel,
+            tipo_sangre: nuevaSangre,
+            fecha_nacimiento: nuevoNacimiento,
+            direccion: nuevaDir,
+            tipos_bici: listaBicis
+          })
+          .eq('id', alumnoId);
+
+        if (error) throw error;
+
+        alert("¡Ficha y bicicletas actualizadas exitosamente!");
+        await cargarDatosAtletas();
+        window.verFichaAtleta(alumnoId);
+
+      } catch (err) {
+        console.error(err);
+        alert("Error al actualizar la información.");
+      } finally {
+        btn.textContent = '💾 Guardar Todos los Cambios';
+        btn.disabled = false;
+      }
+    });
   };
 
-  // Guardar Tasa del Dólar (Persistente)
+  // Cambiar estatus de activo a inactivo y viceversa
+  window.alternarEstatusAtleta = async function(alumnoId, nuevoEstatus) {
+    const accion = nuevoEstatus === 'inactivo' ? 'mover a No Activos' : 'reactivar';
+    if (!confirm(`¿Estás seguro de ${accion} a este atleta?`)) return;
+
+    try {
+      const { error } = await supabase
+        .from('alumnos')
+        .update({ estatus: nuevoEstatus })
+        .eq('id', alumnoId);
+
+      if (error) throw error;
+
+      alert(`Atleta ${nuevoEstatus === 'inactivo' ? 'archivado en No Activos' : 'reactivado exitosamente'}.`);
+      await cargarDatosAtletas();
+      window.verFichaAtleta(alumnoId);
+    } catch (err) {
+      console.error(err);
+      alert("Error al cambiar el estatus del atleta.");
+    }
+  };
+
+  // Eliminar atleta definitivo
+  window.eliminarAtletaDefinitivo = async function(alumnoId, nombre) {
+    const confirmacion = prompt(`⚠️ ADVERTENCIA: Esta acción eliminará permanentemente al atleta y todos sus datos.\n\nEscribe "ELIMINAR" para confirmar la baja de: ${nombre}`);
+    if (confirmacion !== 'ELIMINAR') return;
+
+    try {
+      // 1. Borrar pagos asociados primero para mantener integridad referencial
+      await supabase.from('pagos').delete().eq('alumno_id', alumnoId);
+
+      // 2. Borrar registro de alumno
+      const { error } = await supabase.from('alumnos').delete().eq('id', alumnoId);
+      if (error) throw error;
+
+      alert(`El atleta ${nombre} ha sido eliminado definitivamente.`);
+      modalFicha.classList.add('hidden');
+      await cargarDatosAtletas();
+    } catch (err) {
+      console.error(err);
+      alert("Error al eliminar el atleta.");
+    }
+  };
+
+  // --- LÓGICA DE APROBACIÓN / REVERSIÓN DE PAGOS ---
+  let pagoPendienteId = null;
+  const modalConfirmar = document.getElementById('modalConfirmarPago');
+  const btnConfirmar = document.getElementById('btnConfirmarAprobacion');
+  const btnCancelar = document.getElementById('btnCancelarAprobacion');
+
+  window.aprobarPago = function(pagoId) {
+    pagoPendienteId = pagoId;
+    modalConfirmar.classList.remove('hidden');
+  };
+
+  btnCancelar.addEventListener('click', () => {
+    pagoPendienteId = null;
+    modalConfirmar.classList.add('hidden');
+  });
+
+  btnConfirmar.addEventListener('click', async () => {
+    if (!pagoPendienteId) return;
+    btnConfirmar.textContent = 'PROCESANDO...';
+    btnConfirmar.disabled = true;
+
+    try {
+      const { error } = await supabase
+        .from('pagos')
+        .update({ estado: 'aprobado' })
+        .eq('id', pagoPendienteId);
+
+      if (error) throw error;
+      modalConfirmar.classList.add('hidden');
+
+      await Promise.all([cargarPagosPendientes(), cargarDatosAtletas()]);
+
+      if (!modalFicha.classList.contains('hidden') && window.atletaActivoId) {
+        window.verFichaAtleta(window.atletaActivoId);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error al aprobar pago.");
+    } finally {
+      btnConfirmar.textContent = 'SÍ, APROBAR';
+      btnConfirmar.disabled = false;
+      pagoPendienteId = null;
+    }
+  });
+
+  let pagoRevertirId = null;
+  const modalRevertir = document.getElementById('modalRevertirPago');
+  const btnConfReversion = document.getElementById('btnConfirmarReversion');
+  const btnCancReversion = document.getElementById('btnCancelarReversion');
+
+  window.revertirPago = function(pagoId) {
+    pagoRevertirId = pagoId;
+    modalRevertir.classList.remove('hidden');
+  };
+
+  btnCancReversion.addEventListener('click', () => {
+    pagoRevertirId = null;
+    modalRevertir.classList.add('hidden');
+  });
+
+  btnConfReversion.addEventListener('click', async () => {
+    if (!pagoRevertirId) return;
+    btnConfReversion.textContent = 'PROCESANDO...';
+    btnConfReversion.disabled = true;
+
+    try {
+      const { error } = await supabase
+        .from('pagos')
+        .update({ estado: 'revision' })
+        .eq('id', pagoRevertirId);
+
+      if (error) throw error;
+      modalRevertir.classList.add('hidden');
+
+      await Promise.all([cargarPagosPendientes(), cargarDatosAtletas()]);
+
+      if (!modalFicha.classList.contains('hidden') && window.atletaActivoId) {
+        window.verFichaAtleta(window.atletaActivoId);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error al revertir pago.");
+    } finally {
+      btnConfReversion.textContent = 'SÍ, DESHACER';
+      btnConfReversion.disabled = false;
+      pagoRevertirId = null;
+    }
+  });
+
+  // Guardar Tasa del Dólar
   document.getElementById('formTasa').addEventListener('submit', async (e) => {
     e.preventDefault();
     const nuevoValor = parseFloat(document.getElementById('inputTasa').value);
@@ -607,22 +830,19 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   });
 
-  // Exportar y Correo Masivo
+  // Correo Masivo y Exportar CSV
   document.getElementById('btnCorreoMasivo')?.addEventListener('click', async () => {
-    const { data } = await supabase.from('alumnos').select('email');
-    const emails = (data || []).map(a => a.email).filter(Boolean).join(',');
+    const emails = cacheAlumnos.map(a => a.email).filter(Boolean).join(',');
     if (!emails) return alert("No hay correos registrados.");
     window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${emails}&su=Pupi%20Bike%20Kids`, '_blank');
   });
 
-  document.getElementById('btnExportarAlumnos')?.addEventListener('click', async () => {
-    const { data } = await supabase.from('alumnos').select('*');
-    exportarACSV(data, 'alumnos_pupibike.csv');
+  document.getElementById('btnExportarAlumnos')?.addEventListener('click', () => {
+    exportarACSV(cacheAlumnos, 'alumnos_pupibike.csv');
   });
 
-  document.getElementById('btnExportarPagos')?.addEventListener('click', async () => {
-    const { data } = await supabase.from('pagos').select('*');
-    exportarACSV(data, 'pagos_pupibike.csv');
+  document.getElementById('btnExportarPagos')?.addEventListener('click', () => {
+    exportarACSV(cachePagos, 'pagos_pupibike.csv');
   });
 
   function exportarACSV(arr, filename) {
