@@ -77,7 +77,7 @@ import Layout from '../layouts/Layout.astro';
               <option value="AVANZADO">AVANZADO (COMPETICIÓN)</option>
             </select>
           </div>
-          <!-- NUEVO CAMPO: Tipo de Sangre (Opcional) -->
+          <!-- Tipo de Sangre (Opcional) -->
           <div>
             <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Tipo de Sangre (Opcional)</label>
             <select id="tipo_sangre" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2 appearance-none">
@@ -150,16 +150,17 @@ import Layout from '../layouts/Layout.astro';
     
     btnSubmit.textContent = "SUBIENDO FOTO Y CREANDO CUENTA...";
     btnSubmit.disabled = true;
+    mensaje.classList.add('hidden');
 
-    const email = document.getElementById('email').value.toLowerCase();
+    const email = document.getElementById('email').value.trim().toLowerCase();
     const password = document.getElementById('password').value;
-    const nombre = document.getElementById('nombre').value.toUpperCase();
-    const cedula = document.getElementById('cedula').value.toUpperCase();
-    const telefono = document.getElementById('telefono').value.toUpperCase();
+    const nombre = document.getElementById('nombre').value.trim().toUpperCase();
+    const cedula = document.getElementById('cedula').value.trim().toUpperCase();
+    const telefono = document.getElementById('telefono').value.trim().toUpperCase();
     const fecha_nacimiento = document.getElementById('fecha_nacimiento').value;
-    const direccion = document.getElementById('direccion').value.toUpperCase();
+    const direccion = document.getElementById('direccion').value.trim().toUpperCase();
     const nivel = document.getElementById('nivel').value.toUpperCase();
-    const tipo_sangre = document.getElementById('tipo_sangre').value; // <--- Nuevo valor
+    const tipo_sangre = document.getElementById('tipo_sangre').value;
     const fotoFile = document.getElementById('fotoFile').files[0];
 
     let fotoUrlFinal = '';
@@ -178,22 +179,27 @@ import Layout from '../layouts/Layout.astro';
 
       // 2. Foto a Storage (Opcional)
       if (fotoFile) {
-        const fileExt = fotoFile.name.split('.').pop();
-        const fileName = `${userId}-${Math.random()}.${fileExt}`;
-        const filePath = `${fileName}`;
+        const fileExt = fotoFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+        const fileName = `${userId}-${Date.now()}.${fileExt}`;
 
-        const { error: uploadError } = await supabase.storage.from('fotos-atletas').upload(filePath, fotoFile);
+        const { error: uploadError } = await supabase.storage
+          .from('fotos-atletas')
+          .upload(fileName, fotoFile, { upsert: true });
+
         if (uploadError) throw uploadError;
 
-        const { data: publicUrlData } = supabase.storage.from('fotos-atletas').getPublicUrl(filePath);
+        const { data: publicUrlData } = supabase.storage
+          .from('fotos-atletas')
+          .getPublicUrl(fileName);
+
         fotoUrlFinal = publicUrlData.publicUrl;
       }
 
-      // 3. Bicicleta (Se guarda solo si escribieron algo, ya que es opcional)
+      // 3. Bicicleta (Se guarda solo si escribieron datos)
       const listaBicicletas = [];
-      const biciRin = document.getElementById('biciRin').value.toUpperCase();
-      const biciMarca = document.getElementById('biciMarca').value.toUpperCase();
-      const biciColor = document.getElementById('biciColor').value.toUpperCase();
+      const biciRin = document.getElementById('biciRin').value.trim().toUpperCase();
+      const biciMarca = document.getElementById('biciMarca').value.trim().toUpperCase();
+      const biciColor = document.getElementById('biciColor').value.trim().toUpperCase();
 
       if (biciRin || biciMarca || biciColor) {
         listaBicicletas.push({
@@ -216,7 +222,7 @@ import Layout from '../layouts/Layout.astro';
           fecha_nacimiento: fecha_nacimiento,
           direccion: direccion,
           nivel: nivel,
-          tipo_sangre: tipo_sangre, // <--- Enviado a la base de datos
+          tipo_sangre: tipo_sangre,
           foto_url: fotoUrlFinal,
           tipos_bici: listaBicicletas
         }]);
@@ -224,23 +230,36 @@ import Layout from '../layouts/Layout.astro';
       if (errorAlumno) throw errorAlumno;
 
       form.reset();
-      mensaje.textContent = "¡Inscripción exitosa! Redirigiendo a tu panel...";
-      mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-lime-400 text-black block mt-2";
-      
-      setTimeout(() => {
-         window.location.href = '/dashboard';
-      }, 2000);
+
+      // Si Supabase requiere confirmación de email y no inició sesión automáticamente:
+      if (!authData.session) {
+        mensaje.textContent = "¡Inscripción registrada! Revisa tu correo para confirmar tu cuenta antes de iniciar sesión.";
+        mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-cyan-400 text-black block mt-2";
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 3500);
+      } else {
+        mensaje.textContent = "¡Inscripción exitosa! Redirigiendo a tu panel...";
+        mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-lime-400 text-black block mt-2";
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 2000);
+      }
 
     } catch (error) {
       console.error(error);
       let errorMsg = "Hubo un error. Verifica tus datos.";
-      if (error.message.includes('already registered')) errorMsg = "Este correo ya está registrado.";
-      if (error.message.includes('row-level security') || error.message.includes('policy')) {
+      if (error.message && error.message.includes('already registered')) {
+        errorMsg = "Este correo ya está registrado. Por favor inicia sesión.";
+      } else if (error.message && (error.message.includes('row-level security') || error.message.includes('policy'))) {
         errorMsg = "Error de permisos en Storage. Asegúrate de que el bucket 'fotos-atletas' sea público.";
+      } else if (error.message) {
+        errorMsg = error.message;
       }
       
       mensaje.textContent = errorMsg;
       mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-pink-600 text-white block mt-2";
+      mensaje.classList.remove('hidden');
     } finally {
       btnSubmit.textContent = "Crear Cuenta";
       btnSubmit.disabled = false;
