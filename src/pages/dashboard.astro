@@ -7,7 +7,7 @@ import Layout from '../layouts/Layout.astro';
   <nav class="bg-black text-white p-4 border-b-4 border-cyan-400 sticky top-0 z-50">
     <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
       <a href="/" class="text-3xl font-black italic tracking-wider text-white transform -skew-x-6 hover:opacity-80 transition">
-        PUPI BIKE 
+        PUPIBIKE 
         <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1d4ed8] via-[#06b6d4] to-[#84cc16]">KIDS</span>
       </a>
       <button id="btnLogout" class="text-pink-400 font-bold hover:text-white transition italic uppercase text-sm md:text-base border border-pink-500 px-4 py-1 hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-400">
@@ -119,7 +119,7 @@ import Layout from '../layouts/Layout.astro';
           <a href="/historial" class="block text-center text-cyan-400 text-sm font-bold hover:text-white transition italic underline focus:outline-none focus:text-white">Ver historial completo</a>
         </section>
 
-        <!-- TARJETA DINÁMICA: DATOS DE PAGO MÓVIL Y TASA DEL DÍA -->
+        <!-- TARJETA DINÁMICA: DATOS DE PAGO MÓVIL Y ARANCELES -->
         <section class="bg-zinc-900 p-6 shadow-[8px_8px_0px_#00d2ff] border-2 border-cyan-400">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b-2 border-zinc-800 pb-3">
             <h3 class="text-2xl font-black italic uppercase text-cyan-400 tracking-wide">Datos Pago Móvil</h3>
@@ -128,17 +128,30 @@ import Layout from '../layouts/Layout.astro';
             </div>
           </div>
 
-          <!-- Monto sugerido convertido a Bs -->
-          <div class="bg-zinc-950 p-4 border-2 border-zinc-800 mb-4 text-center shadow-inner">
-            <span class="text-xs md:text-sm text-zinc-200 font-black uppercase tracking-wider block mb-1">
-              Mensualidad (30$) al cambio de hoy:
-            </span>
-            <span id="uiTotalBs" class="text-3xl md:text-4xl font-black italic text-lime-400 tracking-tight">
-              Calculando...
-            </span>
+          <!-- Montos convertidos a Bs (Inscripción y Mensualidad) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            <!-- Inscripción -->
+            <div class="bg-zinc-950 p-3 border-2 border-zinc-800 text-center shadow-inner">
+              <span class="text-[11px] text-zinc-300 font-black uppercase tracking-wider block mb-1">
+                Inscripción (30$):
+              </span>
+              <span id="uiTotalInscripcionBs" class="text-xl font-black italic text-cyan-400 tracking-tight block">
+                Calculando...
+              </span>
+            </div>
+
+            <!-- Mensualidad -->
+            <div class="bg-zinc-950 p-3 border-2 border-zinc-800 text-center shadow-inner">
+              <span class="text-[11px] text-zinc-300 font-black uppercase tracking-wider block mb-1">
+                Mensualidad (70$):
+              </span>
+              <span id="uiTotalMensualidadBs" class="text-xl font-black italic text-lime-400 tracking-tight block">
+                Calculando...
+              </span>
+            </div>
           </div>
 
-          <!-- Datos de Pago Móvil destacados -->
+          <!-- Datos bancarios de Pago Móvil -->
           <div class="space-y-3 bg-zinc-950 p-4 border border-zinc-800">
             <div class="flex justify-between items-center border-b border-zinc-800/80 pb-2">
               <span class="text-xs font-black uppercase text-zinc-300">Banco:</span>
@@ -159,7 +172,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
 
           <p class="text-xs text-zinc-300 font-medium italic mt-3 text-center leading-relaxed">
-            Luego de transferir, haz clic en <strong class="text-pink-400 uppercase">"Reportar Pago"</strong> arriba.
+            Luego de transferir, haz clic en <strong class="text-pink-400 uppercase">"Reportar Pago"</strong> arriba para registrar el comprobante.
           </p>
         </section>
 
@@ -259,6 +272,18 @@ import Layout from '../layouts/Layout.astro';
       <div class="transform skew-x-2">
         <h2 class="text-2xl font-black uppercase italic text-pink-500 mb-6 border-b border-zinc-800 pb-2">Reportar Transferencia</h2>
         <form id="formPago" class="flex flex-col gap-4">
+          <!-- Concepto del Pago -->
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Concepto del Pago</label>
+            <select id="inputConcepto" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-lime-400 font-bold focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
+              <option value="Mensualidad">Mensualidad (70$)</option>
+              <option value="Inscripcion">Inscripción (30$)</option>
+              <option value="Inscripcion + Mensualidad">Inscripción + Mensualidad (100$)</option>
+              <option value="Abono">Abono / Otro Monto</option>
+            </select>
+          </div>
+
+          <!-- Método de Pago -->
           <div>
             <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Método de Pago</label>
             <select id="inputMetodo" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
@@ -268,14 +293,16 @@ import Layout from '../layouts/Layout.astro';
               <option value="Efectivo">Efectivo en Pista</option>
             </select>
           </div>
+
           <div>
             <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Número de Referencia</label>
             <input type="text" id="inputReferencia" required placeholder="Ej: 12345678" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold placeholder-zinc-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
           </div>
+
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Monto ($)</label>
-              <input type="number" id="inputMonto" required placeholder="30" min="1" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold placeholder-zinc-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
+              <input type="number" id="inputMonto" required value="70" min="1" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold placeholder-zinc-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
             </div>
             <div>
               <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Mes que Cancela</label>
@@ -286,6 +313,7 @@ import Layout from '../layouts/Layout.astro';
               </select>
             </div>
           </div>
+
           <div id="mensajePago" class="hidden text-sm font-bold uppercase italic text-center p-2 border mt-2"></div>
           <button type="submit" id="btnEnviarPago" class="w-full bg-pink-600 text-white font-black italic uppercase text-lg py-3 hover:bg-pink-500 transition-all mt-2 focus:outline-none focus:ring-2 focus:ring-white">Enviar Reporte</button>
         </form>
@@ -445,19 +473,35 @@ import Layout from '../layouts/Layout.astro';
 
       currentAlumno = alumno;
 
-      // 3. Renderizar Tasa y Conversión en Bolívares
+      // 3. Renderizar Tasa y Conversiones en Bolívares (30$ Inscripción y 70$ Mensualidad)
       const tasaValor = parseFloat(tasaConfig?.valor || 0);
       const uiTasa = document.getElementById('uiTasaValor');
-      const uiTotalBs = document.getElementById('uiTotalBs');
+      const uiInscripcionBs = document.getElementById('uiTotalInscripcionBs');
+      const uiMensualidadBs = document.getElementById('uiTotalMensualidadBs');
 
       if (tasaValor > 0) {
         uiTasa.textContent = tasaValor.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const mensualidadBs = (30 * tasaValor).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        uiTotalBs.textContent = `${mensualidadBs} Bs.`;
+        
+        const inscripcionBs = (30 * tasaValor).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const mensualidadBs = (70 * tasaValor).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        if (uiInscripcionBs) uiInscripcionBs.textContent = `${inscripcionBs} Bs.`;
+        if (uiMensualidadBs) uiMensualidadBs.textContent = `${mensualidadBs} Bs.`;
       } else {
         uiTasa.textContent = "Pendiente";
-        uiTotalBs.textContent = "Consultar con el club";
+        if (uiInscripcionBs) uiInscripcionBs.textContent = "Consultar";
+        if (uiMensualidadBs) uiMensualidadBs.textContent = "Consultar";
       }
+
+      // Actualizar monto sugerido automáticamente cuando el usuario elige el concepto en el modal
+      document.getElementById('inputConcepto')?.addEventListener('change', (e) => {
+        const inputMonto = document.getElementById('inputMonto');
+        const valor = e.target.value;
+        if (valor === 'Inscripcion') inputMonto.value = 30;
+        else if (valor === 'Mensualidad') inputMonto.value = 70;
+        else if (valor === 'Inscripcion + Mensualidad') inputMonto.value = 100;
+        else inputMonto.value = '';
+      });
 
       // Variables auxiliares para modal de edición
       window.currentCedula = alumno.cedula || '';
@@ -591,6 +635,7 @@ import Layout from '../layouts/Layout.astro';
     document.getElementById('formPago').reset(); 
   });
 
+  // Envío del Formulario de Pagos con Concepto
   document.getElementById('formPago')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnEnviarPago');
@@ -603,6 +648,7 @@ import Layout from '../layouts/Layout.astro';
     try {
       if (!currentUser || !currentAlumno?.id) throw new Error("Sesión no válida.");
 
+      const concepto = document.getElementById('inputConcepto').value;
       const metodo = document.getElementById('inputMetodo').value;
       const referencia = document.getElementById('inputReferencia').value.trim();
       const monto = parseFloat(document.getElementById('inputMonto').value);
@@ -612,9 +658,10 @@ import Layout from '../layouts/Layout.astro';
         throw new Error("Ingresa monto y referencia válidos.");
       }
 
+      // Guardamos método junto con el concepto para identificarlo claramente
       const { error } = await supabase.from('pagos').insert([{ 
         alumno_id: currentAlumno.id,
-        metodo_pago: metodo,
+        metodo_pago: `${metodo} (${concepto})`,
         referencia: referencia,
         monto: monto,
         mes_correspondiente: mes,
