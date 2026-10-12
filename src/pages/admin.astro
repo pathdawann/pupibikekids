@@ -91,6 +91,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
           <thead>
             <tr class="bg-zinc-950 text-pink-400 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
               <th class="p-4">Fecha</th>
+              <th class="p-4">Atleta</th> <!-- NUEVA COLUMNA -->
               <th class="p-4">Método</th>
               <th class="p-4">Referencia</th>
               <th class="p-4">Monto</th>
@@ -198,24 +199,41 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   });
 
-  // 1. Cargar Últimos Pagos
+  // 1. Cargar Últimos Pagos (Solución a prueba de fallos)
   async function cargarPagosPendientes() {
     const tbody = document.getElementById('tablaPagosPendientes');
     tbody.innerHTML = '';
 
+    // Paso A: Pedimos solo los pagos (consulta simple sin inner join)
     const { data: pagos, error } = await supabase
       .from('pagos')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(20);
 
-    if (error || !pagos || pagos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-400 italic">No hay pagos registrados.</td></tr>`;
+    if (error) {
+      console.error("Error cargando pagos:", error);
+      tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-400 italic">Error de conexión.</td></tr>`;
       return;
     }
 
+    if (!pagos || pagos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-400 italic">No hay pagos registrados.</td></tr>`;
+      return;
+    }
+
+    // Paso B: Pedimos la lista de alumnos por separado para extraer sus nombres
+    const { data: alumnos } = await supabase
+      .from('alumnos')
+      .select('id, nombre');
+
     pagos.forEach(pago => {
       const fecha = new Date(pago.created_at).toLocaleDateString('es-ES');
+      
+      // Paso C: Cruzamos la información internamente con Javascript
+      const atleta = alumnos?.find(a => a.id === pago.alumno_id);
+      const nombreAtleta = atleta ? atleta.nombre : 'ATLETA DESCONOCIDO';
+
       let accionHtml = '';
 
       if (pago.estado === 'revision' || !pago.estado) {
@@ -233,9 +251,11 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
         `;
       }
 
+      // Inyectamos la fila asegurando que tenga las 7 columnas (colspan)
       tbody.innerHTML += `
         <tr class="hover:bg-zinc-800/50">
           <td class="p-4 text-zinc-300">${fecha}</td>
+          <td class="p-4 font-black uppercase text-cyan-400">${nombreAtleta}</td>
           <td class="p-4 font-bold text-white">${pago.metodo_pago}</td>
           <td class="p-4 font-mono text-cyan-400">${pago.referencia}</td>
           <td class="p-4 font-black text-pink-400">${pago.monto}$</td>

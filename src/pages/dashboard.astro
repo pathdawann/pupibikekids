@@ -658,8 +658,9 @@ import Layout from '../layouts/Layout.astro';
         throw new Error("Ingresa monto y referencia válidos.");
       }
 
-      // Guardamos método junto con el concepto para identificarlo claramente
+      // CÓDIGO CORREGIDO
       const { error } = await supabase.from('pagos').insert([{ 
+        user_id: currentUser.id, // <--- ESTO ES VITAL PARA PASAR EL RLS
         alumno_id: currentAlumno.id,
         metodo_pago: `${metodo} (${concepto})`,
         referencia: referencia,
