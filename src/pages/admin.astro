@@ -5,15 +5,14 @@ import { supabaseServer } from '../lib/supabase-server.js';
 // 1. Inicializamos cliente de servidor
 const supabase = supabaseServer(Astro);
 
-// 2. Verificamos la autenticidad del usuario en el servidor
+// 2. Verificamos la autenticidad
 const { data: { user }, error } = await supabase.auth.getUser();
 
-// 3. Si no hay sesión válida, redirigimos al login
 if (!user || error) {
   return Astro.redirect('/login');
 }
 
-// 4. Verificamos autorización administrativa
+// 3. Verificamos autorización administrativa
 const correosAutorizados = ["pathdawann@gmail.com", "cesar@gmail.com"];
 if (!user.email || !correosAutorizados.includes(user.email)) {
   return Astro.redirect('/dashboard');
@@ -21,145 +20,191 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
 ---
 
 <Layout title="Panel Administrativo | Pupi Bike Kids" noindex={true}>
-  <!-- Navegación del Panel Admin -->
-  <nav class="bg-black text-white p-4 border-b-4 border-lime-400 sticky top-0 z-50">
-    <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
-      <a href="/admin" class="text-2xl md:text-3xl font-black italic tracking-wider text-white transform -skew-x-6">
-        PUPIBIKE <span class="text-lime-400">ADMIN</span>
-      </a>
+  <!-- Navegación Corporativa -->
+  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="container mx-auto px-4 lg:px-8 max-w-7xl flex justify-between items-center h-16">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+          <span class="text-white font-black text-sm italic">PK</span>
+        </div>
+        <a href="/admin" class="text-xl font-black italic tracking-tight text-gray-900">
+          PUPIBIKE <span class="text-blue-600">ADMIN</span>
+        </a>
+      </div>
       <div class="flex items-center gap-4">
-        <a href="/dashboard" class="text-cyan-400 font-bold hover:underline italic text-sm focus:outline-none focus:text-white">Mi Panel de Atleta</a>
-        <button id="btnAdminLogout" class="text-pink-400 font-bold hover:text-white transition italic uppercase text-sm border border-pink-500 px-3 py-1 hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-400">
-          Salir
+        <a href="/dashboard" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition">Vista Atleta</a>
+        <button id="btnAdminLogout" class="text-sm font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-1.5 rounded-md transition">
+          Cerrar Sesión
         </button>
       </div>
     </div>
   </nav>
 
-  <!-- Contenido Admin -->
-  <main id="adminContenido" class="container mx-auto px-4 py-10 max-w-7xl">
-    
-    <!-- Encabezado y Respaldo -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635]">
-      <div>
-        <h1 class="text-3xl font-black text-white uppercase italic tracking-wider">Centro de Control y <span class="text-lime-400">Academia</span></h1>
-        <p class="text-zinc-300 text-sm mt-1">Gestión integral de atletas, aprobación de mensualidades y tasa del día.</p>
+  <main id="adminContenido" class="bg-gray-50 min-h-screen pb-12">
+    <div class="container mx-auto px-4 lg:px-8 py-8 max-w-7xl">
+      
+      <!-- Encabezado y Acciones Globales -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Centro de Control</h1>
+          <p class="text-sm text-gray-500 mt-1">Gestión administrativa y financiera de la academia.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button id="btnCorreoMasivo" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
+            <span>✉️</span> Enviar Correo (BCC)
+          </button>
+          <button id="btnExportarAlumnos" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
+            <span>👥</span> Backup Alumnos CSV
+          </button>
+          <button id="btnExportarPagos" class="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm transition flex items-center gap-2">
+            <span>💰</span> Backup Pagos CSV
+          </button>
+        </div>
       </div>
-      <div class="flex flex-wrap gap-3">
-        <button id="btnCorreoMasivo" class="bg-lime-400 text-black font-black italic uppercase px-4 py-2 text-sm hover:bg-lime-300 shadow-[3px_3px_0px_rgba(0,0,0,0.5)] focus:outline-none focus:ring-2 focus:ring-white">
-          ✉️ Correo Masivo (BCC)
-        </button>
-        <button id="btnExportarAlumnos" class="bg-cyan-400 text-black font-black italic uppercase px-4 py-2 text-sm hover:bg-cyan-300 shadow-[3px_3px_0px_rgba(0,0,0,0.5)] focus:outline-none focus:ring-2 focus:ring-white">
-          📥 Descargar Alumnos (CSV)
-        </button>
-        <button id="btnExportarPagos" class="bg-pink-600 text-white font-black italic uppercase px-4 py-2 text-sm hover:bg-pink-500 shadow-[3px_3px_0px_rgba(0,0,0,0.5)] focus:outline-none focus:ring-2 focus:ring-white">
-          📥 Descargar Pagos (CSV)
-        </button>
-      </div>
-    </div>
 
-    <!-- SECCIÓN: Tasa del Dólar y Seguridad -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-      <div class="bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff]">
-        <h2 class="text-xl font-black italic uppercase text-cyan-400 mb-3">Tasa de Cambio del Día</h2>
-        <form id="formTasa" class="flex flex-col gap-4">
+      <!-- DASHBOARD MÉTRICAS (Inyectado por JS) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="metricasDashboard">
+        <!-- Tarjetas de resumen estadístico -->
+      </div>
+
+      <!-- SECCIÓN SUPERIOR: Tasa e Ingresos -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        
+        <!-- Tasa del Día -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col justify-between">
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Valor Actual ($ a Bs)</label>
-            <input type="number" step="0.01" id="inputTasa" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold text-lg focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400" placeholder="Ej: 37.50">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Tasa de Cambio (BCV)</h2>
+              <span id="fechaTasa" class="text-xs text-gray-400">Actualizando...</span>
+            </div>
+            <form id="formTasa" class="flex items-center gap-3">
+              <div class="relative flex-1">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 font-medium">Bs.</span>
+                <input type="number" step="0.01" id="inputTasa" required class="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="0.00">
+              </div>
+              <button type="submit" id="btnGuardarTasa" class="bg-blue-600 text-white font-medium px-4 py-2 rounded-md hover:bg-blue-700 transition shadow-sm">Guardar</button>
+            </form>
           </div>
-          <button type="submit" id="btnGuardarTasa" class="bg-cyan-400 text-black font-black italic uppercase py-2 hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-white">Actualizar Tasa</button>
-        </form>
-        <p id="mensajeTasa" class="text-xs font-bold mt-2 text-center hidden"></p>
+          <p id="mensajeTasa" class="text-xs font-medium mt-3 text-center hidden"></p>
+        </div>
+
+        <!-- Resumen Financiero -->
+        <div class="lg:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+          <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4">Control Operativo e Instrucciones</h2>
+          <div class="text-sm text-gray-600 space-y-2">
+            <p>1. <strong>Tasa Histórica:</strong> Al aprobar un pago hoy, el sistema guardará automáticamente la tasa actual que configuraste arriba. Esto garantiza que el cálculo en Bolívares sea exacto al día de la operación.</p>
+            <p>2. <strong>Directorio:</strong> Usa la tabla inferior para buscar atletas por nombre o cédula. Haz clic en "Editar" para modificar sus datos o niveles.</p>
+            <p>3. <strong>Respaldos:</strong> Se recomienda descargar el CSV de pagos a final de cada mes para los cierres contables.</p>
+          </div>
+        </div>
       </div>
 
-      <div class="md:col-span-2 bg-zinc-900 p-6 border-2 border-zinc-700 flex flex-col justify-center">
-        <h3 class="text-lg font-black italic uppercase text-white mb-2">💡 Control Operativo</h3>
-        <p class="text-zinc-300 text-sm leading-relaxed">
-          Haz clic en cualquiera de las tarjetas de nivel para ver a los atletas activos, o en "NO ACTIVOS" para ver a los retirados. Desde la ficha puedes modificar bicicletas, niveles, estados de matrícula y pagos.
-        </p>
+      <!-- SECCIÓN: Historial Financiero (Pagos) -->
+      <div class="mb-10 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="border-b border-gray-200 px-6 py-4 bg-gray-50 flex justify-between items-center">
+          <h2 class="text-base font-bold text-gray-900">Historial de Recibos y Transferencias</h2>
+          <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-full" id="contadorPagosMes">Cargando...</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead class="bg-white border-b border-gray-200 text-gray-500 font-medium">
+              <tr>
+                <th class="px-6 py-3">Fecha</th>
+                <th class="px-6 py-3">Atleta (Cédula)</th>
+                <th class="px-6 py-3">Referencia / Método</th>
+                <th class="px-6 py-3 text-right">Monto USD</th>
+                <th class="px-6 py-3 text-right">Monto BS (Tasa)</th>
+                <th class="px-6 py-3 text-center">Mes a Cancelar</th>
+                <th class="px-6 py-3 text-center">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaPagosPendientes" class="divide-y divide-gray-100 text-gray-700 bg-white">
+              <!-- JS inyecta filas -->
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
-    <!-- SECCIÓN: Pagos Pendientes con Botón de Aprobar -->
-    <div class="mb-12">
-      <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#db2777] mb-6">
-        <h2 class="text-2xl font-black uppercase italic text-pink-500 tracking-wider">Últimos Pagos Reportados</h2>
+      <!-- SECCIÓN: Directorio Total de Atletas -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-12">
+        <div class="border-b border-gray-200 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50">
+          <h2 class="text-base font-bold text-gray-900">Directorio de Alumnos</h2>
+          
+          <!-- Filtros de Directorio -->
+          <div class="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
+            <button onclick="window.filtrarDirectorio('TODOS')" id="filtro-TODOS" class="filtro-btn active px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Todos</button>
+            <button onclick="window.filtrarDirectorio('AVANZADO')" id="filtro-AVANZADO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Avanzado</button>
+            <button onclick="window.filtrarDirectorio('INTERMEDIO')" id="filtro-INTERMEDIO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Intermedio</button>
+            <button onclick="window.filtrarDirectorio('PRINCIPIANTE')" id="filtro-PRINCIPIANTE" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Principiante</button>
+            <button onclick="window.filtrarDirectorio('INACTIVO')" id="filtro-INACTIVO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Inactivos</button>
+          </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead class="bg-white border-b border-gray-200 text-gray-500 font-medium">
+              <tr>
+                <th class="px-6 py-3">Alumno</th>
+                <th class="px-6 py-3">Contacto</th>
+                <th class="px-6 py-3 text-center">Nivel</th>
+                <th class="px-6 py-3 text-center">Solvencia (Mes Actual)</th>
+                <th class="px-6 py-3 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaDirectorioAtletas" class="divide-y divide-gray-100 text-gray-700 bg-white">
+              <!-- JS inyecta filas -->
+            </tbody>
+          </table>
+        </div>
       </div>
       
-      <div class="overflow-x-auto bg-zinc-900 border-2 border-pink-500 shadow-[6px_6px_0px_#db2777]">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="bg-zinc-950 text-pink-400 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
-              <th class="p-4">Fecha</th>
-              <th class="p-4">Atleta</th> <!-- NUEVA COLUMNA -->
-              <th class="p-4">Método</th>
-              <th class="p-4">Referencia</th>
-              <th class="p-4">Monto</th>
-              <th class="p-4">Mes</th>
-              <th class="p-4 text-center">Acción</th>
-            </tr>
-          </thead>
-          <tbody id="tablaPagosPendientes" class="divide-y divide-zinc-800 text-sm font-medium">
-            <!-- Inyectado por JS -->
-          </tbody>
-        </table>
-      </div>
-    </div>
+    </div> <!-- End Container -->
 
-    <!-- SECCIÓN: Selector por Tarjetas de Nivel y Estado -->
-    <div class="mb-12">
-      <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#a3e635] mb-6">
-        <h2 class="text-2xl font-black uppercase italic text-lime-400 tracking-wider">Atletas Inscritos por Niveles y Estatus</h2>
-      </div>
+    <!-- ESTILOS PARA LOS BOTONES DE FILTRO -->
+    <style>
+      .filtro-btn.active {
+        background-color: white;
+        color: #111827; /* gray-900 */
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      }
+    </style>
 
-      <!-- CARDS DE RESUMEN (INTERACTIVAS) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="cardsNivelesResumen">
-        <!-- Inyectado por JS -->
-      </div>
-
-      <!-- TABLA DETALLADA DEL GRUPO SELECCIONADO -->
-      <div id="contenedorNivelActivo" class="hidden">
-        <!-- Inyectado dinámicamente -->
-      </div>
-    </div>
-
-    <!-- MODAL CONFIRMAR PAGO -->
-    <div id="modalConfirmarPago" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
-      <div class="bg-zinc-900 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] p-6 md:p-8 w-full max-w-md mx-auto relative transform -skew-x-2 text-center">
-        <h2 class="text-2xl font-black uppercase italic text-lime-400 mb-4 tracking-wider">Aprobar Pago</h2>
-        <p class="text-zinc-200 font-medium mb-8">¿Estás seguro de aprobar este recibo? El atleta reflejará su solvencia de inmediato en su panel.</p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <button id="btnCancelarAprobacion" class="bg-zinc-800 text-white font-black italic uppercase px-6 py-3 hover:bg-zinc-700 transition shadow-[4px_4px_0px_rgba(0,0,0,0.5)] transform skew-x-2 focus:outline-none focus:ring-2 focus:ring-white">
-            Cancelar
-          </button>
-          <button id="btnConfirmarAprobacion" class="bg-lime-400 text-black font-black italic uppercase px-6 py-3 hover:bg-lime-300 transition shadow-[4px_4px_0px_#db2777] transform skew-x-2 focus:outline-none focus:ring-2 focus:ring-white">
-            Sí, Aprobar
-          </button>
+    <!-- MODAL CONFIRMAR PAGO (Corporativo) -->
+    <div id="modalConfirmarPago" class="fixed inset-0 bg-gray-900/50 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 text-center border border-gray-200">
+        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4 text-green-600 text-xl">✓</div>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">Aprobar Pago</h2>
+        <p class="text-sm text-gray-500 mb-6">El pago se marcará como aprobado usando la tasa de cambio actual. Esta acción refleja solvencia inmediata para el atleta.</p>
+        <div class="flex justify-center gap-3">
+          <button id="btnCancelarAprobacion" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+          <button id="btnConfirmarAprobacion" class="px-5 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 shadow-sm">Confirmar Aprobación</button>
         </div>
       </div>
     </div>
 
-    <!-- MODAL DESHACER PAGO -->
-    <div id="modalRevertirPago" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
-      <div class="bg-zinc-900 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] p-6 md:p-8 w-full max-w-md mx-auto relative transform -skew-x-2 text-center">
-        <h2 class="text-2xl font-black uppercase italic text-pink-500 mb-4 tracking-wider">Deshacer Aprobación</h2>
-        <p class="text-zinc-200 font-medium mb-8">¿Seguro que deseas devolver este pago a "Revisión"? El atleta volverá a ver su deuda pendiente.</p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <button id="btnCancelarReversion" class="bg-zinc-800 text-white font-black italic uppercase px-6 py-3 hover:bg-zinc-700 transition shadow-[4px_4px_0px_rgba(0,0,0,0.5)] transform skew-x-2 focus:outline-none focus:ring-2 focus:ring-white">
-            Cancelar
-          </button>
-          <button id="btnConfirmarReversion" class="bg-pink-600 text-white font-black italic uppercase px-6 py-3 hover:bg-pink-500 transition shadow-[4px_4px_0px_#db2777] transform skew-x-2 focus:outline-none focus:ring-2 focus:ring-white">
-            Sí, Deshacer
-          </button>
+    <!-- MODAL DESHACER PAGO (Corporativo) -->
+    <div id="modalRevertirPago" class="fixed inset-0 bg-gray-900/50 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 text-center border border-gray-200">
+        <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mx-auto mb-4 text-yellow-600 text-xl">⚠️</div>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">Revertir a Revisión</h2>
+        <p class="text-sm text-gray-500 mb-6">El recibo volverá al estado "En Revisión" y se eliminará la tasa histórica guardada temporalmente.</p>
+        <div class="flex justify-center gap-3">
+          <button id="btnCancelarReversion" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+          <button id="btnConfirmarReversion" class="px-5 py-2.5 text-sm font-medium text-white bg-yellow-600 rounded-lg hover:bg-yellow-700 shadow-sm">Revertir Pago</button>
         </div>
       </div>
     </div>
 
-    <!-- MODAL EDICIÓN Y GESTIÓN TOTAL DEL ATLETA -->
-    <div id="modalFichaAtleta" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-3 md:p-6">
-      <div class="bg-zinc-900 border-2 border-cyan-400 shadow-[8px_8px_0px_#00d2ff] p-6 md:p-8 w-full max-w-4xl mx-auto relative max-h-[92vh] overflow-y-auto">
-        <button id="btnCerrarModalFicha" aria-label="Cerrar modal de ficha" class="absolute top-4 right-4 text-zinc-400 hover:text-cyan-400 text-2xl font-black focus:outline-none focus:text-white">X</button>
-        <div id="contenidoFichaAtleta">
+    <!-- MODAL EDICIÓN Y GESTIÓN TOTAL DEL ATLETA (Corporativo) -->
+    <div id="modalFichaAtleta" class="fixed inset-0 bg-gray-900/60 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col relative">
+        <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <h2 class="text-lg font-bold text-gray-900">Gestión de Atleta</h2>
+          <button id="btnCerrarModalFicha" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div id="contenidoFichaAtleta" class="p-6 overflow-y-auto bg-white flex-1">
           <!-- Inyectado dinámicamente -->
         </div>
       </div>
@@ -173,394 +218,515 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
 
   let cacheAlumnos = [];
   let cachePagos = [];
-  let grupoSeleccionado = 'AVANZADO';
+  let tasaActualDolar = 0;
+  let filtroActual = 'TODOS';
 
   document.addEventListener('DOMContentLoaded', async () => {
     try {
-      // 1. Cargar Tasa del Día
-      const { data: tasaData } = await supabase
-        .from('configuracion')
-        .select('valor')
-        .eq('clave', 'tasa_dolar')
-        .single();
-
+      // 1. Cargar Tasa del Día Global
+      const { data: tasaData } = await supabase.from('configuracion').select('valor, updated_at').eq('clave', 'tasa_dolar').single();
+      
       if (tasaData) {
-        document.getElementById('inputTasa').value = tasaData.valor;
+        tasaActualDolar = parseFloat(tasaData.valor);
+        document.getElementById('inputTasa').value = tasaActualDolar;
+        const fechaUpd = new Date(tasaData.updated_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
+        document.getElementById('fechaTasa').textContent = `Act. ${fechaUpd}`;
       }
 
-      // 2. Cargar datos del panel
-      await Promise.all([
-        cargarPagosPendientes(),
-        cargarDatosAtletas()
-      ]);
+      // 2. Cargar datos base
+      await cargarDatosGlobales();
 
     } catch (err) {
-      console.error("Error al cargar panel admin:", err);
+      console.error("Error inicial:", err);
     }
   });
 
-  // 1. Cargar Últimos Pagos (Solución a prueba de fallos)
-  async function cargarPagosPendientes() {
+  async function cargarDatosGlobales() {
+    const [{ data: alumnos }, { data: pagos }] = await Promise.all([
+      supabase.from('alumnos').select('id, nombre, cedula, telefono, email, nivel, estatus, foto_url, tipo_sangre, direccion, fecha_nacimiento, tipos_bici').order('nombre', { ascending: true }),
+      supabase.from('pagos').select('*').order('created_at', { ascending: false })
+    ]);
+
+    cacheAlumnos = alumnos || [];
+    cachePagos = pagos || [];
+
+    renderizarMetricas();
+    renderizarPagos();
+    window.filtrarDirectorio(filtroActual);
+  }
+
+  function renderizarMetricas() {
+    const contenedor = document.getElementById('metricasDashboard');
+    
+    const totalActivos = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo').length;
+    const activosAvanzado = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === 'AVANZADO' && (a.estatus || 'activo').toLowerCase() !== 'inactivo').length;
+    const activosIntermedio = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === 'INTERMEDIO' && (a.estatus || 'activo').toLowerCase() !== 'inactivo').length;
+    
+    // Calcular ingresos del mes (Solo aprobados del mes en curso)
+    const fechaActual = new Date();
+    const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
+    
+    const pagosMesAprobados = cachePagos.filter(p => p.mes_correspondiente === mesActualStr && p.estado === 'aprobado');
+    const totalIngresos = pagosMesAprobados.reduce((sum, pago) => sum + Number(pago.monto || 0), 0);
+
+    const pagosRevision = cachePagos.filter(p => p.estado === 'revision').length;
+
+    contenedor.innerHTML = `
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-500 mb-1">Matrícula Total</p>
+          <p class="text-3xl font-black text-gray-900">${totalActivos}</p>
+        </div>
+        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl">🎓</div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-500 mb-1">Distribución Niveles</p>
+          <p class="text-sm font-bold text-gray-900 mt-1">Avz: <span class="text-blue-600">${activosAvanzado}</span> | Int: <span class="text-green-600">${activosIntermedio}</span></p>
+          <p class="text-xs text-gray-400 mt-1">Principiantes: ${totalActivos - activosAvanzado - activosIntermedio}</p>
+        </div>
+        <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center text-2xl">🚲</div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-500 mb-1">Ingresos Aprobados (${mesesNombres[fechaActual.getMonth()]})</p>
+          <p class="text-3xl font-black text-gray-900">$${totalIngresos}</p>
+        </div>
+        <div class="w-12 h-12 bg-gray-50 text-gray-700 rounded-full flex items-center justify-center text-2xl">💵</div>
+      </div>
+
+      <div class="bg-white rounded-xl border ${pagosRevision > 0 ? 'border-orange-300 bg-orange-50/30' : 'border-gray-200'} p-5 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium ${pagosRevision > 0 ? 'text-orange-600' : 'text-gray-500'} mb-1">Pagos en Revisión</p>
+          <p class="text-3xl font-black ${pagosRevision > 0 ? 'text-orange-600' : 'text-gray-900'}">${pagosRevision}</p>
+        </div>
+        <div class="w-12 h-12 ${pagosRevision > 0 ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'} rounded-full flex items-center justify-center text-2xl">⏳</div>
+      </div>
+    `;
+  }
+
+  function renderizarPagos() {
     const tbody = document.getElementById('tablaPagosPendientes');
     tbody.innerHTML = '';
+    
+    // Limitar visualización a 30 para rendimiento de admin, el CSV baja todos
+    const pagosLimitados = cachePagos.slice(0, 30);
+    document.getElementById('contadorPagosMes').textContent = `Últimos ${pagosLimitados.length}`;
 
-    // Paso A: Pedimos solo los pagos (consulta simple sin inner join)
-    const { data: pagos, error } = await supabase
-      .from('pagos')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(20);
-
-    if (error) {
-      console.error("Error cargando pagos:", error);
-      tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-400 italic">Error de conexión.</td></tr>`;
+    if (pagosLimitados.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500">No hay pagos registrados en el sistema.</td></tr>`;
       return;
     }
 
-    if (!pagos || pagos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-400 italic">No hay pagos registrados.</td></tr>`;
-      return;
-    }
+    pagosLimitados.forEach(pago => {
+      const fecha = new Date(pago.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+      const atleta = cacheAlumnos.find(a => a.id === pago.alumno_id);
+      const nombreAtleta = atleta ? atleta.nombre : 'Atleta Eliminado';
+      const cedulaAtleta = atleta ? atleta.cedula : 'N/A';
 
-    // Paso B: Pedimos la lista de alumnos por separado para extraer sus nombres
-    const { data: alumnos } = await supabase
-      .from('alumnos')
-      .select('id, nombre');
-
-    pagos.forEach(pago => {
-      const fecha = new Date(pago.created_at).toLocaleDateString('es-ES');
-      
-      // Paso C: Cruzamos la información internamente con Javascript
-      const atleta = alumnos?.find(a => a.id === pago.alumno_id);
-      const nombreAtleta = atleta ? atleta.nombre : 'ATLETA DESCONOCIDO';
-
-      let accionHtml = '';
-
-      if (pago.estado === 'revision' || !pago.estado) {
-        accionHtml = `
-          <button onclick="window.aprobarPago('${pago.id}')" class="bg-lime-400 text-black font-black italic uppercase px-4 py-2 text-xs hover:bg-lime-300 shadow transform skew-x-2 transition focus:outline-none focus:ring-2 focus:ring-white">
-            ✓ Aprobar
-          </button>
-        `;
+      // LÓGICA DE TASA HISTÓRICA
+      let stringBs = '<span class="text-gray-400 text-xs">Pendiente</span>';
+      if (pago.monto_bs && pago.tasa_historica) {
+        // Tiene tasa histórica guardada
+        stringBs = `<span class="font-medium text-gray-900">${Number(pago.monto_bs).toLocaleString('es-VE')} Bs</span> <br> <span class="text-[10px] text-gray-500">Tasa: ${pago.tasa_historica}</span>`;
       } else if (pago.estado === 'aprobado') {
-        accionHtml = `
-          <button onclick="window.revertirPago('${pago.id}')" class="bg-zinc-950 text-lime-400 font-black italic uppercase px-4 py-2 text-xs border border-lime-400 shadow transform skew-x-2 hover:bg-pink-600 hover:text-white hover:border-pink-500 transition group relative w-32 focus:outline-none focus:ring-2 focus:ring-white" title="Clic para deshacer">
-            <span class="group-hover:hidden">✓ Aprobado</span>
-            <span class="hidden group-hover:inline">⟲ Deshacer</span>
-          </button>
-        `;
+         // Es un pago viejo aprobado que no tenía tasa, no mostramos error
+         stringBs = '<span class="text-gray-400 text-xs">No registrada</span>';
       }
 
-      // Inyectamos la fila asegurando que tenga las 7 columnas (colspan)
+      let badgeEstado = '';
+      let btnAccion = '';
+
+      if (pago.estado === 'aprobado') {
+        badgeEstado = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Aprobado</span>`;
+        btnAccion = `<button onclick="window.revertirPago('${pago.id}')" class="text-xs text-gray-500 hover:text-orange-600 underline focus:outline-none">Revertir</button>`;
+      } else {
+        badgeEstado = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">Revisión</span>`;
+        btnAccion = `<button onclick="window.aprobarPago('${pago.id}', ${pago.monto})" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-700 shadow-sm transition">Aprobar</button>`;
+      }
+
       tbody.innerHTML += `
-        <tr class="hover:bg-zinc-800/50">
-          <td class="p-4 text-zinc-300">${fecha}</td>
-          <td class="p-4 font-black uppercase text-cyan-400">${nombreAtleta}</td>
-          <td class="p-4 font-bold text-white">${pago.metodo_pago}</td>
-          <td class="p-4 font-mono text-cyan-400">${pago.referencia}</td>
-          <td class="p-4 font-black text-pink-400">${pago.monto}$</td>
-          <td class="p-4 text-zinc-200">${pago.mes_correspondiente}</td>
-          <td class="p-4 text-center">${accionHtml}</td>
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-6 py-4 text-gray-500 font-medium">${fecha}</td>
+          <td class="px-6 py-4">
+            <div class="text-sm font-bold text-gray-900 uppercase">${nombreAtleta}</div>
+            <div class="text-xs text-gray-500">${cedulaAtleta}</div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="text-sm text-gray-900 font-mono">${pago.referencia}</div>
+            <div class="text-xs text-gray-500">${pago.metodo_pago}</div>
+          </td>
+          <td class="px-6 py-4 text-right text-sm font-black text-gray-900">$${pago.monto}</td>
+          <td class="px-6 py-4 text-right text-sm leading-tight">${stringBs}</td>
+          <td class="px-6 py-4 text-center text-sm text-gray-600">${pago.mes_correspondiente}</td>
+          <td class="px-6 py-4 text-center">
+            <div class="flex flex-col items-center gap-2">
+              ${badgeEstado}
+              ${btnAccion}
+            </div>
+          </td>
         </tr>
       `;
     });
   }
 
-  // 2. Cargar Datos Globales y Construir Cards
-  async function cargarDatosAtletas() {
-    const [{ data: alumnos, error: errAlumnos }, { data: pagos, error: errPagos }] = await Promise.all([
-      supabase.from('alumnos').select('*').order('nombre', { ascending: true }),
-      supabase.from('pagos').select('*').order('created_at', { ascending: false })
-    ]);
+  // Lógica de Tabs del Directorio
+  window.filtrarDirectorio = function(filtro) {
+    filtroActual = filtro;
+    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`filtro-${filtro}`).classList.add('active');
+    
+    renderizarDirectorio();
+  };
 
-    if (errAlumnos || errPagos) return console.error("Error cargando atletas");
+  function renderizarDirectorio() {
+    const tbody = document.getElementById('tablaDirectorioAtletas');
+    tbody.innerHTML = '';
 
-    cacheAlumnos = alumnos || [];
-    cachePagos = pagos || [];
+    let lista = cacheAlumnos;
+    if (filtroActual === 'INACTIVO') {
+      lista = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() === 'inactivo');
+    } else if (filtroActual !== 'TODOS') {
+      lista = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === filtroActual && (a.estatus || 'activo').toLowerCase() !== 'inactivo');
+    } else {
+       lista = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo');
+    }
 
-    renderizarCardsResumen();
-    renderizarTablaGrupo(grupoSeleccionado);
-  }
+    if (lista.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">No hay atletas en esta vista.</td></tr>`;
+      return;
+    }
 
-  function renderizarCardsResumen() {
-    const contenedorCards = document.getElementById('cardsNivelesResumen');
-    contenedorCards.innerHTML = '';
+    const fechaActual = new Date();
+    const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
 
-    const grupos = [
-      { id: 'AVANZADO', titulo: 'Avanzado', borde: 'border-cyan-400', texto: 'text-cyan-400', tipo: 'nivel' },
-      { id: 'INTERMEDIO', titulo: 'Intermedio', borde: 'border-lime-400', texto: 'text-lime-400', tipo: 'nivel' },
-      { id: 'PRINCIPIANTE', titulo: 'Principiante', borde: 'border-pink-500', texto: 'text-pink-400', tipo: 'nivel' },
-      { id: 'INACTIVO', titulo: 'No Activos', borde: 'border-zinc-500', texto: 'text-zinc-300', tipo: 'estatus' }
-    ];
-
-    grupos.forEach(g => {
-      let total = 0;
-      if (g.tipo === 'nivel') {
-        total = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === g.id && (a.estatus || 'activo').toLowerCase() !== 'inactivo').length;
+    lista.forEach(alumno => {
+      const pagosAlumno = cachePagos.filter(p => p.alumno_id === alumno.id);
+      const pagoMes = pagosAlumno.find(p => p.mes_correspondiente === mesActualStr);
+      
+      let badgeEstatusMes = '';
+      if ((alumno.estatus || 'activo').toLowerCase() === 'inactivo') {
+        badgeEstatusMes = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">Retirado</span>`;
+      } else if (pagoMes?.estado === 'aprobado') {
+        badgeEstatusMes = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Al Día</span>`;
+      } else if (pagoMes?.estado === 'revision') {
+        badgeEstatusMes = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">Revisión</span>`;
       } else {
-        total = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() === 'inactivo').length;
+        if (fechaActual.getDate() > 5) {
+          badgeEstatusMes = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">Moroso</span>`;
+        } else {
+          badgeEstatusMes = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">Pendiente</span>`;
+        }
       }
 
-      const esActivo = grupoSeleccionado === g.id;
+      let colorNivel = 'text-gray-500';
+      if(alumno.nivel === 'AVANZADO') colorNivel = 'text-blue-600 font-bold';
+      if(alumno.nivel === 'INTERMEDIO') colorNivel = 'text-green-600 font-bold';
 
-      contenedorCards.innerHTML += `
-        <div onclick="window.seleccionarGrupo('${g.id}')" class="bg-zinc-900 p-5 border-2 ${g.borde} cursor-pointer hover:-translate-y-1 transition transform -skew-x-2 shadow-[6px_6px_0px_rgba(0,0,0,0.5)] ${esActivo ? 'ring-4 ring-white' : ''}">
-          <div class="flex justify-between items-center mb-2">
-            <h3 class="text-xl font-black italic uppercase ${g.texto}">${g.titulo}</h3>
-            <span class="bg-black text-white font-mono font-black text-xs px-2.5 py-1 border border-zinc-700">${total}</span>
-          </div>
-          <p class="text-zinc-300 text-xs font-medium">Ver listado de atletas</p>
-        </div>
+      const telefonoLim = (alumno.telefono || '').replace(/\s+/g, '');
+      const btnWp = `<a href="https://wa.me/${telefonoLim}" target="_blank" class="text-green-600 hover:text-green-800 transition" title="WhatsApp"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 3.825 0 6.938 3.112 6.938 6.937 0 3.825-3.113 6.938-6.938 6.938z"/></svg></a>`;
+
+      tbody.innerHTML += `
+        <tr class="hover:bg-gray-50 transition border-b border-gray-50">
+          <td class="px-6 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gray-200 overflow-hidden border border-gray-300">
+               <img src="${alumno.foto_url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=100&auto=format&fit=crop&q=80'}" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <div class="text-sm font-bold text-gray-900 uppercase">${alumno.nombre}</div>
+              <div class="text-xs text-gray-500">${alumno.cedula}</div>
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="text-sm text-gray-700 font-mono">${alumno.telefono}</div>
+            <div class="text-xs text-gray-500">${alumno.email}</div>
+          </td>
+          <td class="px-6 py-4 text-center text-xs ${colorNivel}">${alumno.nivel || 'N/A'}</td>
+          <td class="px-6 py-4 text-center">${badgeEstatusMes}</td>
+          <td class="px-6 py-4 text-center">
+            <div class="flex justify-center items-center gap-3">
+              <button onclick="window.verFichaAtleta('${alumno.id}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium transition focus:outline-none">Ficha</button>
+              ${btnWp}
+            </div>
+          </td>
+        </tr>
       `;
     });
   }
 
-  window.seleccionarGrupo = function(grupo) {
-    grupoSeleccionado = grupo;
-    renderizarCardsResumen();
-    renderizarTablaGrupo(grupo);
+  // --- LÓGICA DE APROBACIÓN CON TASA HISTÓRICA ---
+  let pagoPendiente = null;
+  const modalConfirmar = document.getElementById('modalConfirmarPago');
+  
+  window.aprobarPago = function(pagoId, montoUsd) {
+    if(tasaActualDolar <= 0) {
+      alert("¡ATENCIÓN! No has configurado la Tasa del Día. Por favor, actualiza la tasa arriba antes de aprobar pagos para que el cálculo en Bolívares sea correcto.");
+      document.getElementById('inputTasa').focus();
+      return;
+    }
+    
+    pagoPendiente = { id: pagoId, usd: montoUsd };
+    modalConfirmar.classList.remove('hidden');
   };
 
-  function renderizarTablaGrupo(grupo) {
-    const contenedor = document.getElementById('contenedorNivelActivo');
-    contenedor.classList.remove('hidden');
+  document.getElementById('btnCancelarAprobacion').addEventListener('click', () => {
+    pagoPendiente = null;
+    modalConfirmar.classList.add('hidden');
+  });
 
-    let lista = [];
-    let tituloGrupo = '';
+  document.getElementById('btnConfirmarAprobacion').addEventListener('click', async () => {
+    if (!pagoPendiente) return;
+    const btn = document.getElementById('btnConfirmarAprobacion');
+    btn.textContent = 'Procesando...';
+    btn.disabled = true;
 
-    if (grupo === 'INACTIVO') {
-      lista = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() === 'inactivo');
-      tituloGrupo = 'Atletas No Activos / Retirados';
-    } else {
-      lista = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === grupo && (a.estatus || 'activo').toLowerCase() !== 'inactivo');
-      tituloGrupo = `Atletas Activos en Nivel: ${grupo}`;
+    try {
+      // 1. Calculamos el equivalente en Bs en este instante exacto
+      const calculoBs = (pagoPendiente.usd * tasaActualDolar).toFixed(2);
+
+      // 2. Guardamos estado, tasa histórica y monto bs en la base de datos
+      const { error } = await supabase
+        .from('pagos')
+        .update({ 
+          estado: 'aprobado',
+          tasa_historica: tasaActualDolar,
+          monto_bs: calculoBs
+        })
+        .eq('id', pagoPendiente.id);
+
+      if (error) throw error;
+      modalConfirmar.classList.add('hidden');
+
+      await cargarDatosGlobales(); // Refresca UI
+    } catch (err) {
+      console.error(err);
+      alert("Error al aprobar pago.");
+    } finally {
+      btn.textContent = 'Confirmar Aprobación';
+      btn.disabled = false;
+      pagoPendiente = null;
     }
+  });
 
-    const fechaActual = new Date();
-    const diaActual = fechaActual.getDate();
-    const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
+  // Revertir Pago
+  let pagoRevertirId = null;
+  const modalRevertir = document.getElementById('modalRevertirPago');
+  
+  window.revertirPago = function(pagoId) {
+    pagoRevertirId = pagoId;
+    modalRevertir.classList.remove('hidden');
+  };
 
-    let filasHtml = '';
-    if (lista.length === 0) {
-      filasHtml = `<tr><td colspan="4" class="p-6 text-center text-zinc-400 italic">No hay atletas en esta categoría.</td></tr>`;
-    } else {
-      lista.forEach(alumno => {
-        const telefonoLim = (alumno.telefono || '').replace(/\s+/g, '');
-        const pagosAlumno = cachePagos.filter(p => p.alumno_id === alumno.id);
-        const pagoMes = pagosAlumno.find(p => p.mes_correspondiente === mesActualStr);
-        const ultimoPago = pagosAlumno[0];
+  document.getElementById('btnCancelarReversion').addEventListener('click', () => {
+    pagoRevertirId = null;
+    modalRevertir.classList.add('hidden');
+  });
 
-        let badgeHtml = '';
-        let mensajeWp = '';
+  document.getElementById('btnConfirmarReversion').addEventListener('click', async () => {
+    if (!pagoRevertirId) return;
+    const btn = document.getElementById('btnConfirmarReversion');
+    btn.textContent = 'Revirtiendo...';
+    btn.disabled = true;
 
-        if ((alumno.estatus || 'activo').toLowerCase() === 'inactivo') {
-          badgeHtml = `<span class="bg-zinc-800 text-zinc-300 px-3 py-1 text-xs font-black uppercase border border-zinc-600">INACTIVO</span>`;
-          mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Te saludamos de Pupi Bike Kids. ¿Cómo estás?`);
-        } else if (pagoMes?.estado === 'aprobado' || (!pagoMes && ultimoPago?.estado === 'aprobado')) {
-          badgeHtml = `<span class="bg-lime-400 text-black px-3 py-1 text-xs font-black uppercase">✓ AL DÍA</span>`;
-          mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Te escribimos de Pupi Bike Kids. ¡Gracias por estar al día! Te recordamos nuestros próximos eventos.`);
-        } else if (pagoMes?.estado === 'revision' || (!pagoMes && ultimoPago?.estado === 'revision')) {
-          badgeHtml = `<span class="bg-cyan-400 text-black px-3 py-1 text-xs font-black uppercase">⏳ REVISIÓN</span>`;
-          mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recibimos tu comprobante de pago. Pronto lo validaremos en el sistema.`);
-        } else {
-          if (diaActual > 5) {
-            badgeHtml = `<span class="bg-pink-600 text-white px-3 py-1 text-xs font-black uppercase animate-pulse">⚠️ MOROSO</span>`;
-            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recordatorio de Pupi Bike Kids: El plazo de pago para la mensualidad de ${mesActualStr} ha vencido. Por favor, reporta tu pago lo antes posible.`);
-          } else {
-            badgeHtml = `<span class="bg-yellow-400 text-black px-3 py-1 text-xs font-black uppercase">PENDIENTE</span>`;
-            mensajeWp = encodeURIComponent(`¡Hola ${alumno.nombre}! Recuerda que estamos en los días de pago (del 1 al 5) para la mensualidad.`);
-          }
-        }
+    try {
+      // Al revertir, borramos la tasa histórica para evitar cruces
+      const { error } = await supabase
+        .from('pagos')
+        .update({ estado: 'revision', tasa_historica: null, monto_bs: null })
+        .eq('id', pagoRevertirId);
 
-        filasHtml += `
-          <tr class="hover:bg-zinc-800/50">
-            <td class="p-4 font-bold text-white uppercase">${alumno.nombre}</td>
-            <td class="p-4">${badgeHtml}</td>
-            <td class="p-4 text-zinc-300 text-xs">${alumno.email}</td>
-            <td class="p-4 text-center">
-              <div class="flex items-center justify-center gap-2">
-                <button onclick="window.verFichaAtleta('${alumno.id}')" class="bg-cyan-500 text-black font-black px-3 py-1.5 text-xs uppercase hover:bg-cyan-400 transition shadow focus:outline-none focus:ring-2 focus:ring-white">
-                  🔍 Ver Ficha
-                </button>
-                <a href="https://wa.me/${telefonoLim}?text=${mensajeWp}" target="_blank" class="bg-emerald-600 text-white font-black px-3 py-1.5 text-xs uppercase hover:bg-emerald-500 transition shadow focus:outline-none focus:ring-2 focus:ring-white">
-                  💬 WhatsApp
-                </a>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
+      if (error) throw error;
+      modalRevertir.classList.add('hidden');
+      await cargarDatosGlobales();
+    } catch (err) {
+      console.error(err);
+      alert("Error al revertir pago.");
+    } finally {
+      btn.textContent = 'Revertir Pago';
+      btn.disabled = false;
+      pagoRevertirId = null;
     }
+  });
 
-    contenedor.innerHTML = `
-      <div class="bg-zinc-900 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] overflow-hidden">
-        <div class="bg-black px-6 py-4 border-b border-zinc-800 flex justify-between items-center">
-          <h3 class="text-xl font-black italic uppercase text-cyan-400">${tituloGrupo}</h3>
-          <span class="bg-cyan-400 text-black font-black text-xs px-3 py-1 uppercase">${lista.length} Atletas</span>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="bg-zinc-950 text-zinc-200 text-xs font-black uppercase tracking-wider border-b border-zinc-800">
-                <th class="p-4">Atleta</th>
-                <th class="p-4">Estatus del Mes</th>
-                <th class="p-4">Correo</th>
-                <th class="p-4 text-center">Acciones</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-zinc-800 text-sm font-medium">
-              ${filasHtml}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    `;
+  // Tasa del Dólar Guardar
+  document.getElementById('formTasa').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btnGuardarTasa');
+    const nuevoValor = parseFloat(document.getElementById('inputTasa').value);
+    const msg = document.getElementById('mensajeTasa');
+    btn.disabled = true;
+
+    try {
+      const now = new Date();
+      const { error } = await supabase
+        .from('configuracion')
+        .upsert({ clave: 'tasa_dolar', valor: String(nuevoValor), updated_at: now }, { onConflict: 'clave' });
+
+      if (error) throw error;
+      tasaActualDolar = nuevoValor;
+      msg.textContent = "Tasa actualizada correctamente.";
+      msg.className = "text-xs font-medium mt-3 text-center text-green-600 block";
+      document.getElementById('fechaTasa').textContent = `Act. ${now.toLocaleDateString('es-ES', { hour: '2-digit', minute:'2-digit' })}`;
+    } catch (err) {
+      msg.textContent = "Error al conectar.";
+      msg.className = "text-xs font-medium mt-3 text-center text-red-500 block";
+    } finally {
+      btn.disabled = false;
+      setTimeout(() => msg.classList.add('hidden'), 3000);
+    }
+  });
+
+  // Funciones de Respaldo CSV (Optimizadas con Nombre y Cedula)
+  document.getElementById('btnExportarPagos')?.addEventListener('click', () => {
+    if (!cachePagos.length) return alert("No hay pagos para exportar.");
+    
+    // Mapeamos los pagos para inyectar el nombre y cedula del alumno en el excel final
+    const exportData = cachePagos.map(p => {
+      const atleta = cacheAlumnos.find(a => a.id === p.alumno_id);
+      return {
+        Fecha_Registro: new Date(p.created_at).toLocaleDateString('es-ES'),
+        Atleta: atleta ? atleta.nombre : 'Desconocido',
+        Cedula: atleta ? atleta.cedula : 'N/A',
+        Mes_Correspondiente: p.mes_correspondiente,
+        Monto_USD: p.monto,
+        Tasa_Aplicada: p.tasa_historica || 'N/A',
+        Monto_BS: p.monto_bs || 'N/A',
+        Metodo: p.metodo_pago,
+        Referencia: p.referencia,
+        Estado: p.estado
+      };
+    });
+    
+    exportarACSV(exportData, `PupiBike_Pagos_${new Date().toISOString().split('T')[0]}.csv`);
+  });
+
+  document.getElementById('btnExportarAlumnos')?.addEventListener('click', () => {
+     exportarACSV(cacheAlumnos, `PupiBike_Alumnos_${new Date().toISOString().split('T')[0]}.csv`);
+  });
+
+  function exportarACSV(arr, filename) {
+    if (!arr || !arr.length) return;
+    const keys = Object.keys(arr[0]);
+    const csvContent = "\uFEFF" + [keys.join(","), ...arr.map(r => keys.map(k => JSON.stringify(r[k] ?? "")).join(","))].join("\n");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }));
+    link.download = filename;
+    link.click();
   }
 
-  // --- MODAL DE GESTIÓN TOTAL DE LA FICHA DEL ATLETA ---
+  // Correo Masivo
+  document.getElementById('btnCorreoMasivo')?.addEventListener('click', () => {
+    const emails = cacheAlumnos.map(a => a.email).filter(Boolean).join(',');
+    if (!emails) return alert("No hay correos registrados.");
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${emails}&su=Academia%20PupiBike%20Kids`, '_blank');
+  });
+
+  document.getElementById('btnAdminLogout')?.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  });
+
+  // --- GESTIÓN COMPLETA DEL ATLETA (Paso 3) ---
   const modalFicha = document.getElementById('modalFichaAtleta');
-  const contenidoFicha = document.getElementById('contenidoFichaAtleta');
   document.getElementById('btnCerrarModalFicha').addEventListener('click', () => modalFicha.classList.add('hidden'));
 
   window.verFichaAtleta = function(alumnoId) {
-    window.atletaActivoId = alumnoId;
     const alumno = cacheAlumnos.find(a => a.id === alumnoId);
     if (!alumno) return;
-
     modalFicha.classList.remove('hidden');
 
-    const pagosAtleta = cachePagos.filter(p => p.alumno_id === alumnoId);
-    const foto = alumno.foto_url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80';
+    const esInactivo = (alumno.estatus || 'activo').toLowerCase() === 'inactivo';
     const bicis = alumno.tipos_bici || [];
     const b1 = bicis[0] || {};
     const b2 = bicis[1] || {};
-    const esInactivo = (alumno.estatus || 'activo').toLowerCase() === 'inactivo';
 
-    let pagosHtml = '<p class="text-zinc-400 text-xs italic p-4 text-center">No hay reportes de pagos para este atleta.</p>';
-    if (pagosAtleta && pagosAtleta.length > 0) {
-      pagosHtml = `
-        <table class="w-full text-left text-xs">
-          <thead class="bg-zinc-950 text-pink-400 uppercase font-black">
-            <tr>
-              <th class="p-2">Fecha</th>
-              <th class="p-2">Mes</th>
-              <th class="p-2">Método</th>
-              <th class="p-2">Ref</th>
-              <th class="p-2">Monto</th>
-              <th class="p-2 text-center">Acción</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-zinc-800">
-            ${pagosAtleta.map(p => {
-              const f = new Date(p.created_at).toLocaleDateString('es-ES');
-              let btn = '';
-              if (p.estado === 'revision') {
-                btn = `<button onclick="window.aprobarPago('${p.id}')" class="bg-lime-400 text-black px-2 py-1 font-black uppercase text-[10px] hover:bg-lime-300 focus:outline-none">✓ Aprobar</button>`;
-              } else {
-                btn = `<button onclick="window.revertirPago('${p.id}')" class="bg-zinc-800 text-lime-400 border border-lime-400 px-2 py-1 font-black uppercase text-[10px] hover:bg-pink-600 hover:text-white focus:outline-none">✓ Aprobado</button>`;
-              }
-              return `
-                <tr class="hover:bg-zinc-800/40">
-                  <td class="p-2 text-zinc-300">${f}</td>
-                  <td class="p-2 font-bold text-white">${p.mes_correspondiente}</td>
-                  <td class="p-2 text-zinc-300">${p.metodo_pago}</td>
-                  <td class="p-2 font-mono text-cyan-400">${p.referencia}</td>
-                  <td class="p-2 font-black text-pink-400">${p.monto}$</td>
-                  <td class="p-2 text-center">${btn}</td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
-      `;
-    }
-
-    contenidoFicha.innerHTML = `
-      <div class="flex flex-col gap-6">
-        <!-- Encabezado con Foto y Botones de Estatus -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-zinc-800 pb-4">
-          <div class="flex items-center gap-4">
-            <img src="${foto}" class="w-20 h-20 rounded-full object-cover border-2 border-cyan-400 bg-zinc-950" />
-            <div>
-              <h2 class="text-2xl font-black uppercase italic text-white">${alumno.nombre}</h2>
-              <p class="text-zinc-300 text-xs">${alumno.email}</p>
-              <span class="inline-block px-2.5 py-0.5 text-[10px] font-black uppercase mt-1 ${esInactivo ? 'bg-zinc-800 text-zinc-300 border border-zinc-600' : 'bg-lime-400 text-black'}">
-                ${esInactivo ? 'NO ACTIVO / RETIRADO' : 'MATRÍCULA ACTIVA'}
-              </span>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="window.alternarEstatusAtleta('${alumno.id}', '${esInactivo ? 'activo' : 'inactivo'}')" class="px-4 py-2 text-xs font-black uppercase italic transition border focus:outline-none focus:ring-2 focus:ring-white ${esInactivo ? 'bg-lime-400 text-black hover:bg-lime-300 border-lime-400' : 'bg-zinc-800 text-yellow-400 hover:bg-zinc-700 border-yellow-500'}">
-              ${esInactivo ? '✓ Reactivar Atleta' : '📁 Mover a No Activos'}
-            </button>
-            <button type="button" onclick="window.eliminarAtletaDefinitivo('${alumno.id}', '${alumno.nombre}')" class="px-3 py-2 text-xs font-black uppercase italic bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white border border-red-500 transition focus:outline-none focus:ring-2 focus:ring-red-400">
-              🗑️ Eliminar
-            </button>
+    const cont = document.getElementById('contenidoFichaAtleta');
+    cont.innerHTML = `
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-200">
+        <div class="flex items-center gap-4">
+          <img src="${alumno.foto_url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80'}" class="w-16 h-16 rounded-full object-cover border border-gray-200 shadow-sm">
+          <div>
+            <h3 class="text-xl font-bold text-gray-900 uppercase tracking-tight">${alumno.nombre}</h3>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${esInactivo ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-800'} mt-1">
+              ${esInactivo ? 'Retirado / Inactivo' : 'Matrícula Activa'}
+            </span>
           </div>
         </div>
+        <div class="flex gap-2">
+           <button type="button" onclick="window.alternarEstatusAtleta('${alumno.id}', '${esInactivo ? 'activo' : 'inactivo'}')" class="px-3 py-1.5 text-xs font-bold rounded-md border ${esInactivo ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100'} transition shadow-sm">
+             ${esInactivo ? '✓ Reactivar' : '⏸ Suspender'}
+           </button>
+           <button type="button" onclick="window.eliminarAtletaDefinitivo('${alumno.id}', '${alumno.nombre}')" class="px-3 py-1.5 text-xs font-bold rounded-md border bg-red-50 text-red-700 border-red-200 hover:bg-red-100 transition shadow-sm">
+             🗑️ Eliminar
+           </button>
+        </div>
+      </div>
 
-        <!-- FORMULARIO DE EDICIÓN TOTAL -->
-        <form id="formAdminEditarAtleta" class="flex flex-col gap-5">
-          <h3 class="text-cyan-400 font-black uppercase text-sm border-b border-zinc-800 pb-2">1. Datos Personales y Nivel</h3>
-          
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+      <form id="formAdminEditarAtleta" class="space-y-6">
+        <!-- 1. Datos Personales -->
+        <div>
+          <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3 border-b border-gray-100 pb-1 text-blue-600">1. Datos Personales y Académicos</h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label class="block text-zinc-200 uppercase font-bold mb-1">Nivel de Aprendizaje</label>
-              <select id="adminEditNivel" class="w-full bg-zinc-950 border border-zinc-700 text-lime-400 font-black p-2 uppercase focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
+              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Nivel</label>
+              <select id="adminEditNivel" class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="PRINCIPIANTE" ${alumno.nivel === 'PRINCIPIANTE' ? 'selected' : ''}>PRINCIPIANTE</option>
                 <option value="INTERMEDIO" ${alumno.nivel === 'INTERMEDIO' ? 'selected' : ''}>INTERMEDIO</option>
                 <option value="AVANZADO" ${alumno.nivel === 'AVANZADO' ? 'selected' : ''}>AVANZADO</option>
               </select>
             </div>
             <div>
-              <label class="block text-zinc-200 uppercase font-bold mb-1">Nombre Completo</label>
-              <input type="text" id="adminEditNombre" value="${alumno.nombre || ''}" class="w-full bg-zinc-950 border border-zinc-700 text-white font-bold p-2 uppercase focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
+              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Nombre Completo</label>
+              <input type="text" id="adminEditNombre" value="${alumno.nombre || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
-              <label class="block text-zinc-200 uppercase font-bold mb-1">Cédula</label>
-              <input type="text" id="adminEditCedula" value="${alumno.cedula || ''}" class="w-full bg-zinc-950 border border-zinc-700 text-white font-bold p-2 uppercase focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
+              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Cédula</label>
+              <input type="text" id="adminEditCedula" value="${alumno.cedula || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
-              <label class="block text-zinc-200 uppercase font-bold mb-1">Teléfono</label>
-              <input type="text" id="adminEditTelefono" value="${alumno.telefono || ''}" class="w-full bg-zinc-950 border border-zinc-700 text-white font-bold p-2 uppercase focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
+              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Teléfono</label>
+              <input type="text" id="adminEditTelefono" value="${alumno.telefono || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
-              <label class="block text-zinc-200 uppercase font-bold mb-1">Tipo de Sangre</label>
-              <select id="adminEditSangre" class="w-full bg-zinc-950 border border-zinc-700 text-pink-400 font-black p-2 uppercase focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
-                <option value="">-- No especificado --</option>
-                <option value="O+" ${alumno.tipo_sangre === 'O+' ? 'selected' : ''}>O+</option>
-                <option value="O-" ${alumno.tipo_sangre === 'O-' ? 'selected' : ''}>O-</option>
-                <option value="A+" ${alumno.tipo_sangre === 'A+' ? 'selected' : ''}>A+</option>
-                <option value="A-" ${alumno.tipo_sangre === 'A-' ? 'selected' : ''}>A-</option>
-                <option value="B+" ${alumno.tipo_sangre === 'B+' ? 'selected' : ''}>B+</option>
-                <option value="B-" ${alumno.tipo_sangre === 'B-' ? 'selected' : ''}>B-</option>
-                <option value="AB+" ${alumno.tipo_sangre === 'AB+' ? 'selected' : ''}>AB+</option>
-                <option value="AB-" ${alumno.tipo_sangre === 'AB-' ? 'selected' : ''}>AB-</option>
+              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Tipo de Sangre</label>
+              <select id="adminEditSangre" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                 <option value="">-- No especificado --</option>
+                 <option value="O+" ${alumno.tipo_sangre === 'O+' ? 'selected' : ''}>O+</option>
+                 <option value="O-" ${alumno.tipo_sangre === 'O-' ? 'selected' : ''}>O-</option>
+                 <option value="A+" ${alumno.tipo_sangre === 'A+' ? 'selected' : ''}>A+</option>
+                 <option value="A-" ${alumno.tipo_sangre === 'A-' ? 'selected' : ''}>A-</option>
+                 <option value="B+" ${alumno.tipo_sangre === 'B+' ? 'selected' : ''}>B+</option>
+                 <option value="B-" ${alumno.tipo_sangre === 'B-' ? 'selected' : ''}>B-</option>
+                 <option value="AB+" ${alumno.tipo_sangre === 'AB+' ? 'selected' : ''}>AB+</option>
+                 <option value="AB-" ${alumno.tipo_sangre === 'AB-' ? 'selected' : ''}>AB-</option>
               </select>
             </div>
             <div>
-              <label class="block text-zinc-200 uppercase font-bold mb-1">Fecha de Nacimiento</label>
-              <input type="date" id="adminEditNacimiento" value="${alumno.fecha_nacimiento || ''}" class="w-full bg-zinc-950 border border-zinc-700 text-white font-bold p-2 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
+              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Fecha de Nacimiento</label>
+              <input type="date" id="adminEditNacimiento" value="${alumno.fecha_nacimiento || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
-            <div class="col-span-1 md:col-span-3">
-              <label class="block text-zinc-200 uppercase font-bold mb-1">Dirección de Residencia</label>
-              <input type="text" id="adminEditDireccion" value="${alumno.direccion || ''}" class="w-full bg-zinc-950 border border-zinc-700 text-white font-bold p-2 uppercase focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
+            <div class="md:col-span-3">
+              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Dirección de Residencia</label>
+              <input type="text" id="adminEditDireccion" value="${alumno.direccion || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
           </div>
+        </div>
 
-          <!-- EDICIÓN DE BICICLETAS -->
-          <h3 class="text-lime-400 font-black uppercase text-sm border-b border-zinc-800 pb-2 mt-2">2. Inventario de Bicicletas</h3>
-          
-          <div class="space-y-3 text-xs">
-            <!-- Bici 1 -->
-            <div class="bg-zinc-950 p-3 border border-zinc-800">
-              <span class="text-lime-400 font-black uppercase text-[11px] block mb-2">Bicicleta 1 (Principal)</span>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <!-- 2. Bicicletas -->
+        <div>
+          <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3 border-b border-gray-100 pb-1 text-blue-600">2. Inventario de Bicicletas</h4>
+          <div class="space-y-4">
+            
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <span class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 block">Principal</span>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div>
-                  <label class="block text-zinc-300 text-[10px] uppercase font-bold mb-1">Tipo</label>
-                  <select id="adminBici1Tipo" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 font-bold focus:outline-none focus:border-lime-400">
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Tipo</label>
+                  <select id="adminBici1Tipo" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm bg-white text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     <option value="MTB" ${b1.tipo === 'MTB' ? 'selected' : ''}>MTB</option>
                     <option value="RUTA" ${b1.tipo === 'RUTA' ? 'selected' : ''}>RUTA</option>
                     <option value="GRAVEL" ${b1.tipo === 'GRAVEL' ? 'selected' : ''}>GRAVEL</option>
@@ -568,27 +734,26 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
                   </select>
                 </div>
                 <div>
-                  <label class="block text-zinc-300 text-[10px] uppercase font-bold mb-1">Rin</label>
-                  <input type="text" id="adminBici1Rin" value="${b1.rin || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold focus:outline-none focus:border-lime-400">
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Rin</label>
+                  <input type="text" id="adminBici1Rin" value="${b1.rin || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                  <label class="block text-zinc-300 text-[10px] uppercase font-bold mb-1">Marca</label>
-                  <input type="text" id="adminBici1Marca" value="${b1.marca || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold focus:outline-none focus:border-lime-400">
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Marca</label>
+                  <input type="text" id="adminBici1Marca" value="${b1.marca || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                  <label class="block text-zinc-300 text-[10px] uppercase font-bold mb-1">Color</label>
-                  <input type="text" id="adminBici1Color" value="${b1.color || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold focus:outline-none focus:border-lime-400">
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Color</label>
+                  <input type="text" id="adminBici1Color" value="${b1.color || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
               </div>
             </div>
-
-            <!-- Bici 2 -->
-            <div class="bg-zinc-950 p-3 border border-zinc-800">
-              <span class="text-cyan-400 font-black uppercase text-[11px] block mb-2">Bicicleta 2 (Opcional)</span>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+            
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <span class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 block">Secundaria (Opcional)</span>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div>
-                  <label class="block text-zinc-300 text-[10px] uppercase font-bold mb-1">Tipo</label>
-                  <select id="adminBici2Tipo" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 font-bold focus:outline-none focus:border-cyan-400">
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Tipo</label>
+                  <select id="adminBici2Tipo" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm bg-white text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     <option value="">-- Ninguna --</option>
                     <option value="MTB" ${b2.tipo === 'MTB' ? 'selected' : ''}>MTB</option>
                     <option value="RUTA" ${b2.tipo === 'RUTA' ? 'selected' : ''}>RUTA</option>
@@ -597,43 +762,36 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
                   </select>
                 </div>
                 <div>
-                  <label class="block text-zinc-300 text-[10px] uppercase font-bold mb-1">Rin</label>
-                  <input type="text" id="adminBici2Rin" value="${b2.rin || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold focus:outline-none focus:border-cyan-400">
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Rin</label>
+                  <input type="text" id="adminBici2Rin" value="${b2.rin || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                  <label class="block text-zinc-300 text-[10px] uppercase font-bold mb-1">Marca</label>
-                  <input type="text" id="adminBici2Marca" value="${b2.marca || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold focus:outline-none focus:border-cyan-400">
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Marca</label>
+                  <input type="text" id="adminBici2Marca" value="${b2.marca || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                  <label class="block text-zinc-300 text-[10px] uppercase font-bold mb-1">Color</label>
-                  <input type="text" id="adminBici2Color" value="${b2.color || ''}" class="w-full bg-zinc-900 border border-zinc-700 text-white p-1.5 uppercase font-bold focus:outline-none focus:border-cyan-400">
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Color</label>
+                  <input type="text" id="adminBici2Color" value="${b2.color || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
               </div>
             </div>
           </div>
-
-          <div class="flex justify-end gap-3 mt-2">
-            <button type="submit" id="btnAdminGuardarAtleta" class="bg-lime-400 text-black font-black italic uppercase px-6 py-2.5 text-xs hover:bg-lime-300 transition shadow focus:outline-none focus:ring-2 focus:ring-white">
-              💾 Guardar Todos los Cambios
-            </button>
-          </div>
-        </form>
-
-        <!-- Historial y Aprobación de Pagos -->
-        <div class="border-t border-zinc-800 pt-4">
-          <h3 class="text-pink-400 font-black uppercase text-sm mb-3">Historial de Recibos y Pagos</h3>
-          <div class="bg-zinc-950 border border-zinc-800 overflow-x-auto">
-            ${pagosHtml}
-          </div>
         </div>
-      </div>
+
+        <!-- Acciones -->
+        <div class="flex justify-end pt-4 border-t border-gray-200">
+          <button type="submit" id="btnAdminGuardarAtleta" class="bg-blue-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-blue-700 transition shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            💾 Guardar Cambios en Ficha
+          </button>
+        </div>
+      </form>
     `;
 
-    // Guardar cambios totales desde el admin
+    // Evento para guardar cambios en la BD
     document.getElementById('formAdminEditarAtleta').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btnAdminGuardarAtleta');
-      btn.textContent = 'GUARDANDO...';
+      btn.textContent = 'Guardando...';
       btn.disabled = true;
 
       try {
@@ -655,7 +813,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
             color: document.getElementById('adminBici1Color').value.trim().toUpperCase()
           });
         }
-
         const b2Tipo = document.getElementById('adminBici2Tipo').value;
         if (b2Tipo) {
           listaBicis.push({
@@ -681,24 +838,23 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
           .eq('id', alumnoId);
 
         if (error) throw error;
-
-        alert("¡Ficha y bicicletas actualizadas exitosamente!");
-        await cargarDatosAtletas();
-        window.verFichaAtleta(alumnoId);
-
+        
+        alert("¡Ficha actualizada exitosamente!");
+        await cargarDatosGlobales(); // Actualiza la tabla de fondo
+        window.verFichaAtleta(alumnoId); // Refresca el modal para mostrar datos nuevos
       } catch (err) {
         console.error(err);
         alert("Error al actualizar la información.");
       } finally {
-        btn.textContent = '💾 Guardar Todos los Cambios';
+        btn.textContent = '💾 Guardar Cambios en Ficha';
         btn.disabled = false;
       }
     });
   };
 
-  // Cambiar estatus de activo a inactivo y viceversa
+  // Función para Suspender / Reactivar Atleta
   window.alternarEstatusAtleta = async function(alumnoId, nuevoEstatus) {
-    const accion = nuevoEstatus === 'inactivo' ? 'mover a No Activos' : 'reactivar';
+    const accion = nuevoEstatus === 'inactivo' ? 'suspender a No Activos' : 'reactivar';
     if (!confirm(`¿Estás seguro de ${accion} a este atleta?`)) return;
 
     try {
@@ -708,175 +864,35 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
         .eq('id', alumnoId);
 
       if (error) throw error;
-
-      alert(`Atleta ${nuevoEstatus === 'inactivo' ? 'archivado en No Activos' : 'reactivado exitosamente'}.`);
-      await cargarDatosAtletas();
-      window.verFichaAtleta(alumnoId);
+      
+      alert(`Atleta ${nuevoEstatus === 'inactivo' ? 'movido a Inactivos' : 'reactivado exitosamente'}.`);
+      await cargarDatosGlobales();
+      window.verFichaAtleta(alumnoId); 
     } catch (err) {
       console.error(err);
-      alert("Error al cambiar el estatus del atleta.");
+      alert("Error al cambiar el estatus.");
     }
   };
 
-  // Eliminar atleta definitivo
+  // Función para Eliminar Atleta Definitivamente
   window.eliminarAtletaDefinitivo = async function(alumnoId, nombre) {
-    const confirmacion = prompt(`⚠️ ADVERTENCIA: Esta acción eliminará permanentemente al atleta y todos sus datos.\n\nEscribe "ELIMINAR" para confirmar la baja de: ${nombre}`);
+    const confirmacion = prompt(`⚠️ ADVERTENCIA: Esta acción eliminará permanentemente a este atleta y todo su historial de pagos.\n\nPara confirmar, escribe: ELIMINAR`);
     if (confirmacion !== 'ELIMINAR') return;
 
     try {
-      // 1. Borrar pagos asociados primero para mantener integridad referencial
+      // 1. Borramos sus pagos por seguridad referencial
       await supabase.from('pagos').delete().eq('alumno_id', alumnoId);
 
-      // 2. Borrar registro de alumno
+      // 2. Borramos la ficha del alumno
       const { error } = await supabase.from('alumnos').delete().eq('id', alumnoId);
       if (error) throw error;
 
-      alert(`El atleta ${nombre} ha sido eliminado definitivamente.`);
+      alert(`El atleta ${nombre} ha sido eliminado del sistema.`);
       modalFicha.classList.add('hidden');
-      await cargarDatosAtletas();
+      await cargarDatosGlobales();
     } catch (err) {
       console.error(err);
       alert("Error al eliminar el atleta.");
     }
   };
-
-  // --- LÓGICA DE APROBACIÓN / REVERSIÓN DE PAGOS ---
-  let pagoPendienteId = null;
-  const modalConfirmar = document.getElementById('modalConfirmarPago');
-  const btnConfirmar = document.getElementById('btnConfirmarAprobacion');
-  const btnCancelar = document.getElementById('btnCancelarAprobacion');
-
-  window.aprobarPago = function(pagoId) {
-    pagoPendienteId = pagoId;
-    modalConfirmar.classList.remove('hidden');
-  };
-
-  btnCancelar.addEventListener('click', () => {
-    pagoPendienteId = null;
-    modalConfirmar.classList.add('hidden');
-  });
-
-  btnConfirmar.addEventListener('click', async () => {
-    if (!pagoPendienteId) return;
-    btnConfirmar.textContent = 'PROCESANDO...';
-    btnConfirmar.disabled = true;
-
-    try {
-      const { error } = await supabase
-        .from('pagos')
-        .update({ estado: 'aprobado' })
-        .eq('id', pagoPendienteId);
-
-      if (error) throw error;
-      modalConfirmar.classList.add('hidden');
-
-      await Promise.all([cargarPagosPendientes(), cargarDatosAtletas()]);
-
-      if (!modalFicha.classList.contains('hidden') && window.atletaActivoId) {
-        window.verFichaAtleta(window.atletaActivoId);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error al aprobar pago.");
-    } finally {
-      btnConfirmar.textContent = 'SÍ, APROBAR';
-      btnConfirmar.disabled = false;
-      pagoPendienteId = null;
-    }
-  });
-
-  let pagoRevertirId = null;
-  const modalRevertir = document.getElementById('modalRevertirPago');
-  const btnConfReversion = document.getElementById('btnConfirmarReversion');
-  const btnCancReversion = document.getElementById('btnCancelarReversion');
-
-  window.revertirPago = function(pagoId) {
-    pagoRevertirId = pagoId;
-    modalRevertir.classList.remove('hidden');
-  };
-
-  btnCancReversion.addEventListener('click', () => {
-    pagoRevertirId = null;
-    modalRevertir.classList.add('hidden');
-  });
-
-  btnConfReversion.addEventListener('click', async () => {
-    if (!pagoRevertirId) return;
-    btnConfReversion.textContent = 'PROCESANDO...';
-    btnConfReversion.disabled = true;
-
-    try {
-      const { error } = await supabase
-        .from('pagos')
-        .update({ estado: 'revision' })
-        .eq('id', pagoRevertirId);
-
-      if (error) throw error;
-      modalRevertir.classList.add('hidden');
-
-      await Promise.all([cargarPagosPendientes(), cargarDatosAtletas()]);
-
-      if (!modalFicha.classList.contains('hidden') && window.atletaActivoId) {
-        window.verFichaAtleta(window.atletaActivoId);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error al revertir pago.");
-    } finally {
-      btnConfReversion.textContent = 'SÍ, DESHACER';
-      btnConfReversion.disabled = false;
-      pagoRevertirId = null;
-    }
-  });
-
-  // Guardar Tasa del Dólar
-  document.getElementById('formTasa').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const nuevoValor = parseFloat(document.getElementById('inputTasa').value);
-    const msg = document.getElementById('mensajeTasa');
-
-    try {
-      const { error } = await supabase
-        .from('configuracion')
-        .upsert({ clave: 'tasa_dolar', valor: String(nuevoValor), updated_at: new Date() }, { onConflict: 'clave' });
-
-      if (error) throw error;
-      msg.textContent = "¡Tasa actualizada con éxito!";
-      msg.className = "text-xs font-bold mt-2 text-center text-lime-400 block";
-    } catch (err) {
-      console.error(err);
-      msg.textContent = "Error al actualizar la tasa.";
-      msg.className = "text-xs font-bold mt-2 text-center text-pink-500 block";
-    }
-  });
-
-  // Correo Masivo y Exportar CSV
-  document.getElementById('btnCorreoMasivo')?.addEventListener('click', async () => {
-    const emails = cacheAlumnos.map(a => a.email).filter(Boolean).join(',');
-    if (!emails) return alert("No hay correos registrados.");
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${emails}&su=Pupi%20Bike%20Kids`, '_blank');
-  });
-
-  document.getElementById('btnExportarAlumnos')?.addEventListener('click', () => {
-    exportarACSV(cacheAlumnos, 'alumnos_pupibike.csv');
-  });
-
-  document.getElementById('btnExportarPagos')?.addEventListener('click', () => {
-    exportarACSV(cachePagos, 'pagos_pupibike.csv');
-  });
-
-  function exportarACSV(arr, filename) {
-    if (!arr || !arr.length) return alert("No hay datos para exportar.");
-    const keys = Object.keys(arr[0]);
-    const csvContent = "\uFEFF" + [keys.join(","), ...arr.map(r => keys.map(k => JSON.stringify(r[k] ?? "")).join(","))].join("\n");
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }));
-    link.download = filename;
-    link.click();
-  }
-
-  document.getElementById('btnAdminLogout')?.addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/login';
-  });
 </script>
