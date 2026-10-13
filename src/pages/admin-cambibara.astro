@@ -3,187 +3,430 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Admin - Cambibara Race">
-  <nav class="bg-black text-white p-4 border-b-2 border-green-500">
-    <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
-      <div class="flex items-center gap-4">
-        <a href="/" class="text-xl font-black italic tracking-wider text-white transform -skew-x-6">
-          PUPIBIKE <span class="text-green-500">ADMIN</span>
-        </a>
-        <span class="text-zinc-600 font-black">|</span>
-        <span class="text-zinc-400 font-bold text-sm tracking-widest uppercase">Cambibara Race</span>
+  <main class="bg-zinc-950 text-white min-h-screen p-6 md:p-10">
+    
+    <!-- ENCABEZADO -->
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 border-b border-zinc-800 pb-6">
+      <div>
+        <span class="text-green-500 font-black tracking-widest uppercase text-xs">PUPIBIKE ADMIN</span>
+        <h1 class="text-3xl md:text-4xl font-black italic uppercase tracking-wider text-white">
+          CAMBIBARA <span class="text-green-500">RACE</span>
+        </h1>
       </div>
-      <a href="/admin" class="text-zinc-400 hover:text-green-500 font-bold text-xs transition">
-        VOLVER AL PANEL
-      </a>
+      <div class="flex items-center gap-4">
+        <a href="/admin" class="text-green-400 font-black italic uppercase text-xs border border-green-500 px-4 py-2.5 hover:bg-green-500 hover:text-black transition">
+          ← Volver al Panel
+        </a>
+      </div>
     </div>
-  </nav>
 
-  <main class="bg-[#0a0a0a] min-h-screen py-10">
-    <div class="container mx-auto px-4 max-w-7xl">
-      
-      <!-- Cabecera y Botón de Exportación -->
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 border-b border-zinc-800 pb-6">
+    <div class="max-w-7xl mx-auto space-y-8">
+
+      <!-- TARJETA DE DATOS BANCARIOS PARA COMPARTIR / COPIAR -->
+      <div class="bg-zinc-900 border-2 border-green-500 p-6 shadow-[6px_6px_0px_#22c55e] flex flex-col md:flex-row justify-between items-center gap-6">
         <div>
-          <h1 class="text-3xl font-black text-white uppercase italic transform -skew-x-6 tracking-tight mb-2">
-            Inscripciones <span class="text-green-500">Cambibara</span>
-          </h1>
-          <p class="text-zinc-400 text-sm font-medium">Total de atletas registrados: <span id="totalAtletas" class="text-green-500 font-black text-lg">0</span></p>
+          <h3 class="text-green-400 font-black italic uppercase text-lg mb-1">💳 Datos de Pago para Compartir</h3>
+          <p class="text-zinc-400 text-xs md:text-sm">Haz clic en el botón para copiar la información completa y enviarla por WhatsApp.</p>
         </div>
-        
-        <button id="btnExportarCSV" class="bg-zinc-900 border border-green-500 text-green-500 hover:bg-green-500 hover:text-black font-black uppercase text-xs px-6 py-3 transition-colors flex items-center gap-2 focus:outline-none">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-          Exportar a CSV / Excel
+        <button id="btnCopiarDatosPago" class="bg-black border border-green-500 text-green-400 px-6 py-3 font-black italic uppercase text-xs tracking-wider hover:bg-green-500 hover:text-black transition shadow-[3px_3px_0px_#22c55e]">
+          📋 Copiar Datos Bancarios
         </button>
       </div>
 
-      <!-- Tabla de Datos -->
-      <div class="bg-[#0f0f0f] border border-zinc-800 overflow-x-auto">
+      <!-- MÉTRICAS Y CONTADORES -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-zinc-900 p-6 border-l-4 border-green-500 border-y border-r border-zinc-800 shadow-md">
+          <span class="text-zinc-400 text-xs font-black uppercase tracking-wider block mb-1">Total de Atletas Registrados</span>
+          <p id="contadorAtletas" class="text-4xl font-black italic text-white">0</p>
+        </div>
+        <div class="bg-zinc-900 p-6 border-l-4 border-green-500 border-y border-r border-zinc-800 shadow-md">
+          <span class="text-zinc-400 text-xs font-black uppercase tracking-wider block mb-1">Total Dinero Generado ($8.00 c/u)</span>
+          <p id="contadorDinero" class="text-4xl font-black italic text-green-500">$0.00 USD</p>
+        </div>
+      </div>
+
+      <!-- CONTROLES Y FILTROS -->
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-zinc-900 p-4 border border-zinc-800">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <label class="text-xs font-black uppercase text-zinc-400">Filtrar Categoría:</label>
+          <select id="filtroCategoria" class="bg-zinc-950 text-white border border-zinc-700 px-4 py-2 font-bold uppercase text-xs focus:border-green-500 focus:outline-none">
+            <option value="TODAS">Todas las Categorías</option>
+            <option value="Balance">Balance</option>
+            <option value="5 y 6 años">5 y 6 años</option>
+            <option value="7 y 8 años">7 y 8 años</option>
+            <option value="9 y 10 años">9 y 10 años</option>
+            <option value="11 y 12 años">11 y 12 años</option>
+            <option value="13 y 14 años">13 y 14 años</option>
+            <option value="15 y 16 años">15 y 16 años</option>
+            <option value="Open">Open</option>
+          </select>
+        </div>
+
+        <button id="btnExportarExcel" class="bg-zinc-950 border border-green-500 text-green-400 font-black italic uppercase text-xs px-5 py-2.5 hover:bg-green-500 hover:text-black transition">
+          📥 Exportar a CSV / Excel
+        </button>
+      </div>
+
+      <!-- TABLA DE INSCRITOS -->
+      <div class="bg-zinc-900 border border-zinc-800 overflow-x-auto shadow-xl">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-black border-b border-zinc-800">
-              <th class="p-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Fecha R.</th>
-              <th class="p-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Atleta</th>
-              <th class="p-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Categoría</th>
-              <th class="p-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Contacto</th>
-              <th class="p-4 text-xs font-black text-zinc-500 uppercase tracking-wider">Pago</th>
-              <th class="p-4 text-xs font-black text-zinc-500 uppercase tracking-wider text-center">Capture</th>
+            <tr class="bg-black border-b border-zinc-800 text-zinc-400 text-[11px] font-black uppercase tracking-wider">
+              <th class="p-4">Fecha R.</th>
+              <th class="p-4">Atleta</th>
+              <th class="p-4">Categoría</th>
+              <th class="p-4">Contacto</th>
+              <th class="p-4">Pago</th>
+              <th class="p-4 text-center">Capture</th>
+              <th class="p-4 text-center">Acciones</th>
             </tr>
           </thead>
-          <tbody id="tablaInscripciones" class="divide-y divide-zinc-800">
-            <!-- Los datos se inyectarán aquí -->
+          <tbody id="tablaInscritosBody" class="divide-y divide-zinc-800 text-sm">
             <tr>
-              <td colspan="6" class="p-8 text-center text-zinc-500 font-bold text-sm">Cargando inscripciones...</td>
+              <td colspan="7" class="p-8 text-center text-zinc-500 italic">Cargando registros...</td>
             </tr>
           </tbody>
         </table>
       </div>
 
     </div>
+
+    <!-- MODAL PARA EDITAR INSCRITO -->
+    <div id="modalInscrito" class="fixed inset-0 bg-black/90 z-[999] hidden flex items-center justify-center p-4">
+      <div class="bg-zinc-900 border-2 border-green-500 max-w-2xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto transform -skew-x-1 shadow-[8px_8px_0px_#22c55e]">
+        <h2 class="text-2xl font-black uppercase italic text-green-500 mb-6 tracking-wider">Editar Inscripción</h2>
+        
+        <form id="formInscrito" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="hidden" id="editId">
+          
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Nombre</label>
+            <input type="text" id="editNombre" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Apellido</label>
+            <input type="text" id="editApellido" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Cédula</label>
+            <input type="text" id="editCedula" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Fecha Nacimiento</label>
+            <input type="date" id="editFechaNac" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Género</label>
+            <select id="editGenero" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
+              <option value="Masculino">Masculino</option>
+              <option value="Femenino">Femenino</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Categoría (Se calcula sola)</label>
+            <input type="text" id="editCategoria" required readonly class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-green-400 font-bold uppercase text-sm cursor-not-allowed">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Correo Electrónico</label>
+            <input type="email" id="editEmail" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Teléfono</label>
+            <input type="text" id="editTelefono" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Estado</label>
+            <input type="text" id="editEstado" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Ciudad</label>
+            <input type="text" id="editCiudad" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Método de Pago</label>
+            <select id="editMetodoPago" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
+              <option value="Pago Movil">Pago Móvil</option>
+              <option value="Transferencia">Transferencia Nacional</option>
+              <option value="Efectivo Pista">Efectivo en Pista</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Referencia</label>
+            <input type="text" id="editReferencia" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
+          </div>
+
+          <div class="md:col-span-2 flex justify-end gap-4 mt-6">
+            <button type="button" id="btnCerrarModal" class="bg-zinc-800 text-zinc-300 px-5 py-2.5 font-bold uppercase text-xs hover:bg-zinc-700 transition">Cancelar</button>
+            <button type="submit" class="bg-green-600 text-black px-6 py-2.5 font-black uppercase italic text-xs hover:bg-green-500 transition shadow-[3px_3px_0px_#fff]">Actualizar Registro</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN -->
+    <div id="modalEliminar" class="fixed inset-0 bg-black/90 z-[1000] hidden flex items-center justify-center p-4">
+      <div class="bg-zinc-900 border-2 border-red-500 max-w-md w-full p-6 text-center transform -skew-x-1 shadow-[8px_8px_0px_#ef4444]">
+        <div class="text-red-500 text-5xl mb-4">⚠️</div>
+        <h3 class="text-2xl font-black uppercase italic text-white mb-2">¿Eliminar Inscripción?</h3>
+        <p class="text-zinc-400 text-sm mb-6">Esta acción eliminará permanentemente al atleta seleccionado de la base de datos.</p>
+        <div class="flex justify-center gap-4">
+          <button id="btnCancelarEliminar" class="bg-zinc-800 text-zinc-300 px-5 py-2.5 font-bold uppercase text-xs hover:bg-zinc-700 transition">Cancelar</button>
+          <button id="btnConfirmarEliminar" class="bg-red-600 text-white px-6 py-2.5 font-black uppercase italic text-xs hover:bg-red-500 transition shadow-[3px_3px_0px_#fff]">Sí, Eliminar</button>
+        </div>
+      </div>
+    </div>
+
   </main>
 </Layout>
 
 <script type="module">
   import { supabase } from '../lib/supabase.js';
 
-  let inscripcionesData = [];
+  let listaInscritos = [];
+  let idParaEliminar = null;
 
-  // 1. Cargar datos desde Supabase
-  async function cargarInscripciones() {
-    try {
-      const { data, error } = await supabase
-        .from('inscripciones_cambibara')
-        .select('*')
-        .order('created_at', { ascending: false });
+  async function cargarInscritos() {
+    const { data, error } = await supabase
+      .from('inscripciones_cambibara')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      
-      inscripcionesData = data;
-      document.getElementById('totalAtletas').textContent = data.length;
-      renderizarTabla(data);
-
-    } catch (error) {
-      console.error("Error cargando inscripciones:", error);
-      document.getElementById('tablaInscripciones').innerHTML = `
-        <tr><td colspan="6" class="p-8 text-center text-red-500 font-bold text-sm">Error de conexión al cargar los datos. Verifique sus permisos.</td></tr>
-      `;
+    if (error) {
+      console.error("Error al cargar inscritos:", error);
+      return;
     }
+
+    listaInscritos = data || [];
+    renderizarTabla(listaInscritos);
+    actualizarMetricas(listaInscritos);
   }
 
-  // 2. Dibujar la tabla en HTML
-  function renderizarTabla(data) {
-    const tbody = document.getElementById('tablaInscripciones');
+  function actualizarMetricas(datos) {
+    const totalAtletas = datos.length;
+    const totalDinero = totalAtletas * 8.00;
+
+    document.getElementById('contadorAtletas').textContent = totalAtletas;
+    document.getElementById('contadorDinero').textContent = `$${totalDinero.toFixed(2)} USD`;
+  }
+
+  function renderizarTabla(datos) {
+    const tbody = document.getElementById('tablaInscritosBody');
+    tbody.innerHTML = "";
+
+    if (datos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-zinc-500 italic">No hay atletas registrados en esta categoría.</td></tr>`;
+      return;
+    }
+
+    datos.forEach(item => {
+      const fecha = new Date(item.created_at).toLocaleDateString('es-VE');
+      const tr = document.createElement('tr');
+      tr.className = "hover:bg-zinc-950/50 transition-colors";
+      
+      tr.innerHTML = `
+        <td class="p-4 font-mono text-xs text-zinc-400">${fecha}</td>
+        <td class="p-4">
+          <p class="font-black uppercase text-white">${item.nombre} ${item.apellido}</p>
+          <span class="text-xs text-green-400 font-mono font-bold">${item.cedula}</span>
+        </td>
+        <td class="p-4">
+          <span class="inline-block bg-black border border-green-500/50 text-green-400 font-black text-xs px-2.5 py-1 uppercase">${item.categoria}</span>
+        </td>
+        <td class="p-4">
+          <p class="text-xs text-zinc-300 font-mono">${item.telefono}</p>
+          <p class="text-xs text-zinc-500 font-mono">${item.email}</p>
+        </td>
+        <td class="p-4">
+          <p class="font-bold text-xs uppercase text-zinc-200">${item.metodo_pago}</p>
+          <p class="text-xs font-mono text-zinc-400">Ref: ${item.referencia}</p>
+        </td>
+        <td class="p-4 text-center">
+          ${item.comprobante_url ? `<a href="${item.comprobante_url}" target="_blank" class="inline-block bg-zinc-800 text-green-400 border border-green-500/50 px-3 py-1 text-xs font-black uppercase hover:bg-green-500 hover:text-black transition">Ver Pago</a>` : '<span class="text-xs text-zinc-600">N/D</span>'}
+        </td>
+        <td class="p-4 text-center space-x-2">
+          <button data-id="${item.id}" class="btn-editar text-cyan-400 hover:text-cyan-300 font-bold text-xs uppercase underline">Editar</button>
+          <button data-id="${item.id}" class="btn-eliminar text-red-500 hover:text-red-400 font-bold text-xs uppercase underline">Eliminar</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.querySelectorAll('.btn-editar').forEach(btn => {
+      btn.addEventListener('click', (e) => abrirModalEditar(e.target.dataset.id));
+    });
+
+    document.querySelectorAll('.btn-eliminar').forEach(btn => {
+      btn.addEventListener('click', (e) => abrirModalEliminar(e.target.dataset.id));
+    });
+  }
+
+  // --- CÁLCULO DE CATEGORÍA AUTOMÁTICA EN EL MODAL ---
+  function calcularCategoriaModal() {
+    const fecha = document.getElementById('editFechaNac').value;
+    const genero = document.getElementById('editGenero').value;
+    const inputCat = document.getElementById('editCategoria');
+
+    if (!fecha || !genero) {
+      inputCat.value = "";
+      return;
+    }
+
+    const anoNacimiento = parseInt(fecha.substring(0, 4), 10);
+    const anoEvento = 2026; 
+    const edadCalendario = anoEvento - anoNacimiento;
+
+    let catBase = "";
+
+    if (edadCalendario <= 4) {
+      catBase = "Balance";
+    } else if (edadCalendario >= 5 && edadCalendario <= 6) {
+      catBase = "5 y 6 años";
+    } else if (edadCalendario >= 7 && edadCalendario <= 8) {
+      catBase = "7 y 8 años";
+    } else if (edadCalendario >= 9 && edadCalendario <= 10) {
+      catBase = "9 y 10 años";
+    } else if (edadCalendario >= 11 && edadCalendario <= 12) {
+      catBase = "11 y 12 años";
+    } else if (edadCalendario >= 13 && edadCalendario <= 14) {
+      catBase = "13 y 14 años";
+    } else if (edadCalendario >= 15 && edadCalendario <= 16) {
+      catBase = "15 y 16 años";
+    } else {
+      catBase = "Open";
+    }
+
+    inputCat.value = `${catBase} - ${genero.toUpperCase()}`;
+  }
+
+  document.getElementById('editFechaNac').addEventListener('change', calcularCategoriaModal);
+  document.getElementById('editGenero').addEventListener('change', calcularCategoriaModal);
+
+  // Filtro por categoría
+  document.getElementById('filtroCategoria').addEventListener('change', (e) => {
+    const cat = e.target.value;
+    if (cat === 'TODAS') {
+      renderizarTabla(listaInscritos);
+    } else {
+      const filtrados = listaInscritos.filter(item => item.categoria && item.categoria.includes(cat));
+      renderizarTabla(filtrados);
+    }
+  });
+
+  // Copiar datos de pago
+  document.getElementById('btnCopiarDatosPago').addEventListener('click', () => {
+    const textoPago = `💳 *DATOS DE PAGO - CAMBIBARA RACE*\n\nBanco: Venezuela (0102)\nTeléfono: 0424-8781128\nCédula: 24469073\nTitular: Cesar Barrios\nMonto: $8.00 USD (Pago Móvil a tasa BCV)\n\n¡Envía tu capture y reporte de pago para confirmar tu inscripción!`;
+    navigator.clipboard.writeText(textoPago);
+    alert("¡Datos de pago copiados al portapapeles listos para enviar por WhatsApp!");
+  });
+
+  // Modal de Edición
+  const modal = document.getElementById('modalInscrito');
+  const btnCerrarModal = document.getElementById('btnCerrarModal');
+  const formInscrito = document.getElementById('formInscrito');
+
+  btnCerrarModal.addEventListener('click', () => modal.classList.add('hidden'));
+
+  function abrirModalEditar(id) {
+    const atleta = listaInscritos.find(i => i.id == id);
+    if (!atleta) return;
+
+    document.getElementById('editId').value = atleta.id;
+    document.getElementById('editNombre').value = atleta.nombre || '';
+    document.getElementById('editApellido').value = atleta.apellido || '';
+    document.getElementById('editCedula').value = atleta.cedula || '';
+    document.getElementById('editFechaNac').value = atleta.fecha_nacimiento || '';
+    document.getElementById('editGenero').value = atleta.genero || 'Masculino';
+    document.getElementById('editCategoria').value = atleta.categoria || '';
+    document.getElementById('editEmail').value = atleta.email || '';
+    document.getElementById('editTelefono').value = atleta.telefono || '';
+    document.getElementById('editEstado').value = atleta.estado || '';
+    document.getElementById('editCiudad').value = atleta.ciudad || '';
+    document.getElementById('editMetodoPago').value = atleta.metodo_pago || 'Pago Movil';
+    document.getElementById('editReferencia').value = atleta.referencia || '';
+
+    modal.classList.remove('hidden');
+  }
+
+  // Actualizar Registro
+  formInscrito.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('editId').value;
     
-    if (data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-500 font-bold text-sm">No hay inscripciones registradas aún.</td></tr>`;
-      return;
-    }
+    const payload = {
+      nombre: document.getElementById('editNombre').value.trim().toUpperCase(),
+      apellido: document.getElementById('editApellido').value.trim().toUpperCase(),
+      cedula: document.getElementById('editCedula').value.trim().toUpperCase(),
+      fecha_nacimiento: document.getElementById('editFechaNac').value,
+      genero: document.getElementById('editGenero').value,
+      categoria: document.getElementById('editCategoria').value.trim().toUpperCase(),
+      email: document.getElementById('editEmail').value.trim().toLowerCase(),
+      telefono: document.getElementById('editTelefono').value.trim().toUpperCase(),
+      estado: document.getElementById('editEstado').value.trim().toUpperCase(),
+      ciudad: document.getElementById('editCiudad').value.trim().toUpperCase(),
+      metodo_pago: document.getElementById('editMetodoPago').value,
+      referencia: document.getElementById('editReferencia').value.trim().toUpperCase()
+    };
 
-    tbody.innerHTML = data.map(reg => {
-      const fechaRegistro = new Date(reg.created_at).toLocaleDateString('es-VE');
-      
-      return `
-        <tr class="hover:bg-zinc-900/50 transition-colors">
-          <td class="p-4 text-sm text-zinc-400 font-medium whitespace-nowrap">${fechaRegistro}</td>
-          <td class="p-4">
-            <div class="text-white font-bold text-base uppercase">${reg.nombre} ${reg.apellido}</div>
-            <div class="text-green-500 text-sm font-black mt-0.5">V-${reg.cedula}</div>
-          </td>
-          <td class="p-4">
-            <span class="bg-green-500/10 text-white-500 border border-green-500/20 px-3 py-1.5 text-xs font-black uppercase tracking-wider rounded-sm inline-block">
-              ${reg.categoria}
-            </span>
-            <div class="text-green-500 text-sm uppercase mt-2 font-bold">${reg.genero}</div>
-          </td>
-          <td class="p-4">
-            <div class="text-zinc-300 text-sm font-bold">${reg.telefono}</div>
-            <div class="text-green-500 text-sm truncate max-w-[200px] mt-0.5">${reg.email}</div>
-          </td>
-          <td class="p-4">
-            <div class="text-white text-sm font-bold uppercase">${reg.metodo_pago}</div>
-            <div class="text-green-500 text-sm font-mono mt-0.5">Ref: ${reg.referencia}</div>
-          </td>
-          <td class="p-4 text-center">
-            ${reg.comprobante_url && reg.comprobante_url.trim() !== ""
-              ? `<a href="${reg.comprobante_url}" target="_blank" class="inline-block bg-zinc-800 border border-green-500 text-green-500 hover:bg-green-500 hover:text-black font-black text-xs uppercase px-4 py-2 transition-colors rounded-sm">VER PAGO</a>` 
-              : `<span class="bg-zinc-900 border border-zinc-800 text-zinc-600 px-3 py-1 text-xs font-bold uppercase rounded-sm">N/A</span>`
-            }
-          </td>
-        </tr>
-      `;
-    }).join('');
+    const { error } = await supabase.from('inscripciones_cambibara').update(payload).eq('id', id);
+    if (error) {
+      alert("Error al actualizar: " + error.message);
+    } else {
+      modal.classList.add('hidden');
+      cargarInscritos();
+    }
+  });
+
+  // --- MODAL DE ELIMINACIÓN Y BORRADO SEGURO ---
+  const modalEliminar = document.getElementById('modalEliminar');
+  const btnCancelarEliminar = document.getElementById('btnCancelarEliminar');
+  const btnConfirmarEliminar = document.getElementById('btnConfirmarEliminar');
+
+  function abrirModalEliminar(id) {
+    idParaEliminar = id;
+    modalEliminar.classList.remove('hidden');
   }
 
-  // 3. Lógica para exportar a CSV
-  document.getElementById('btnExportarCSV').addEventListener('click', () => {
-    if (inscripcionesData.length === 0) {
-      alert("No hay datos para exportar.");
-      return;
+  btnCancelarEliminar.addEventListener('click', () => {
+    modalEliminar.classList.add('hidden');
+    idParaEliminar = null;
+  });
+
+  btnConfirmarEliminar.addEventListener('click', async () => {
+    if (!idParaEliminar) return;
+
+    const { error } = await supabase
+      .from('inscripciones_cambibara')
+      .delete()
+      .match({ id: idParaEliminar });
+
+    if (error) {
+      alert("Error al eliminar: " + error.message);
+    } else {
+      modalEliminar.classList.add('hidden');
+      idParaEliminar = null;
+      cargarInscritos();
     }
+  });
 
-    // Cabeceras del CSV (Separadas por punto y coma para que Excel en español lo lea directo)
-    const cabeceras = [
-      "Fecha Registro", "Nombre", "Apellido", "Cedula", "Fecha Nacimiento", 
-      "Genero", "Categoria", "Email", "Telefono", "Estado", "Ciudad", 
-      "Metodo Pago", "Referencia", "Fecha Pago", "Enlace Comprobante"
-    ];
+  // Exportar a CSV
+  document.getElementById('btnExportarExcel').addEventListener('click', () => {
+    if (listaInscritos.length === 0) return alert("No hay datos para exportar.");
+    
+    let csvContent = "data:text/csv;charset=utf-8,Fecha,Nombre,Apellido,Cedula,Fecha Nacimiento,Genero,Categoria,Email,Telefono,Estado,Ciudad,Metodo Pago,Referencia\n";
+    
+    listaInscritos.forEach(row => {
+      csvContent += `"${row.created_at}","${row.nombre}","${row.apellido}","${row.cedula}","${row.fecha_nacimiento}","${row.genero}","${row.categoria}","${row.email}","${row.telefono}","${row.estado}","${row.ciudad}","${row.metodo_pago}","${row.referencia}"\n`;
+    });
 
-    // Mapear los datos de Supabase a las columnas
-    const filas = inscripcionesData.map(reg => [
-      new Date(reg.created_at).toLocaleDateString('es-VE'),
-      reg.nombre,
-      reg.apellido,
-      reg.cedula,
-      reg.fecha_nacimiento,
-      reg.genero,
-      reg.categoria,
-      reg.email,
-      reg.telefono,
-      reg.estado,
-      reg.ciudad,
-      reg.metodo_pago,
-      reg.referencia,
-      reg.fecha_pago,
-      reg.comprobante_url
-    ]);
-
-    // Unir cabeceras y filas con punto y coma (;)
-    const contenidoCSV = [
-      cabeceras.join(';'),
-      ...filas.map(fila => fila.map(campo => `"${campo || ''}"`).join(';'))
-    ].join('\n');
-
-    // Crear el archivo descargable
-    const blob = new Blob(["\ufeff" + contenidoCSV], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
+    const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
-    
-    link.setAttribute("href", url);
-    link.setAttribute("download", `Inscripciones_Cambibara_${new Date().toLocaleDateString('es-VE').replace(/\//g, '-')}.csv`);
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "inscritos_cambibara_race.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   });
 
-  // Inicializar
-  document.addEventListener('DOMContentLoaded', cargarInscripciones);
+  // Carga inicial
+  cargarInscritos();
 </script>
