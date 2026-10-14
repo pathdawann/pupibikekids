@@ -1,8 +1,25 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { supabaseServer } from '../lib/supabase-server.js';
+
+// 1. Inicializamos cliente de servidor
+const supabase = supabaseServer(Astro);
+
+// 2. Verificamos que exista una sesión activa
+const { data: { user }, error } = await supabase.auth.getUser();
+
+if (!user || error) {
+  return Astro.redirect('/login');
+}
+
+// 3. Verificamos autorización administrativa
+const correosAutorizados = ["pathdawann@gmail.com", "cesar@gmail.com"];
+if (!user.email || !correosAutorizados.includes(user.email)) {
+  return Astro.redirect('/dashboard');
+}
 ---
 
-<Layout title="Admin - Cambibara Race">
+<Layout title="Admin - Cambibara Race | Pupi Bike Kids" noindex={true}>
   <main class="bg-zinc-950 text-white min-h-screen p-6 md:p-10">
     
     <!-- ENCABEZADO -->
@@ -48,7 +65,7 @@ import Layout from '../layouts/Layout.astro';
       <!-- CONTROLES Y FILTROS -->
       <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-zinc-900 p-4 border border-zinc-800">
         <div class="flex items-center gap-3 w-full md:w-auto">
-          <label class="text-xs font-black uppercase text-zinc-400">Filtrar Categoría:</label>
+          <label for="filtroCategoria" class="text-xs font-black uppercase text-zinc-400">Filtrar Categoría:</label>
           <select id="filtroCategoria" class="bg-zinc-950 text-white border border-zinc-700 px-4 py-2 font-bold uppercase text-xs focus:border-green-500 focus:outline-none">
             <option value="TODAS">Todas las Categorías</option>
             <option value="Balance">Balance</option>
@@ -100,50 +117,50 @@ import Layout from '../layouts/Layout.astro';
           <input type="hidden" id="editId">
           
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Nombre</label>
+            <label for="editNombre" class="block text-xs font-black uppercase text-zinc-400 mb-1">Nombre</label>
             <input type="text" id="editNombre" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Apellido</label>
+            <label for="editApellido" class="block text-xs font-black uppercase text-zinc-400 mb-1">Apellido</label>
             <input type="text" id="editApellido" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Cédula</label>
+            <label for="editCedula" class="block text-xs font-black uppercase text-zinc-400 mb-1">Cédula</label>
             <input type="text" id="editCedula" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Fecha Nacimiento</label>
+            <label for="editFechaNac" class="block text-xs font-black uppercase text-zinc-400 mb-1">Fecha Nacimiento</label>
             <input type="date" id="editFechaNac" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Género</label>
+            <label for="editGenero" class="block text-xs font-black uppercase text-zinc-400 mb-1">Género</label>
             <select id="editGenero" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
               <option value="Masculino">Masculino</option>
               <option value="Femenino">Femenino</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Categoría (Se calcula sola)</label>
+            <label for="editCategoria" class="block text-xs font-black uppercase text-zinc-400 mb-1">Categoría (Se calcula sola)</label>
             <input type="text" id="editCategoria" required readonly class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-green-400 font-bold uppercase text-sm cursor-not-allowed">
           </div>
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Correo Electrónico</label>
+            <label for="editEmail" class="block text-xs font-black uppercase text-zinc-400 mb-1">Correo Electrónico</label>
             <input type="email" id="editEmail" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Teléfono</label>
+            <label for="editTelefono" class="block text-xs font-black uppercase text-zinc-400 mb-1">Teléfono</label>
             <input type="text" id="editTelefono" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Estado</label>
+            <label for="editEstado" class="block text-xs font-black uppercase text-zinc-400 mb-1">Estado</label>
             <input type="text" id="editEstado" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Ciudad</label>
+            <label for="editCiudad" class="block text-xs font-black uppercase text-zinc-400 mb-1">Ciudad</label>
             <input type="text" id="editCiudad" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Método de Pago</label>
+            <label for="editMetodoPago" class="block text-xs font-black uppercase text-zinc-400 mb-1">Método de Pago</label>
             <select id="editMetodoPago" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
               <option value="Pago Movil">Pago Móvil</option>
               <option value="Transferencia">Transferencia Nacional</option>
@@ -151,7 +168,7 @@ import Layout from '../layouts/Layout.astro';
             </select>
           </div>
           <div>
-            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Referencia</label>
+            <label for="editReferencia" class="block text-xs font-black uppercase text-zinc-400 mb-1">Referencia</label>
             <input type="text" id="editReferencia" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
           </div>
 
@@ -185,6 +202,17 @@ import Layout from '../layouts/Layout.astro';
   let listaInscritos = [];
   let idParaEliminar = null;
 
+  // Función auxiliar para evitar que caracteres especiales rompan la tabla
+  function escaparHTML(texto) {
+    if (!texto) return '';
+    return String(texto)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   async function cargarInscritos() {
     const { data, error } = await supabase
       .from('inscripciones_cambibara')
@@ -197,7 +225,7 @@ import Layout from '../layouts/Layout.astro';
     }
 
     listaInscritos = data || [];
-    renderizarTabla(listaInscritos);
+    aplicarFiltroActual();
     actualizarMetricas(listaInscritos);
   }
 
@@ -207,6 +235,19 @@ import Layout from '../layouts/Layout.astro';
 
     document.getElementById('contadorAtletas').textContent = totalAtletas;
     document.getElementById('contadorDinero').textContent = `$${totalDinero.toFixed(2)} USD`;
+  }
+
+  function aplicarFiltroActual() {
+    const cat = document.getElementById('filtroCategoria').value;
+    if (cat === 'TODAS') {
+      renderizarTabla(listaInscritos);
+    } else {
+      const catLower = cat.toLowerCase();
+      const filtrados = listaInscritos.filter(
+        item => item.categoria && item.categoria.toLowerCase().includes(catLower)
+      );
+      renderizarTabla(filtrados);
+    }
   }
 
   function renderizarTabla(datos) {
@@ -223,40 +264,42 @@ import Layout from '../layouts/Layout.astro';
       const tr = document.createElement('tr');
       tr.className = "hover:bg-zinc-950/50 transition-colors";
       
+      const urlSegura = item.comprobante_url ? escaparHTML(item.comprobante_url) : '';
+
       tr.innerHTML = `
-        <td class="p-4 font-mono text-xs text-zinc-400">${fecha}</td>
+        <td class="p-4 font-mono text-xs text-zinc-400">${escaparHTML(fecha)}</td>
         <td class="p-4">
-          <p class="font-black uppercase text-white">${item.nombre} ${item.apellido}</p>
-          <span class="text-xs text-green-400 font-mono font-bold">${item.cedula}</span>
+          <p class="font-black uppercase text-white">${escaparHTML(item.nombre)} ${escaparHTML(item.apellido)}</p>
+          <span class="text-xs text-green-400 font-mono font-bold">${escaparHTML(item.cedula)}</span>
         </td>
         <td class="p-4">
-          <span class="inline-block bg-black border border-green-500/50 text-green-400 font-black text-xs px-2.5 py-1 uppercase">${item.categoria}</span>
+          <span class="inline-block bg-black border border-green-500/50 text-green-400 font-black text-xs px-2.5 py-1 uppercase">${escaparHTML(item.categoria)}</span>
         </td>
         <td class="p-4">
-          <p class="text-xs text-zinc-300 font-mono">${item.telefono}</p>
-          <p class="text-xs text-zinc-500 font-mono">${item.email}</p>
+          <p class="text-xs text-zinc-300 font-mono">${escaparHTML(item.telefono)}</p>
+          <p class="text-xs text-zinc-500 font-mono">${escaparHTML(item.email)}</p>
         </td>
         <td class="p-4">
-          <p class="font-bold text-xs uppercase text-zinc-200">${item.metodo_pago}</p>
-          <p class="text-xs font-mono text-zinc-400">Ref: ${item.referencia}</p>
+          <p class="font-bold text-xs uppercase text-zinc-200">${escaparHTML(item.metodo_pago)}</p>
+          <p class="text-xs font-mono text-zinc-400">Ref: ${escaparHTML(item.referencia)}</p>
         </td>
         <td class="p-4 text-center">
-          ${item.comprobante_url ? `<a href="${item.comprobante_url}" target="_blank" class="inline-block bg-zinc-800 text-green-400 border border-green-500/50 px-3 py-1 text-xs font-black uppercase hover:bg-green-500 hover:text-black transition">Ver Pago</a>` : '<span class="text-xs text-zinc-600">N/D</span>'}
+          ${urlSegura ? `<a href="${urlSegura}" target="_blank" rel="noopener noreferrer" class="inline-block bg-zinc-800 text-green-400 border border-green-500/50 px-3 py-1 text-xs font-black uppercase hover:bg-green-500 hover:text-black transition">Ver Pago</a>` : '<span class="text-xs text-zinc-600">N/D</span>'}
         </td>
         <td class="p-4 text-center space-x-2">
-          <button data-id="${item.id}" class="btn-editar text-cyan-400 hover:text-cyan-300 font-bold text-xs uppercase underline">Editar</button>
-          <button data-id="${item.id}" class="btn-eliminar text-red-500 hover:text-red-400 font-bold text-xs uppercase underline">Eliminar</button>
+          <button data-id="${escaparHTML(item.id)}" class="btn-editar text-cyan-400 hover:text-cyan-300 font-bold text-xs uppercase underline">Editar</button>
+          <button data-id="${escaparHTML(item.id)}" class="btn-eliminar text-red-500 hover:text-red-400 font-bold text-xs uppercase underline">Eliminar</button>
         </td>
       `;
       tbody.appendChild(tr);
     });
 
     document.querySelectorAll('.btn-editar').forEach(btn => {
-      btn.addEventListener('click', (e) => abrirModalEditar(e.target.dataset.id));
+      btn.addEventListener('click', (e) => abrirModalEditar(e.currentTarget.dataset.id));
     });
 
     document.querySelectorAll('.btn-eliminar').forEach(btn => {
-      btn.addEventListener('click', (e) => abrirModalEliminar(e.target.dataset.id));
+      btn.addEventListener('click', (e) => abrirModalEliminar(e.currentTarget.dataset.id));
     });
   }
 
@@ -295,22 +338,15 @@ import Layout from '../layouts/Layout.astro';
       catBase = "Open";
     }
 
-    inputCat.value = `${catBase} - ${genero.toUpperCase()}`;
+    // Mantiene el mismo formato que registro-cambibara.astro
+    inputCat.value = `${catBase} - ${genero}`;
   }
 
   document.getElementById('editFechaNac').addEventListener('change', calcularCategoriaModal);
   document.getElementById('editGenero').addEventListener('change', calcularCategoriaModal);
 
-  // Filtro por categoría
-  document.getElementById('filtroCategoria').addEventListener('change', (e) => {
-    const cat = e.target.value;
-    if (cat === 'TODAS') {
-      renderizarTabla(listaInscritos);
-    } else {
-      const filtrados = listaInscritos.filter(item => item.categoria && item.categoria.includes(cat));
-      renderizarTabla(filtrados);
-    }
-  });
+  // Filtro por categoría (insensible a mayúsculas/minúsculas)
+  document.getElementById('filtroCategoria').addEventListener('change', aplicarFiltroActual);
 
   // Copiar datos de pago
   document.getElementById('btnCopiarDatosPago').addEventListener('click', () => {
@@ -327,7 +363,7 @@ import Layout from '../layouts/Layout.astro';
   btnCerrarModal.addEventListener('click', () => modal.classList.add('hidden'));
 
   function abrirModalEditar(id) {
-    const atleta = listaInscritos.find(i => i.id == id);
+    const atleta = listaInscritos.find(i => String(i.id) === String(id));
     if (!atleta) return;
 
     document.getElementById('editId').value = atleta.id;
@@ -358,7 +394,7 @@ import Layout from '../layouts/Layout.astro';
       cedula: document.getElementById('editCedula').value.trim().toUpperCase(),
       fecha_nacimiento: document.getElementById('editFechaNac').value,
       genero: document.getElementById('editGenero').value,
-      categoria: document.getElementById('editCategoria').value.trim().toUpperCase(),
+      categoria: document.getElementById('editCategoria').value.trim(),
       email: document.getElementById('editEmail').value.trim().toLowerCase(),
       telefono: document.getElementById('editTelefono').value.trim().toUpperCase(),
       estado: document.getElementById('editEstado').value.trim().toUpperCase(),
@@ -408,25 +444,42 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // Exportar a CSV
+  // Exportar a CSV compatible con Excel (UTF-8 con BOM)
   document.getElementById('btnExportarExcel').addEventListener('click', () => {
     if (listaInscritos.length === 0) return alert("No hay datos para exportar.");
     
-    let csvContent = "data:text/csv;charset=utf-8,Fecha,Nombre,Apellido,Cedula,Fecha Nacimiento,Genero,Categoria,Email,Telefono,Estado,Ciudad,Metodo Pago,Referencia\n";
-    
-    listaInscritos.forEach(row => {
-      csvContent += `"${row.created_at}","${row.nombre}","${row.apellido}","${row.cedula}","${row.fecha_nacimiento}","${row.genero}","${row.categoria}","${row.email}","${row.telefono}","${row.estado}","${row.ciudad}","${row.metodo_pago}","${row.referencia}"\n`;
-    });
+    const exportData = listaInscritos.map(row => ({
+      Fecha_Registro: new Date(row.created_at).toLocaleDateString('es-VE'),
+      Nombre: row.nombre || '',
+      Apellido: row.apellido || '',
+      Cedula: row.cedula || '',
+      Fecha_Nacimiento: row.fecha_nacimiento || '',
+      Genero: row.genero || '',
+      Categoria: row.categoria || '',
+      Email: row.email || '',
+      Telefono: row.telefono || '',
+      Estado: row.estado || '',
+      Ciudad: row.ciudad || '',
+      Metodo_Pago: row.metodo_pago || '',
+      Referencia: row.referencia || '',
+      Comprobante_URL: row.comprobante_url || ''
+    }));
 
-    const encodedUri = encodeURI(csvContent);
+    const keys = Object.keys(exportData[0]);
+    const csvContent = "\uFEFF" + [
+      keys.join(","),
+      ...exportData.map(r => keys.map(k => JSON.stringify(r[k] ?? "")).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "inscritos_cambibara_race.csv");
+    link.href = URL.createObjectURL(blob);
+    link.download = `Inscritos_Cambibara_Race_${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   });
 
-  // Carga inicial 
+  // Carga inicial
   cargarInscritos();
 </script>
