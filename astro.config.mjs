@@ -6,7 +6,7 @@ import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  // <--- Añade tu dominio oficial aquí
+  // Dominio oficial
   site: 'https://www.pupibikekids.com',
 
   output: 'server',
@@ -20,5 +20,13 @@ export default defineConfig({
   },
 
   adapter: vercel(),
-  integrations: [sitemap()]
+  integrations: [
+    sitemap({
+      filter: (page) =>
+        !page.includes('/admin') &&
+        !page.includes('/dashboard') &&
+        !page.includes('/historial') &&
+        !page.includes('/login')
+    })
+  ]
 });
