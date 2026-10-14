@@ -46,7 +46,7 @@ import Layout from '../layouts/Layout.astro';
             <div class="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8 border-b border-zinc-700 pb-6">
               <div class="flex items-center gap-6">
                 <div class="w-28 h-28 rounded-full border-4 border-cyan-400 overflow-hidden bg-zinc-950 flex-shrink-0 shadow-lg">
-                  <img id="uiFoto" src="" alt="Foto Atleta" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80'" />
+                  <img id="uiFoto" src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80" alt="Foto Atleta" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80'" />
                 </div>
                 <div class="text-center sm:text-left">
                   <h2 class="text-2xl font-black italic uppercase text-lime-400">Ficha Técnica</h2>
@@ -194,7 +194,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
           
           <div class="bg-zinc-950 p-4 border border-zinc-800 mb-6 rounded-xl overflow-hidden flex justify-center items-center h-80 shadow-inner">
-            <img src="/maillot.png" alt="Maillot Oficial" class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-300" />
+            <img src="/maillot.png" alt="Maillot Oficial" loading="lazy" decoding="async" class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-300" />
           </div>
         </div>
 
@@ -203,7 +203,7 @@ import Layout from '../layouts/Layout.astro';
             <span class="text-zinc-300 text-xs uppercase font-bold block">Precio de lanzamiento:</span>
             <span class="text-2xl font-black italic text-lime-400">35$ <span class="text-xs text-white font-normal">(Todas las tallas)</span></span>
           </div>
-          <a href="https://wa.me/584248781128?text=Hola%20Cesar,%20quiero%20comprar%20el%20maillot%20oficial%20de%20la%20academia." target="_blank" class="w-full sm:w-auto text-center bg-lime-400 text-black font-black italic uppercase px-8 py-3 hover:bg-lime-300 transition-all shadow-[4px_4px_0px_#db2777] transform -skew-x-4 focus:outline-none focus:ring-2 focus:ring-white">
+          <a href="https://wa.me/584248781128?text=Hola%20Cesar,%20quiero%20comprar%20el%20maillot%20oficial%20de%20la%20academia." target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto text-center bg-lime-400 text-black font-black italic uppercase px-8 py-3 hover:bg-lime-300 transition-all shadow-[4px_4px_0px_#db2777] transform -skew-x-4 focus:outline-none focus:ring-2 focus:ring-white">
             Comprar Ahora
           </a>
         </div>
@@ -218,15 +218,15 @@ import Layout from '../layouts/Layout.astro';
           </div>
 
           <div class="flex flex-col gap-4">
-            <!-- Evento 1 -->
-            <div class="bg-zinc-950 p-4 border-l-4 border-cyan-400 shadow flex items-center gap-4 hover:translate-x-1 transition-transform">
-              <div class="bg-cyan-400 text-black font-black text-center px-3 py-2 flex flex-col justify-center min-w-[65px] transform -skew-x-3">
+            <!-- Evento 1 (Sincronizado con index.astro) -->
+            <div class="bg-zinc-950 p-4 border-l-4 border-green-500 shadow flex items-center gap-4 hover:translate-x-1 transition-transform">
+              <div class="bg-green-500 text-black font-black text-center px-3 py-2 flex flex-col justify-center min-w-[65px] transform -skew-x-3">
                 <span class="text-xs leading-none">OCT</span>
-                <span class="text-xl leading-none">15</span>
+                <span class="text-xl leading-none">17</span>
               </div>
               <div class="flex-1">
-                <h4 class="text-base font-bold text-white uppercase italic">Ruta Nocturna Familiar</h4>
-                <p class="text-zinc-300 text-xs">Recorrido por la ciudad para todas las edades. Trae tus luces.</p>
+                <h4 class="text-base font-bold text-white uppercase italic">Cambibara Race</h4>
+                <p class="text-zinc-300 text-xs">Campeonato Bike Balance y Eliminator con obstáculos. Sector Óvalo.</p>
               </div>
             </div>
 
@@ -274,7 +274,7 @@ import Layout from '../layouts/Layout.astro';
         <form id="formPago" class="flex flex-col gap-4">
           <!-- Concepto del Pago -->
           <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Concepto del Pago</label>
+            <label for="inputConcepto" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Concepto del Pago</label>
             <select id="inputConcepto" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-lime-400 font-bold focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
               <option value="Mensualidad">Mensualidad (70$)</option>
               <option value="Inscripcion">Inscripción (30$)</option>
@@ -285,7 +285,7 @@ import Layout from '../layouts/Layout.astro';
 
           <!-- Método de Pago -->
           <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Método de Pago</label>
+            <label for="inputMetodo" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Método de Pago</label>
             <select id="inputMetodo" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
               <option value="Pago Movil">Pago Móvil</option>
               <option value="Transferencia Banesco">Transferencia Banesco</option>
@@ -295,17 +295,17 @@ import Layout from '../layouts/Layout.astro';
           </div>
 
           <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Número de Referencia</label>
+            <label for="inputReferencia" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Número de Referencia</label>
             <input type="text" id="inputReferencia" required placeholder="Ej: 12345678" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold placeholder-zinc-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Monto ($)</label>
-              <input type="number" id="inputMonto" required value="70" min="1" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold placeholder-zinc-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
+              <label for="inputMonto" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Monto ($)</label>
+              <input type="number" id="inputMonto" required value="70" min="1" step="0.01" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold placeholder-zinc-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
             </div>
             <div>
-              <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Mes que Cancela</label>
+              <label for="inputMes" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Mes que Cancela</label>
               <select id="inputMes" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
                 <option value="Octubre 2026">Octubre 2026</option>
                 <option value="Noviembre 2026">Noviembre 2026</option>
@@ -334,35 +334,35 @@ import Layout from '../layouts/Layout.astro';
             <h3 class="text-cyan-400 font-black italic uppercase text-sm mb-3">1. Datos Personales</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Nombre y Apellido</label>
+                <label for="editNombre" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Nombre y Apellido</label>
                 <input type="text" id="editNombre" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Cédula</label>
+                <label for="editCedula" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Cédula</label>
                 <input type="text" id="editCedula" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Fecha de Nacimiento</label>
+                <label for="editNacimiento" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Fecha de Nacimiento</label>
                 <input type="date" id="editNacimiento" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Correo Electrónico</label>
+                <label for="editEmail" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Correo Electrónico</label>
                 <input type="email" id="editEmail" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold lowercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Teléfono / WhatsApp</label>
+                <label for="editTelefono" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Teléfono / WhatsApp</label>
                 <input type="text" id="editTelefono" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Nivel Actual</label>
-                <select id="editNivel" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
+                <label for="editNivel" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Nivel Actual <span class="text-zinc-500 font-normal">(Asignado por entrenador)</span></label>
+                <select id="editNivel" disabled class="w-full px-4 py-2 bg-zinc-950/60 border border-zinc-800 text-zinc-400 font-bold uppercase cursor-not-allowed">
                   <option value="PRINCIPIANTE">PRINCIPIANTE</option>
                   <option value="INTERMEDIO">INTERMEDIO</option>
                   <option value="AVANZADO">AVANZADO</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Tipo de Sangre</label>
+                <label for="editTipoSangre" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Tipo de Sangre</label>
                 <select id="editTipoSangre" class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
                   <option value="">-- NO ESPECIFICADO --</option>
                   <option value="O+">O+</option>
@@ -376,11 +376,11 @@ import Layout from '../layouts/Layout.astro';
                 </select>
               </div>
               <div class="md:col-span-2">
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Dirección / Residencia</label>
+                <label for="editDireccion" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Dirección / Residencia</label>
                 <input type="text" id="editDireccion" required class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400">
               </div>
               <div class="md:col-span-2">
-                <label class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Actualizar Fotografía (Opcional)</label>
+                <label for="editFotoFile" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Actualizar Fotografía (Opcional - Máx 5MB)</label>
                 <input type="file" id="editFotoFile" accept="image/*" class="w-full px-4 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold file:mr-4 file:py-1 file:px-3 file:border-0 file:text-xs file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer">
               </div>
             </div>
@@ -393,7 +393,7 @@ import Layout from '../layouts/Layout.astro';
                 <span class="text-lime-400 font-black text-xs uppercase italic mb-2 block">Bicicleta 1 (Principal)</span>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                   <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Tipo</label>
+                    <label for="editBici1Tipo" class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Tipo</label>
                     <select id="editBici1Tipo" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold focus:outline-none focus:border-lime-400">
                       <option value="MTB">MTB</option>
                       <option value="RUTA">RUTA</option>
@@ -402,15 +402,15 @@ import Layout from '../layouts/Layout.astro';
                     </select>
                   </div>
                   <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Rin</label>
+                    <label for="editBici1Rin" class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Rin</label>
                     <input type="text" id="editBici1Rin" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase focus:outline-none focus:border-lime-400">
                   </div>
                   <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Marca</label>
+                    <label for="editBici1Marca" class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Marca</label>
                     <input type="text" id="editBici1Marca" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase focus:outline-none focus:border-lime-400">
                   </div>
                   <div>
-                    <label class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Color</label>
+                    <label for="editBici1Color" class="block text-[10px] font-black uppercase text-zinc-300 mb-1">Color</label>
                     <input type="text" id="editBici1Color" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white text-sm font-bold uppercase focus:outline-none focus:border-lime-400">
                   </div>
                 </div>
@@ -449,9 +449,42 @@ import Layout from '../layouts/Layout.astro';
   let currentUser = null;
   let currentAlumno = null;
 
+  const MESES_NOMBRES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+  function escaparHTML(texto) {
+    if (texto === null || texto === undefined) return '';
+    return String(texto)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // Genera dinámicamente las opciones de meses (mes anterior, actual y 2 siguientes)
+  function inicializarSelectorMeses() {
+    const selectMes = document.getElementById('inputMes');
+    if (!selectMes) return;
+
+    const hoy = new Date();
+    selectMes.innerHTML = '';
+
+    for (let offset = -1; offset <= 2; offset++) {
+      const fechaOpcion = new Date(hoy.getFullYear(), hoy.getMonth() + offset, 1);
+      const textoMes = `${MESES_NOMBRES[fechaOpcion.getMonth()]} ${fechaOpcion.getFullYear()}`;
+      const option = document.createElement('option');
+      option.value = textoMes;
+      option.textContent = textoMes;
+      if (offset === 0) option.selected = true;
+      selectMes.appendChild(option);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', async () => {
     const pantallaCarga = document.getElementById('pantallaCarga');
     const dashboardContenido = document.getElementById('dashboardContenido');
+
+    inicializarSelectorMeses();
 
     try {
       // 1. Sesión activa
@@ -528,7 +561,7 @@ import Layout from '../layouts/Layout.astro';
         document.getElementById('uiFoto').src = alumno.foto_url;
       }
 
-      // Renderizar bicicletas
+      // Renderizar bicicletas de forma segura
       const contenedorBicis = document.getElementById('contenedorBicicletasVisual');
       contenedorBicis.innerHTML = '';
       const bicisList = alumno.tipos_bici || []; 
@@ -538,10 +571,10 @@ import Layout from '../layouts/Layout.astro';
         bicisValidas.forEach((bici, index) => {
           contenedorBicis.innerHTML += `
             <div class="bg-zinc-950 p-4 border border-zinc-800 transform -skew-x-2">
-              <span class="text-lime-400 font-black text-xs uppercase italic block mb-1">Bicicleta ${index + 1} (${bici.tipo || 'BICICLETA'})</span>
-              <p class="text-white text-sm font-bold">Rin: <span class="text-cyan-400">${bici.rin || 'N/A'}</span></p>
-              <p class="text-white text-sm font-bold">Marca: <span class="text-cyan-400">${bici.marca || 'N/A'}</span></p>
-              <p class="text-white text-sm font-bold">Color: <span class="text-cyan-400">${bici.color || 'N/A'}</span></p>
+              <span class="text-lime-400 font-black text-xs uppercase italic block mb-1">Bicicleta ${index + 1} (${escaparHTML(bici.tipo || 'BICICLETA')})</span>
+              <p class="text-white text-sm font-bold">Rin: <span class="text-cyan-400">${escaparHTML(bici.rin || 'N/A')}</span></p>
+              <p class="text-white text-sm font-bold">Marca: <span class="text-cyan-400">${escaparHTML(bici.marca || 'N/A')}</span></p>
+              <p class="text-white text-sm font-bold">Color: <span class="text-cyan-400">${escaparHTML(bici.color || 'N/A')}</span></p>
             </div>
           `;
         });
@@ -549,10 +582,9 @@ import Layout from '../layouts/Layout.astro';
         contenedorBicis.innerHTML = `<p class="text-zinc-400 text-sm italic">No hay bicicletas registradas.</p>`;
       }
 
-      // 4. Verificación de Solvencia Inteligente
+      // 4. Verificación de Solvencia Inteligente (Corregida por mes en curso)
       const fechaActual = new Date();
-      const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-      const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
+      const mesActualStr = `${MESES_NOMBRES[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
 
       const { data: ultimosPagos } = await supabase
         .from('pagos')
@@ -570,8 +602,9 @@ import Layout from '../layouts/Layout.astro';
 
       if (pagoMesActual) {
         estatusFinal = pagoMesActual.estado;
-      } else if (ultimoPago) {
-        estatusFinal = ultimoPago.estado;
+      } else if (ultimoPago?.estado === 'revision') {
+        // Si acaba de reportar un pago (ej. inscripción o abono) y sigue en revisión
+        estatusFinal = 'revision';
       }
 
       if (estatusFinal === 'aprobado') {
@@ -633,6 +666,7 @@ import Layout from '../layouts/Layout.astro';
   document.getElementById('btnCerrarModal')?.addEventListener('click', () => { 
     modalPago.classList.add('hidden'); 
     document.getElementById('formPago').reset(); 
+    inicializarSelectorMeses();
   });
 
   // Envío del Formulario de Pagos con Concepto
@@ -658,9 +692,8 @@ import Layout from '../layouts/Layout.astro';
         throw new Error("Ingresa monto y referencia válidos.");
       }
 
-      // CÓDIGO CORREGIDO
       const { error } = await supabase.from('pagos').insert([{ 
-        user_id: currentUser.id, // <--- ESTO ES VITAL PARA PASAR EL RLS
+        user_id: currentUser.id,
         alumno_id: currentAlumno.id,
         metodo_pago: `${metodo} (${concepto})`,
         referencia: referencia,
@@ -696,7 +729,7 @@ import Layout from '../layouts/Layout.astro';
     document.getElementById('editEmail').value = (window.currentEmail || '').toLowerCase();
     document.getElementById('editTelefono').value = (document.getElementById('uiTelefono')?.textContent || '').toUpperCase();
     document.getElementById('editDireccion').value = (window.currentDireccion || '').toUpperCase();
-    document.getElementById('editNivel').value = (document.getElementById('uiNivel')?.textContent || 'INTERMEDIO').toUpperCase();
+    document.getElementById('editNivel').value = (currentAlumno?.nivel || 'PRINCIPIANTE').toUpperCase();
     document.getElementById('editTipoSangre').value = window.currentTipoSangre || '';
     document.getElementById('editFotoFile').value = '';
 
@@ -715,33 +748,47 @@ import Layout from '../layouts/Layout.astro';
   document.getElementById('formEditar')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnGuardarEdicion');
+    const msgEditar = document.getElementById('mensajeEditar');
     btn.textContent = "GUARDANDO..."; 
     btn.disabled = true;
+    msgEditar?.classList.add('hidden');
 
     try {
       const userId = currentUser.id;
-      const { data: alumnoActual } = await supabase.from('alumnos').select('foto_url').eq('user_id', userId).single();
-      let fotoUrlFinal = alumnoActual?.foto_url || '';
+      let fotoUrlFinal = currentAlumno?.foto_url || '';
       const fotoFile = document.getElementById('editFotoFile').files[0];
 
       if (fotoFile) {
-        const fileExt = fotoFile.name.split('.').pop();
-        const fileName = `${userId}-${Date.now()}.${fileExt}`;
+        if (fotoFile.size > 5 * 1024 * 1024) {
+          throw new Error("La fotografía no debe superar los 5 MB.");
+        }
+        const fileExt = fotoFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+        const fileName = `${userId}-perfil.${fileExt}`;
         const { error: uploadError } = await supabase.storage.from('fotos-atletas').upload(fileName, fotoFile, { upsert: true });
         if (uploadError) throw uploadError;
         const { data: publicUrlData } = supabase.storage.from('fotos-atletas').getPublicUrl(fileName);
-        fotoUrlFinal = publicUrlData.publicUrl;
+        fotoUrlFinal = `${publicUrlData.publicUrl}?t=${Date.now()}`;
       }
 
       const listaBicicletas = [];
       const b1Tipo = document.getElementById('editBici1Tipo').value;
-      if (b1Tipo) {
+      const b1Rin = document.getElementById('editBici1Rin').value.trim().toUpperCase();
+      const b1Marca = document.getElementById('editBici1Marca').value.trim().toUpperCase();
+      const b1Color = document.getElementById('editBici1Color').value.trim().toUpperCase();
+
+      if (b1Tipo || b1Rin || b1Marca || b1Color) {
         listaBicicletas.push({
           tipo: b1Tipo,
-          rin: document.getElementById('editBici1Rin').value.trim().toUpperCase(),
-          marca: document.getElementById('editBici1Marca').value.trim().toUpperCase(),
-          color: document.getElementById('editBici1Color').value.trim().toUpperCase()
+          rin: b1Rin,
+          marca: b1Marca,
+          color: b1Color
         });
+      }
+
+      // Conservar bicicleta secundaria si fue asignada previamente por el administrador
+      const bicisPrevias = window.currentBicicletas || [];
+      if (bicisPrevias.length > 1) {
+        listaBicicletas.push(...bicisPrevias.slice(1));
       }
 
       const { error } = await supabase.from('alumnos').update({
@@ -752,7 +799,6 @@ import Layout from '../layouts/Layout.astro';
         direccion: document.getElementById('editDireccion').value.trim().toUpperCase(),
         telefono: document.getElementById('editTelefono').value.trim().toUpperCase(),
         tipo_sangre: document.getElementById('editTipoSangre').value,
-        nivel: document.getElementById('editNivel').value.toUpperCase(),
         foto_url: fotoUrlFinal,
         tipos_bici: listaBicicletas
       }).eq('user_id', userId);
@@ -761,7 +807,13 @@ import Layout from '../layouts/Layout.astro';
       setTimeout(() => { window.location.reload(); }, 1000);
     } catch (err) {
       console.error(err);
-      alert("Error al actualizar la ficha.");
+      if (msgEditar) {
+        msgEditar.textContent = err.message || "Error al actualizar la ficha.";
+        msgEditar.className = "text-sm font-bold uppercase italic text-center p-2 border border-pink-500 bg-pink-500/20 text-pink-500 block mt-2";
+        msgEditar.classList.remove('hidden');
+      } else {
+        alert(err.message || "Error al actualizar la ficha.");
+      }
       btn.textContent = "Guardar Cambios"; 
       btn.disabled = false;
     }
