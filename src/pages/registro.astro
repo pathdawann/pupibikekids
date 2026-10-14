@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout>
+<Layout title="Inscripción a la Academia | Pupi Bike Kids">
   <!-- Navegación Adaptada para Móvil / Escritorio -->
   <nav class="bg-black text-white p-4 border-b-4 border-lime-400">
     <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
@@ -32,12 +32,12 @@ import Layout from '../layouts/Layout.astro';
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Correo Electrónico</label>
-            <input type="email" id="email" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2 lowercase">
+            <label for="email" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Correo Electrónico</label>
+            <input type="email" id="email" autocomplete="email" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2 lowercase">
           </div>
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Crear Contraseña</label>
-            <input type="password" id="password" required minlength="6" placeholder="Mínimo 6 caracteres" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
+            <label for="password" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Crear Contraseña</label>
+            <input type="password" id="password" autocomplete="new-password" required minlength="6" placeholder="Mínimo 6 caracteres" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
           </div>
         </div>
       </div>
@@ -50,27 +50,27 @@ import Layout from '../layouts/Layout.astro';
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Nombre del Atleta</label>
+            <label for="nombre" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Nombre y Apellido del Atleta</label>
             <input type="text" id="nombre" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
           </div>
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Cédula (Atleta o Representante)</label>
+            <label for="cedula" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Cédula (Atleta o Representante)</label>
             <input type="text" id="cedula" placeholder="V-12345678" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
           </div>
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Teléfono / WhatsApp</label>
+            <label for="telefono" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Teléfono / WhatsApp</label>
             <input type="text" id="telefono" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
           </div>
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Fecha de Nacimiento</label>
+            <label for="fecha_nacimiento" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Fecha de Nacimiento</label>
             <input type="date" id="fecha_nacimiento" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
           </div>
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Dirección / Residencia</label>
+            <label for="direccion" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Dirección / Residencia</label>
             <input type="text" id="direccion" placeholder="Ciudad, Urbanización, Calle" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
           </div>
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Nivel a Inscribir</label>
+            <label for="nivel" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Nivel a Inscribir</label>
             <select id="nivel" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2 appearance-none">
               <option value="PRINCIPIANTE">PRINCIPIANTE (RUEDITAS / BALANCE)</option>
               <option value="INTERMEDIO">INTERMEDIO (MTB BÁSICO)</option>
@@ -79,7 +79,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
           <!-- Tipo de Sangre (Opcional) -->
           <div>
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Tipo de Sangre (Opcional)</label>
+            <label for="tipo_sangre" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Tipo de Sangre (Opcional)</label>
             <select id="tipo_sangre" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2 appearance-none">
               <option value="">-- NO ESPECIFICADO --</option>
               <option value="O+">O+</option>
@@ -93,7 +93,7 @@ import Layout from '../layouts/Layout.astro';
             </select>
           </div>
           <div class="md:col-span-2">
-            <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Fotografía del Atleta (Opcional)</label>
+            <label for="fotoFile" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Fotografía del Atleta (Opcional - Máx 5MB)</label>
             <input type="file" id="fotoFile" accept="image/*" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer">
           </div>
         </div>
@@ -104,7 +104,7 @@ import Layout from '../layouts/Layout.astro';
           
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Tipo de Bici</label>
+              <label for="biciTipo" class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Tipo de Bici</label>
               <select id="biciTipo" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold">
                 <option value="MTB">MTB</option>
                 <option value="RUTA">RUTA</option>
@@ -113,15 +113,15 @@ import Layout from '../layouts/Layout.astro';
               </select>
             </div>
             <div>
-              <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Rin</label>
+              <label for="biciRin" class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Rin</label>
               <input type="text" id="biciRin" placeholder="Ej: 29" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400">
             </div>
             <div>
-              <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Marca</label>
+              <label for="biciMarca" class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Marca</label>
               <input type="text" id="biciMarca" placeholder="Ej: Giant" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400">
             </div>
             <div>
-              <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Color</label>
+              <label for="biciColor" class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-1">Color</label>
               <input type="text" id="biciColor" placeholder="Ej: Verde" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400">
             </div>
           </div>
@@ -145,21 +145,20 @@ import Layout from '../layouts/Layout.astro';
   const mensaje = document.getElementById('mensaje');
   const btnSubmit = document.getElementById('btnSubmit');
 
-  // 👉 AQUÍ AGREGAS LA PRESELECCIÓN:
+  // Preselección segura desde la URL (?nivel=...)
   const urlParams = new URLSearchParams(window.location.search);
-  const nivelUrl = urlParams.get('nivel');
-  if (nivelUrl) {
+  const nivelUrl = urlParams.get('nivel')?.toUpperCase();
+  const nivelesValidos = ['PRINCIPIANTE', 'INTERMEDIO', 'AVANZADO'];
+  if (nivelUrl && nivelesValidos.includes(nivelUrl)) {
     const selectNivel = document.getElementById('nivel');
     if (selectNivel) {
-      selectNivel.value = nivelUrl.toUpperCase();
+      selectNivel.value = nivelUrl;
     }
   }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault(); 
     
-    btnSubmit.textContent = "SUBIENDO FOTO Y CREANDO CUENTA...";
-    btnSubmit.disabled = true;
     mensaje.classList.add('hidden');
 
     const email = document.getElementById('email').value.trim().toLowerCase();
@@ -172,6 +171,17 @@ import Layout from '../layouts/Layout.astro';
     const nivel = document.getElementById('nivel').value.toUpperCase();
     const tipo_sangre = document.getElementById('tipo_sangre').value;
     const fotoFile = document.getElementById('fotoFile').files[0];
+
+    // Validar tamaño de imagen ANTES de crear el usuario en Auth
+    if (fotoFile && fotoFile.size > 5 * 1024 * 1024) {
+      mensaje.textContent = "La fotografía supera los 5 MB. Por favor elige una imagen más liviana.";
+      mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-pink-600 text-white block mt-2";
+      mensaje.classList.remove('hidden');
+      return;
+    }
+
+    btnSubmit.textContent = "CREANDO CUENTA...";
+    btnSubmit.disabled = true;
 
     let fotoUrlFinal = '';
 
@@ -187,22 +197,29 @@ import Layout from '../layouts/Layout.astro';
       const userId = authData.user?.id;
       if (!userId) throw new Error("No se pudo obtener el ID del usuario.");
 
-      // 2. Foto a Storage (Opcional)
+      // 2. Foto a Storage (Opcional y protegida para no interrumpir la creación de la ficha)
       if (fotoFile) {
-        const fileExt = fotoFile.name.split('.').pop()?.toLowerCase() || 'jpg';
-        const fileName = `${userId}-${Date.now()}.${fileExt}`;
+        try {
+          btnSubmit.textContent = "SUBIENDO FOTOGRAFÍA...";
+          const fileExt = fotoFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+          const fileName = `${userId}-perfil.${fileExt}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from('fotos-atletas')
-          .upload(fileName, fotoFile, { upsert: true });
+          const { error: uploadError } = await supabase.storage
+            .from('fotos-atletas')
+            .upload(fileName, fotoFile, { upsert: true });
 
-        if (uploadError) throw uploadError;
+          if (!uploadError) {
+            const { data: publicUrlData } = supabase.storage
+              .from('fotos-atletas')
+              .getPublicUrl(fileName);
 
-        const { data: publicUrlData } = supabase.storage
-          .from('fotos-atletas')
-          .getPublicUrl(fileName);
-
-        fotoUrlFinal = publicUrlData.publicUrl;
+            fotoUrlFinal = publicUrlData.publicUrl;
+          } else {
+            console.warn("No se pudo subir la foto inicial, se continuará con el registro de la ficha:", uploadError);
+          }
+        } catch (storageErr) {
+          console.warn("Error subiendo foto inicial:", storageErr);
+        }
       }
 
       // 3. Bicicleta (Se guarda solo si escribieron datos)
@@ -221,6 +238,7 @@ import Layout from '../layouts/Layout.astro';
       }
 
       // 4. Guardar registro en la tabla alumnos
+      btnSubmit.textContent = "GUARDANDO FICHA...";
       const { error: errorAlumno } = await supabase
         .from('alumnos')
         .insert([{ 
@@ -245,12 +263,14 @@ import Layout from '../layouts/Layout.astro';
       if (!authData.session) {
         mensaje.textContent = "¡Inscripción registrada! Revisa tu correo para confirmar tu cuenta antes de iniciar sesión.";
         mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-cyan-400 text-black block mt-2";
+        mensaje.classList.remove('hidden');
         setTimeout(() => {
           window.location.href = '/login';
         }, 3500);
       } else {
         mensaje.textContent = "¡Inscripción exitosa! Redirigiendo a tu panel...";
         mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-lime-400 text-black block mt-2";
+        mensaje.classList.remove('hidden');
         setTimeout(() => {
           window.location.href = '/dashboard';
         }, 2000);
@@ -261,8 +281,6 @@ import Layout from '../layouts/Layout.astro';
       let errorMsg = "Hubo un error. Verifica tus datos.";
       if (error.message && error.message.includes('already registered')) {
         errorMsg = "Este correo ya está registrado. Por favor inicia sesión.";
-      } else if (error.message && (error.message.includes('row-level security') || error.message.includes('policy'))) {
-        errorMsg = "Error de permisos en Storage. Asegúrate de que el bucket 'fotos-atletas' sea público.";
       } else if (error.message) {
         errorMsg = error.message;
       }
