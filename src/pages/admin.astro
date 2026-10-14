@@ -50,6 +50,9 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
           <p class="text-sm text-gray-500 mt-1">Gestión administrativa y financiera de la academia.</p>
         </div>
         <div class="flex flex-wrap gap-2">
+          <a href="/admin-cambibara" class="bg-green-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-green-700 shadow-sm transition flex items-center gap-2">
+            <span>🏆</span> Panel Cambibara Race
+          </a>
           <button id="btnCorreoMasivo" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
             <span>✉️</span> Enviar Correo (BCC)
           </button>
@@ -74,7 +77,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col justify-between">
           <div>
             <div class="flex justify-between items-center mb-4">
-              <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Tasa de Cambio (BCV)</h2>
+              <label for="inputTasa" class="text-sm font-bold text-gray-900 uppercase tracking-wide">Tasa de Cambio (BCV)</label>
               <span id="fechaTasa" class="text-xs text-gray-400">Actualizando...</span>
             </div>
             <form id="formTasa" class="flex items-center gap-3">
@@ -93,7 +96,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
           <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4">Control Operativo e Instrucciones</h2>
           <div class="text-sm text-gray-600 space-y-2">
             <p>1. <strong>Tasa Histórica:</strong> Al aprobar un pago hoy, el sistema guardará automáticamente la tasa actual que configuraste arriba. Esto garantiza que el cálculo en Bolívares sea exacto al día de la operación.</p>
-            <p>2. <strong>Directorio:</strong> Usa la tabla inferior para buscar atletas por nombre o cédula. Haz clic en "Editar" para modificar sus datos o niveles.</p>
+            <p>2. <strong>Directorio:</strong> Usa la tabla inferior para buscar atletas por nombre o cédula. Haz clic en "Ficha" para modificar sus datos o niveles.</p>
             <p>3. <strong>Respaldos:</strong> Se recomienda descargar el CSV de pagos a final de cada mes para los cierres contables.</p>
           </div>
         </div>
@@ -131,7 +134,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
           <h2 class="text-base font-bold text-gray-900">Directorio de Alumnos</h2>
           
           <!-- Filtros de Directorio -->
-          <div class="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
+          <div class="flex flex-wrap bg-gray-100 p-1 rounded-lg border border-gray-200">
             <button onclick="window.filtrarDirectorio('TODOS')" id="filtro-TODOS" class="filtro-btn active px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Todos</button>
             <button onclick="window.filtrarDirectorio('AVANZADO')" id="filtro-AVANZADO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Avanzado</button>
             <button onclick="window.filtrarDirectorio('INTERMEDIO')" id="filtro-INTERMEDIO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Intermedio</button>
@@ -200,7 +203,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col relative">
         <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gray-50">
           <h2 class="text-lg font-bold text-gray-900">Gestión de Atleta</h2>
-          <button id="btnCerrarModalFicha" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+          <button id="btnCerrarModalFicha" aria-label="Cerrar ficha de atleta" class="text-gray-400 hover:text-gray-600 focus:outline-none">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
@@ -220,6 +223,30 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
   let cachePagos = [];
   let tasaActualDolar = 0;
   let filtroActual = 'TODOS';
+
+  const FOTO_DEFAULT = 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80';
+
+  // Función auxiliar para sanitizar texto y prevenir errores de HTML/XSS
+  function escaparHTML(texto) {
+    if (texto === null || texto === undefined) return '';
+    return String(texto)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // Función para normalizar números telefónicos de Venezuela para WhatsApp
+  function formatearTelefonoWhatsApp(telefonoRaw) {
+    let limpio = (telefonoRaw || '').replace(/\D/g, '');
+    if (limpio.startsWith('0')) {
+      limpio = '58' + limpio.slice(1);
+    } else if (limpio.length === 10 && /^(412|414|424|416|426)/.test(limpio)) {
+      limpio = '58' + limpio;
+    }
+    return limpio;
+  }
 
   document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -330,38 +357,39 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       // LÓGICA DE TASA HISTÓRICA
       let stringBs = '<span class="text-gray-400 text-xs">Pendiente</span>';
       if (pago.monto_bs && pago.tasa_historica) {
-        // Tiene tasa histórica guardada
-        stringBs = `<span class="font-medium text-gray-900">${Number(pago.monto_bs).toLocaleString('es-VE')} Bs</span> <br> <span class="text-[10px] text-gray-500">Tasa: ${pago.tasa_historica}</span>`;
+        stringBs = `<span class="font-medium text-gray-900">${Number(pago.monto_bs).toLocaleString('es-VE')} Bs</span> <br> <span class="text-[10px] text-gray-500">Tasa: ${escaparHTML(pago.tasa_historica)}</span>`;
       } else if (pago.estado === 'aprobado') {
-         // Es un pago viejo aprobado que no tenía tasa, no mostramos error
-         stringBs = '<span class="text-gray-400 text-xs">No registrada</span>';
+        stringBs = '<span class="text-gray-400 text-xs">No registrada</span>';
       }
+
+      const idPagoSeguro = escaparHTML(pago.id);
+      const montoSeguro = Number(pago.monto) || 0;
 
       let badgeEstado = '';
       let btnAccion = '';
 
       if (pago.estado === 'aprobado') {
         badgeEstado = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Aprobado</span>`;
-        btnAccion = `<button onclick="window.revertirPago('${pago.id}')" class="text-xs text-gray-500 hover:text-orange-600 underline focus:outline-none">Revertir</button>`;
+        btnAccion = `<button onclick="window.revertirPago('${idPagoSeguro}')" class="text-xs text-gray-500 hover:text-orange-600 underline focus:outline-none">Revertir</button>`;
       } else {
         badgeEstado = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">Revisión</span>`;
-        btnAccion = `<button onclick="window.aprobarPago('${pago.id}', ${pago.monto})" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-700 shadow-sm transition">Aprobar</button>`;
+        btnAccion = `<button onclick="window.aprobarPago('${idPagoSeguro}', ${montoSeguro})" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-700 shadow-sm transition">Aprobar</button>`;
       }
 
       tbody.innerHTML += `
         <tr class="hover:bg-gray-50 transition">
-          <td class="px-6 py-4 text-gray-500 font-medium">${fecha}</td>
+          <td class="px-6 py-4 text-gray-500 font-medium">${escaparHTML(fecha)}</td>
           <td class="px-6 py-4">
-            <div class="text-sm font-bold text-gray-900 uppercase">${nombreAtleta}</div>
-            <div class="text-xs text-gray-500">${cedulaAtleta}</div>
+            <div class="text-sm font-bold text-gray-900 uppercase">${escaparHTML(nombreAtleta)}</div>
+            <div class="text-xs text-gray-500">${escaparHTML(cedulaAtleta)}</div>
           </td>
           <td class="px-6 py-4">
-            <div class="text-sm text-gray-900 font-mono">${pago.referencia}</div>
-            <div class="text-xs text-gray-500">${pago.metodo_pago}</div>
+            <div class="text-sm text-gray-900 font-mono">${escaparHTML(pago.referencia)}</div>
+            <div class="text-xs text-gray-500">${escaparHTML(pago.metodo_pago)}</div>
           </td>
-          <td class="px-6 py-4 text-right text-sm font-black text-gray-900">$${pago.monto}</td>
+          <td class="px-6 py-4 text-right text-sm font-black text-gray-900">$${montoSeguro}</td>
           <td class="px-6 py-4 text-right text-sm leading-tight">${stringBs}</td>
-          <td class="px-6 py-4 text-center text-sm text-gray-600">${pago.mes_correspondiente}</td>
+          <td class="px-6 py-4 text-center text-sm text-gray-600">${escaparHTML(pago.mes_correspondiente)}</td>
           <td class="px-6 py-4 text-center">
             <div class="flex flex-col items-center gap-2">
               ${badgeEstado}
@@ -377,7 +405,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
   window.filtrarDirectorio = function(filtro) {
     filtroActual = filtro;
     document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`filtro-${filtro}`).classList.add('active');
+    document.getElementById(`filtro-${filtro}`)?.classList.add('active');
     
     renderizarDirectorio();
   };
@@ -392,7 +420,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     } else if (filtroActual !== 'TODOS') {
       lista = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === filtroActual && (a.estatus || 'activo').toLowerCase() !== 'inactivo');
     } else {
-       lista = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo');
+      lista = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo');
     }
 
     if (lista.length === 0) {
@@ -424,32 +452,37 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       }
 
       let colorNivel = 'text-gray-500';
-      if(alumno.nivel === 'AVANZADO') colorNivel = 'text-blue-600 font-bold';
-      if(alumno.nivel === 'INTERMEDIO') colorNivel = 'text-green-600 font-bold';
+      if (alumno.nivel === 'AVANZADO') colorNivel = 'text-blue-600 font-bold';
+      if (alumno.nivel === 'INTERMEDIO') colorNivel = 'text-green-600 font-bold';
 
-      const telefonoLim = (alumno.telefono || '').replace(/\s+/g, '');
-      const btnWp = `<a href="https://wa.me/${telefonoLim}" target="_blank" class="text-green-600 hover:text-green-800 transition" title="WhatsApp"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 3.825 0 6.938 3.112 6.938 6.937 0 3.825-3.113 6.938-6.938 6.938z"/></svg></a>`;
+      const telefonoLim = formatearTelefonoWhatsApp(alumno.telefono);
+      const btnWp = telefonoLim
+        ? `<a href="https://wa.me/${telefonoLim}" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-800 transition" title="Escribir por WhatsApp"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 3.825 0 6.938 3.112 6.938 6.937 0 3.825-3.113 6.938-6.938 6.938z"/></svg></a>`
+        : '';
+
+      const idAlumnoSeguro = escaparHTML(alumno.id);
+      const fotoSegura = alumno.foto_url ? escaparHTML(alumno.foto_url) : FOTO_DEFAULT;
 
       tbody.innerHTML += `
         <tr class="hover:bg-gray-50 transition border-b border-gray-50">
           <td class="px-6 py-4 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-gray-200 overflow-hidden border border-gray-300">
-               <img src="${alumno.foto_url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=100&auto=format&fit=crop&q=80'}" class="w-full h-full object-cover">
+            <div class="w-8 h-8 rounded-full bg-gray-200 overflow-hidden border border-gray-300 flex-shrink-0">
+               <img src="${fotoSegura}" alt="${escaparHTML(alumno.nombre)}" class="w-full h-full object-cover" onerror="this.src='${FOTO_DEFAULT}'">
             </div>
             <div>
-              <div class="text-sm font-bold text-gray-900 uppercase">${alumno.nombre}</div>
-              <div class="text-xs text-gray-500">${alumno.cedula}</div>
+              <div class="text-sm font-bold text-gray-900 uppercase">${escaparHTML(alumno.nombre)}</div>
+              <div class="text-xs text-gray-500">${escaparHTML(alumno.cedula)}</div>
             </div>
           </td>
           <td class="px-6 py-4">
-            <div class="text-sm text-gray-700 font-mono">${alumno.telefono}</div>
-            <div class="text-xs text-gray-500">${alumno.email}</div>
+            <div class="text-sm text-gray-700 font-mono">${escaparHTML(alumno.telefono)}</div>
+            <div class="text-xs text-gray-500">${escaparHTML(alumno.email)}</div>
           </td>
-          <td class="px-6 py-4 text-center text-xs ${colorNivel}">${alumno.nivel || 'N/A'}</td>
+          <td class="px-6 py-4 text-center text-xs ${colorNivel}">${escaparHTML(alumno.nivel || 'N/A')}</td>
           <td class="px-6 py-4 text-center">${badgeEstatusMes}</td>
           <td class="px-6 py-4 text-center">
             <div class="flex justify-center items-center gap-3">
-              <button onclick="window.verFichaAtleta('${alumno.id}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium transition focus:outline-none">Ficha</button>
+              <button onclick="window.verFichaAtleta('${idAlumnoSeguro}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium transition focus:outline-none">Ficha</button>
               ${btnWp}
             </div>
           </td>
@@ -463,7 +496,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
   const modalConfirmar = document.getElementById('modalConfirmarPago');
   
   window.aprobarPago = function(pagoId, montoUsd) {
-    if(tasaActualDolar <= 0) {
+    if (tasaActualDolar <= 0) {
       alert("¡ATENCIÓN! No has configurado la Tasa del Día. Por favor, actualiza la tasa arriba antes de aprobar pagos para que el cálculo en Bolívares sea correcto.");
       document.getElementById('inputTasa').focus();
       return;
@@ -584,7 +617,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
   document.getElementById('btnExportarPagos')?.addEventListener('click', () => {
     if (!cachePagos.length) return alert("No hay pagos para exportar.");
     
-    // Mapeamos los pagos para inyectar el nombre y cedula del alumno en el excel final
     const exportData = cachePagos.map(p => {
       const atleta = cacheAlumnos.find(a => a.id === p.alumno_id);
       return {
@@ -630,12 +662,12 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     window.location.href = '/login';
   });
 
-  // --- GESTIÓN COMPLETA DEL ATLETA (Paso 3) ---
+  // --- GESTIÓN COMPLETA DEL ATLETA ---
   const modalFicha = document.getElementById('modalFichaAtleta');
   document.getElementById('btnCerrarModalFicha').addEventListener('click', () => modalFicha.classList.add('hidden'));
 
   window.verFichaAtleta = function(alumnoId) {
-    const alumno = cacheAlumnos.find(a => a.id === alumnoId);
+    const alumno = cacheAlumnos.find(a => String(a.id) === String(alumnoId));
     if (!alumno) return;
     modalFicha.classList.remove('hidden');
 
@@ -644,23 +676,26 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     const b1 = bicis[0] || {};
     const b2 = bicis[1] || {};
 
+    const idSeguro = escaparHTML(alumno.id);
+    const fotoSegura = alumno.foto_url ? escaparHTML(alumno.foto_url) : FOTO_DEFAULT;
+
     const cont = document.getElementById('contenidoFichaAtleta');
     cont.innerHTML = `
       <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-200">
         <div class="flex items-center gap-4">
-          <img src="${alumno.foto_url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80'}" class="w-16 h-16 rounded-full object-cover border border-gray-200 shadow-sm">
+          <img src="${fotoSegura}" alt="${escaparHTML(alumno.nombre)}" class="w-16 h-16 rounded-full object-cover border border-gray-200 shadow-sm" onerror="this.src='${FOTO_DEFAULT}'">
           <div>
-            <h3 class="text-xl font-bold text-gray-900 uppercase tracking-tight">${alumno.nombre}</h3>
+            <h3 class="text-xl font-bold text-gray-900 uppercase tracking-tight">${escaparHTML(alumno.nombre)}</h3>
             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${esInactivo ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-800'} mt-1">
               ${esInactivo ? 'Retirado / Inactivo' : 'Matrícula Activa'}
             </span>
           </div>
         </div>
         <div class="flex gap-2">
-           <button type="button" onclick="window.alternarEstatusAtleta('${alumno.id}', '${esInactivo ? 'activo' : 'inactivo'}')" class="px-3 py-1.5 text-xs font-bold rounded-md border ${esInactivo ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100'} transition shadow-sm">
+           <button type="button" onclick="window.alternarEstatusAtleta('${idSeguro}', '${esInactivo ? 'activo' : 'inactivo'}')" class="px-3 py-1.5 text-xs font-bold rounded-md border ${esInactivo ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100'} transition shadow-sm">
              ${esInactivo ? '✓ Reactivar' : '⏸ Suspender'}
            </button>
-           <button type="button" onclick="window.eliminarAtletaDefinitivo('${alumno.id}', '${alumno.nombre}')" class="px-3 py-1.5 text-xs font-bold rounded-md border bg-red-50 text-red-700 border-red-200 hover:bg-red-100 transition shadow-sm">
+           <button type="button" onclick="window.eliminarAtletaDefinitivo('${idSeguro}')" class="px-3 py-1.5 text-xs font-bold rounded-md border bg-red-50 text-red-700 border-red-200 hover:bg-red-100 transition shadow-sm">
              🗑️ Eliminar
            </button>
         </div>
@@ -672,7 +707,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
           <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3 border-b border-gray-100 pb-1 text-blue-600">1. Datos Personales y Académicos</h4>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Nivel</label>
+              <label for="adminEditNivel" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Nivel</label>
               <select id="adminEditNivel" class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="PRINCIPIANTE" ${alumno.nivel === 'PRINCIPIANTE' ? 'selected' : ''}>PRINCIPIANTE</option>
                 <option value="INTERMEDIO" ${alumno.nivel === 'INTERMEDIO' ? 'selected' : ''}>INTERMEDIO</option>
@@ -680,19 +715,19 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Nombre Completo</label>
-              <input type="text" id="adminEditNombre" value="${alumno.nombre || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <label for="adminEditNombre" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Nombre Completo</label>
+              <input type="text" id="adminEditNombre" value="${escaparHTML(alumno.nombre || '')}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Cédula</label>
-              <input type="text" id="adminEditCedula" value="${alumno.cedula || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <label for="adminEditCedula" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Cédula</label>
+              <input type="text" id="adminEditCedula" value="${escaparHTML(alumno.cedula || '')}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Teléfono</label>
-              <input type="text" id="adminEditTelefono" value="${alumno.telefono || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <label for="adminEditTelefono" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Teléfono</label>
+              <input type="text" id="adminEditTelefono" value="${escaparHTML(alumno.telefono || '')}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Tipo de Sangre</label>
+              <label for="adminEditSangre" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Tipo de Sangre</label>
               <select id="adminEditSangre" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                  <option value="">-- No especificado --</option>
                  <option value="O+" ${alumno.tipo_sangre === 'O+' ? 'selected' : ''}>O+</option>
@@ -706,12 +741,12 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Fecha de Nacimiento</label>
-              <input type="date" id="adminEditNacimiento" value="${alumno.fecha_nacimiento || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <label for="adminEditNacimiento" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Fecha de Nacimiento</label>
+              <input type="date" id="adminEditNacimiento" value="${escaparHTML(alumno.fecha_nacimiento || '')}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div class="md:col-span-3">
-              <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Dirección de Residencia</label>
-              <input type="text" id="adminEditDireccion" value="${alumno.direccion || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <label for="adminEditDireccion" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Dirección de Residencia</label>
+              <input type="text" id="adminEditDireccion" value="${escaparHTML(alumno.direccion || '')}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
           </div>
         </div>
@@ -725,7 +760,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
               <span class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 block">Principal</span>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div>
-                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Tipo</label>
+                  <label for="adminBici1Tipo" class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Tipo</label>
                   <select id="adminBici1Tipo" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm bg-white text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     <option value="MTB" ${b1.tipo === 'MTB' ? 'selected' : ''}>MTB</option>
                     <option value="RUTA" ${b1.tipo === 'RUTA' ? 'selected' : ''}>RUTA</option>
@@ -734,16 +769,16 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
                   </select>
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Rin</label>
-                  <input type="text" id="adminBici1Rin" value="${b1.rin || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <label for="adminBici1Rin" class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Rin</label>
+                  <input type="text" id="adminBici1Rin" value="${escaparHTML(b1.rin || '')}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Marca</label>
-                  <input type="text" id="adminBici1Marca" value="${b1.marca || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <label for="adminBici1Marca" class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Marca</label>
+                  <input type="text" id="adminBici1Marca" value="${escaparHTML(b1.marca || '')}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Color</label>
-                  <input type="text" id="adminBici1Color" value="${b1.color || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <label for="adminBici1Color" class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Color</label>
+                  <input type="text" id="adminBici1Color" value="${escaparHTML(b1.color || '')}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
               </div>
             </div>
@@ -752,7 +787,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
               <span class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 block">Secundaria (Opcional)</span>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div>
-                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Tipo</label>
+                  <label for="adminBici2Tipo" class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Tipo</label>
                   <select id="adminBici2Tipo" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm bg-white text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     <option value="">-- Ninguna --</option>
                     <option value="MTB" ${b2.tipo === 'MTB' ? 'selected' : ''}>MTB</option>
@@ -762,16 +797,16 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
                   </select>
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Rin</label>
-                  <input type="text" id="adminBici2Rin" value="${b2.rin || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <label for="adminBici2Rin" class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Rin</label>
+                  <input type="text" id="adminBici2Rin" value="${escaparHTML(b2.rin || '')}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Marca</label>
-                  <input type="text" id="adminBici2Marca" value="${b2.marca || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <label for="adminBici2Marca" class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Marca</label>
+                  <input type="text" id="adminBici2Marca" value="${escaparHTML(b2.marca || '')}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Color</label>
-                  <input type="text" id="adminBici2Color" value="${b2.color || ''}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <label for="adminBici2Color" class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Color</label>
+                  <input type="text" id="adminBici2Color" value="${escaparHTML(b2.color || '')}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 uppercase bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
               </div>
             </div>
@@ -874,9 +909,12 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   };
 
-  // Función para Eliminar Atleta Definitivamente
-  window.eliminarAtletaDefinitivo = async function(alumnoId, nombre) {
-    const confirmacion = prompt(`⚠️ ADVERTENCIA: Esta acción eliminará permanentemente a este atleta y todo su historial de pagos.\n\nPara confirmar, escribe: ELIMINAR`);
+  // Función para Eliminar Atleta Definitivamente (busca el nombre de forma segura por ID)
+  window.eliminarAtletaDefinitivo = async function(alumnoId) {
+    const alumno = cacheAlumnos.find(a => String(a.id) === String(alumnoId));
+    const nombre = alumno ? alumno.nombre : 'este atleta';
+
+    const confirmacion = prompt(`⚠️ ADVERTENCIA: Esta acción eliminará permanentemente a ${nombre} y todo su historial de pagos.\n\nPara confirmar, escribe: ELIMINAR`);
     if (confirmacion !== 'ELIMINAR') return;
 
     try {
