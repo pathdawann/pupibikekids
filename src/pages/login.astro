@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout>
+<Layout title="Iniciar Sesión | Pupi Bike Kids">
   <!-- Navegación Adaptada para Móvil / Escritorio -->
   <nav class="bg-black text-white p-4 border-b-4 border-cyan-400">
     <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
@@ -27,13 +27,13 @@ import Layout from '../layouts/Layout.astro';
     <form id="loginForm" class="bg-zinc-900 p-8 md:p-10 shadow-[8px_8px_0px_#00d2ff] border-2 border-cyan-400 flex flex-col gap-6 relative z-10">
       
       <div>
-        <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Correo Electrónico</label>
-        <input type="email" id="email" placeholder="tucorreo@ejemplo.com" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2 placeholder-zinc-700 lowercase">
+        <label for="email" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Correo Electrónico</label>
+        <input type="email" id="email" autocomplete="email" placeholder="tucorreo@ejemplo.com" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2 placeholder-zinc-700 lowercase">
       </div>
       
       <div>
-        <label class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Contraseña</label>
-        <input type="password" id="password" placeholder="••••••••" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2 placeholder-zinc-700">
+        <label for="password" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Contraseña</label>
+        <input type="password" id="password" autocomplete="current-password" placeholder="••••••••" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-cyan-400 transition transform -skew-x-2 placeholder-zinc-700">
       </div>
 
       <div id="mensaje" class="hidden"></div>
@@ -43,7 +43,9 @@ import Layout from '../layouts/Layout.astro';
       </button>
       
       <div class="text-center mt-2 flex flex-col gap-2">
-        <a href="#" class="text-xs font-bold text-zinc-500 hover:text-cyan-400 italic transition">¿Olvidaste tu contraseña?</a>
+        <button type="button" id="btnRecuperarClave" class="text-xs font-bold text-zinc-500 hover:text-cyan-400 italic transition focus:outline-none">
+          ¿Olvidaste tu contraseña?
+        </button>
         <a href="/registro" class="text-sm font-bold text-zinc-400 hover:text-pink-500 italic transition">¿Aún no estás inscrito? Regístrate aquí</a>
       </div>
     </form>
@@ -56,6 +58,43 @@ import Layout from '../layouts/Layout.astro';
   const form = document.getElementById('loginForm');
   const mensaje = document.getElementById('mensaje');
   const btnSubmit = document.getElementById('btnSubmit');
+  const btnRecuperar = document.getElementById('btnRecuperarClave');
+
+  // Recuperación de contraseña por correo
+  btnRecuperar?.addEventListener('click', async () => {
+    const emailInput = document.getElementById('email');
+    const email = emailInput.value.trim().toLowerCase();
+
+    if (!email) {
+      mensaje.textContent = "Escribe tu correo electrónico arriba y vuelve a presionar '¿Olvidaste tu contraseña?'.";
+      mensaje.className = "p-3 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-cyan-400 text-black block mt-2 text-xs";
+      mensaje.classList.remove('hidden');
+      emailInput.focus();
+      return;
+    }
+
+    btnRecuperar.disabled = true;
+    btnRecuperar.textContent = "Enviando enlace...";
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/dashboard`,
+      });
+      if (error) throw error;
+
+      mensaje.textContent = "Te enviamos un enlace a tu correo para restablecer tu contraseña. Revisa tu bandeja de entrada o spam.";
+      mensaje.className = "p-3 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-lime-400 text-black block mt-2 text-xs";
+      mensaje.classList.remove('hidden');
+    } catch (err) {
+      console.error(err);
+      mensaje.textContent = "No se pudo enviar el correo de recuperación. Verifica que esté bien escrito.";
+      mensaje.className = "p-3 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-pink-600 text-white block mt-2 text-xs";
+      mensaje.classList.remove('hidden');
+    } finally {
+      btnRecuperar.disabled = false;
+      btnRecuperar.textContent = "¿Olvidaste tu contraseña?";
+    }
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
