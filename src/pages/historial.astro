@@ -54,6 +54,16 @@ import Layout from '../layouts/Layout.astro';
 <script type="module">
   import { supabase } from '../lib/supabase.js';
 
+  function escaparHTML(texto) {
+    if (texto === null || texto === undefined) return '';
+    return String(texto)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   document.addEventListener('DOMContentLoaded', async () => {
     const pantallaCarga = document.getElementById('pantallaCarga');
     const historialContenido = document.getElementById('historialContenido');
@@ -94,6 +104,7 @@ import Layout from '../layouts/Layout.astro';
       if (!pagos || pagos.length === 0) {
         mensajeVacio.classList.remove('hidden');
       } else {
+        contenedorLista.innerHTML = '';
         pagos.forEach(pago => {
           const fechaReporte = new Date(pago.created_at).toLocaleDateString('es-ES', { 
             day: '2-digit', 
@@ -109,18 +120,26 @@ import Layout from '../layouts/Layout.astro';
             badgeEstadoHtml = `<span class="text-xs font-black bg-cyan-400/20 text-cyan-400 px-3 py-1 uppercase tracking-widest border border-cyan-400 mt-2">⏳ En Revisión</span>`;
           }
 
+          // Mostrar detalle en Bs si fue aprobado con tasa histórica
+          const detalleBsHtml = (pago.monto_bs && pago.tasa_historica)
+            ? `<p class="text-xs text-zinc-400 font-mono mt-1">${Number(pago.monto_bs).toLocaleString('es-VE')} Bs (Tasa: ${escaparHTML(pago.tasa_historica)})</p>`
+            : '';
+
           const tarjetaHtml = `
             <div class="bg-zinc-900 border-l-8 ${pago.estado === 'aprobado' ? 'border-lime-400' : 'border-pink-500'} p-6 md:p-8 shadow-[6px_6px_0px_rgba(0,0,0,0.3)] transform -skew-x-2 hover:-translate-y-1 transition-transform border-y border-r border-zinc-800">
               <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 transform skew-x-2">
                 
                 <div class="flex-1">
-                  <p class="${pago.estado === 'aprobado' ? 'text-lime-400' : 'text-pink-500'} font-black uppercase italic tracking-wider text-xl mb-1">${pago.mes_correspondiente}</p>
-                  <p class="text-white font-bold text-lg mb-1">${pago.metodo_pago} <span class="text-zinc-500">|</span> Ref: ${pago.referencia}</p>
-                  <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Reportado el: ${fechaReporte}</p>
+                  <p class="${pago.estado === 'aprobado' ? 'text-lime-400' : 'text-pink-500'} font-black uppercase italic tracking-wider text-xl mb-1">${escaparHTML(pago.mes_correspondiente)}</p>
+                  <p class="text-white font-bold text-lg mb-1">${escaparHTML(pago.metodo_pago)} <span class="text-zinc-500">|</span> Ref: ${escaparHTML(pago.referencia)}</p>
+                  <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Reportado el: ${escaparHTML(fechaReporte)}</p>
                 </div>
 
                 <div class="text-left md:text-right flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center">
-                  <p class="text-3xl font-black text-lime-400 italic">${pago.monto}$</p>
+                  <div>
+                    <p class="text-3xl font-black text-lime-400 italic">${escaparHTML(pago.monto)}$</p>
+                    ${detalleBsHtml}
+                  </div>
                   ${badgeEstadoHtml}
                 </div>
 
