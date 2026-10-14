@@ -56,7 +56,7 @@ import Layout from '../layouts/Layout.astro';
 
   <!-- Hero Section -->
   <header class="bg-zinc-950 pt-32 pb-24 lg:min-h-[85vh] flex items-center justify-center text-center relative overflow-hidden">
-    <div class="absolute inset-0 bg-[url('/fondo-hero.jpg')] bg-cover bg-center opacity-30"></div>
+    <div class="absolute inset-0 bg-[url('/hero2.png')] bg-cover bg-[center_18%] opacity-70"></div>
     <div class="absolute top-0 left-0 w-80 h-80 bg-blue-700 rounded-full mix-blend-screen filter blur-[120px] opacity-40 z-10"></div>
     <div class="absolute bottom-0 right-0 w-80 h-80 bg-lime-500 rounded-full mix-blend-screen filter blur-[120px] opacity-20 z-10"></div>
 
@@ -137,11 +137,12 @@ import Layout from '../layouts/Layout.astro';
     <div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-zinc-950 to-transparent z-20 pointer-events-none"></div>
     <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-zinc-950 to-transparent z-20 pointer-events-none"></div>
 
-    <div id="slide-0" class="absolute inset-0 bg-[url('/galeria/1.jpg')] bg-cover bg-center transition-opacity duration-1000 opacity-100 z-10"></div>
-    <div id="slide-1" class="absolute inset-0 bg-[url('/galeria/2.jpg')] bg-cover bg-center transition-opacity duration-1000 opacity-0 z-0"></div>
-    <div id="slide-2" class="absolute inset-0 bg-[url('/galeria/3.jpg')] bg-cover bg-center transition-opacity duration-1000 opacity-0 z-0"></div>
-    <div id="slide-3" class="absolute inset-0 bg-[url('/galeria/4.jpg')] bg-cover bg-center transition-opacity duration-1000 opacity-0 z-0"></div>
-    <div id="slide-4" class="absolute inset-0 bg-[url('/galeria/5.jpg')] bg-cover bg-center transition-opacity duration-1000 opacity-0 z-0"></div>
+    <div id="slide-0" class="absolute inset-0 bg-[url('/galeria/1.webp')] bg-cover bg-center transition-opacity duration-1000 opacity-100 z-10"></div>
+    <!-- Reemplaza bg-center por bg-[center_15%] o bg-top en ese slide específico -->
+    <div id="slide-1" class="absolute inset-0 bg-[url('/galeria/2.webp')] bg-cover bg-[center_28%] transition-opacity duration-1000 opacity-0 z-0"></div>    
+    <div id="slide-2" class="absolute inset-0 bg-[url('/galeria/3.webp')] bg-cover bg-[center_58%] transition-opacity duration-1000 opacity-0 z-0"></div>
+    <div id="slide-3" class="absolute inset-0 bg-[url('/galeria/4.webp')] bg-cover bg-[center_43%] transition-opacity duration-1000 opacity-0 z-0"></div>
+    <div id="slide-4" class="absolute inset-0 bg-[url('/galeria/5.webp')] bg-cover bg-center transition-opacity duration-1000 opacity-0 z-0"></div>
   </section>
 
   <!-- SECCIÓN: Nuestro Equipo -->
@@ -160,7 +161,7 @@ import Layout from '../layouts/Layout.astro';
         <!-- Fundador 1: Cesar Barrios -->
         <div class="bg-zinc-900 p-8 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] transform -skew-x-2 flex flex-col xl:flex-row items-center gap-8 group hover:-translate-y-2 transition-transform">
           <div class="w-48 h-48 flex-shrink-0 rounded-full overflow-hidden border-4 border-cyan-400 transform skew-x-2 shadow-lg">
-            <img src="/instructores/cesarbarrios.png" alt="Cesar Barrios" loading="lazy" decoding="async" class="w-full h-full object-cover bg-zinc-800" />
+            <img src="/instructores/cesarbarrios.webp" alt="Cesar Barrios" loading="lazy" decoding="async" class="w-full h-full object-cover bg-zinc-800" />
           </div>
           <div class="text-center xl:text-left transform skew-x-2 flex-1">
             <h3 class="text-3xl font-black italic uppercase text-white mb-1">Cesar "Pupi" Barrios</h3>
@@ -177,7 +178,7 @@ import Layout from '../layouts/Layout.astro';
         <!-- Fundador 2: Jesús Díaz -->
         <div class="bg-zinc-900 p-8 border-2 border-pink-500 shadow-[8px_8px_0px_#db2777] transform -skew-x-2 flex flex-col xl:flex-row items-center gap-8 group hover:-translate-y-2 transition-transform">
           <div class="w-48 h-48 flex-shrink-0 rounded-full overflow-hidden border-4 border-cyan-400 transform skew-x-2 shadow-lg">
-            <img src="/instructores/jesusdiaz.png" alt="Jesus Diaz" loading="lazy" decoding="async" class="w-full h-full object-cover bg-zinc-800" />
+            <img src="/instructores/jesusdiaz.webp" alt="Jesus Diaz" loading="lazy" decoding="async" class="w-full h-full object-cover bg-zinc-800" />
           </div>
           <div class="text-center xl:text-left transform skew-x-2 flex-1">
             <h3 class="text-3xl font-black italic uppercase text-white mb-1">Jesús "Chumbo" Díaz</h3>
@@ -200,7 +201,7 @@ import Layout from '../layouts/Layout.astro';
         <!-- 1. David Mata -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
           <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
-            <img src="/equipo/david.png" alt="David Mata" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="/instructores/davidmata-pupiteam.webp" alt="David Mata" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <span class="hidden w-full h-full items-center justify-center text-3xl font-black text-pink-400 bg-zinc-950">D</span>
           </div>
           <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">David Mata</h3>
@@ -213,7 +214,7 @@ import Layout from '../layouts/Layout.astro';
         <!-- 2. Luis Blanco -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
           <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
-            <img src="/equipo/adrian.png" alt="Luis Blanco" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="/instructores/luisblanco-pupiteam.jpg" alt="Luis Blanco" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <span class="hidden w-full h-full items-center justify-center text-3xl font-black text-lime-400 bg-zinc-950">L</span>
           </div>
           <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Luis Blanco</h3>
@@ -226,7 +227,7 @@ import Layout from '../layouts/Layout.astro';
         <!-- 3. Junior -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-pink-500 shadow-[6px_6px_0px_#db2777] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
           <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-cyan-400 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
-            <img src="/equipo/junior.png" alt="Junior" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="/instructores/junior-pupiteam.webp" alt="Junior" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <span class="hidden w-full h-full items-center justify-center text-3xl font-black text-cyan-400 bg-zinc-950">J</span>
           </div>
           <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Junior</h3>
@@ -239,7 +240,7 @@ import Layout from '../layouts/Layout.astro';
         <!-- 4. Luis David -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
           <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
-            <img src="/equipo/jesus.png" alt="Luis David" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="/instructores/luisdavid-pupiteam.webp" alt="Luis David" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <span class="hidden w-full h-full items-center justify-center text-3xl font-black text-pink-400 bg-zinc-950">L</span>
           </div>
           <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Luis David</h3>
@@ -252,7 +253,7 @@ import Layout from '../layouts/Layout.astro';
         <!-- 5. Yusdeilis -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
           <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
-            <img src="/equipo/yuliandrys.png" alt="Yusdeilis" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="/instructores/yusdeilys-pupiteam.png" alt="Yusdeilis" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <span class="hidden w-full h-full items-center justify-center text-3xl font-black text-lime-400 bg-zinc-950">Y</span>
           </div>
           <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Yusdeilis</h3>
@@ -265,7 +266,7 @@ import Layout from '../layouts/Layout.astro';
         <!-- 6. Manzul -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-pink-500 shadow-[6px_6px_0px_#db2777] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
           <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-cyan-400 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
-            <img src="/equipo/manzul.png" alt="Manzul" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="/instructores/manzul-pupiteam.png" alt="Manzul" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <span class="hidden w-full h-full items-center justify-center text-3xl font-black text-cyan-400 bg-zinc-950">M</span>
           </div>
           <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Manzul</h3>
@@ -278,7 +279,7 @@ import Layout from '../layouts/Layout.astro';
         <!-- 7. Sarah (Corregido con clase hidden en el span de respaldo) -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-lime-400 shadow-[6px_6px_0px_#a3e635] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
           <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-500 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
-            <img src="/equipo/sarah.png" alt="Sarah" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="/instructores/sarah-pupiteam.png" alt="Sarah" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <span class="hidden w-full h-full items-center justify-center text-3xl font-black text-lime-400 bg-zinc-950">S</span>
           </div>
           <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Sarah</h3>
@@ -291,7 +292,7 @@ import Layout from '../layouts/Layout.astro';
         <!-- 8. Carolina Alvarado (Corregido con clase hidden en el span de respaldo) -->
         <div class="flex flex-col items-center bg-zinc-900 p-6 border-2 border-cyan-400 shadow-[6px_6px_0px_#00d2ff] transform -skew-x-2 group hover:-translate-y-2 transition-transform">
           <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-lime-400 mb-4 transform skew-x-2 bg-zinc-950 flex items-center justify-center shadow">
-            <img src="/equipo/carolina.png" alt="Carolina Alvarado" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="/instructores/dracarolina-pupiteam.webp" alt="Carolina Alvarado" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <span class="hidden w-full h-full items-center justify-center text-3xl font-black text-cyan-400 bg-zinc-950">C</span>
           </div>
           <h3 class="text-2xl font-black italic uppercase text-white mb-1 transform skew-x-2 text-center">Carolina Alvarado</h3>
@@ -307,7 +308,7 @@ import Layout from '../layouts/Layout.astro';
 
   <!-- BANNER CAMBIBARA RACE CON ZOOM MODAL -->
   <section id="cambibara-race" class="bg-zinc-950 py-16 relative overflow-hidden border-t-4 border-green-500 scroll-mt-20">
-    <div class="absolute inset-0 bg-[url('/fondo-barro.jpg')] bg-cover bg-center opacity-20 grayscale"></div>
+    <div class="absolute inset-0 bg-[url('./fondo-barro.jpg')] bg-cover bg-center opacity-20 grayscale"></div>
     <div class="absolute top-0 right-0 w-96 h-96 bg-green-600 rounded-full mix-blend-screen filter blur-[120px] opacity-20"></div>
     
     <div class="container mx-auto px-4 max-w-7xl relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
@@ -327,10 +328,10 @@ import Layout from '../layouts/Layout.astro';
               decoding="async"
               class="block w-auto h-auto max-h-[700px] object-contain rounded-sm transform skew-x-1"
             />
-            <!-- Indicador visual sutil de zoom -->
+            <!-- Indicador visual sutil de zoom 
             <div class="absolute bottom-4 right-4 bg-black/80 border border-green-500 text-green-400 px-3 py-1 text-[10px] font-black uppercase tracking-wider transform skew-x-1 pointer-events-none">
               🔍 Haz clic para ampliar
-            </div>
+            </div>-->
           </div>
         </div>
       </div>
