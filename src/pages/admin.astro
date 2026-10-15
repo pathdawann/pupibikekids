@@ -148,17 +148,17 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         </div>
       </div>
 
-      <!-- SECCIÓN: Directorio Total de Atletas CON BUSCADOR -->
+      <!-- SECCIÓN: Directorio Total de Atletas CON BUSCADOR Y 5 NIVELES -->
       <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-12">
-        <div class="border-b border-gray-200 px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4 bg-gray-50">
+        <div class="border-b border-gray-200 px-6 py-4 flex flex-col xl:flex-row justify-between items-center gap-4 bg-gray-50">
           <div>
             <h2 class="text-base font-bold text-gray-900">Directorio de Alumnos</h2>
             <p class="text-xs text-gray-500">Gestión de fichas técnicas y solvencias.</p>
           </div>
           
-          <div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+          <div class="flex flex-col sm:flex-row items-center gap-3 w-full xl:w-auto">
             <!-- Buscador de alumnos -->
-            <div class="relative w-full sm:w-72">
+            <div class="relative w-full sm:w-64">
               <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 text-xs">🔍</span>
               <input 
                 type="text" 
@@ -168,13 +168,15 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
               >
             </div>
 
-            <!-- Filtros de Directorio -->
+            <!-- Filtros de Directorio incluyendo Prospecto y Adultos -->
             <div class="flex flex-wrap bg-gray-100 p-1 rounded-lg border border-gray-200 w-full sm:w-auto justify-center">
-              <button onclick="window.filtrarDirectorio('TODOS')" id="filtro-TODOS" class="filtro-btn active px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Todos</button>
-              <button onclick="window.filtrarDirectorio('AVANZADO')" id="filtro-AVANZADO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Avanzado</button>
-              <button onclick="window.filtrarDirectorio('INTERMEDIO')" id="filtro-INTERMEDIO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Intermedio</button>
-              <button onclick="window.filtrarDirectorio('PRINCIPIANTE')" id="filtro-PRINCIPIANTE" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Principiante</button>
-              <button onclick="window.filtrarDirectorio('INACTIVO')" id="filtro-INACTIVO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Inactivos</button>
+              <button onclick="window.filtrarDirectorio('TODOS')" id="filtro-TODOS" class="filtro-btn active px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Todos</button>
+              <button onclick="window.filtrarDirectorio('PROSPECTO')" id="filtro-PROSPECTO" class="filtro-btn px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Prospectos</button>
+              <button onclick="window.filtrarDirectorio('AVANZADO')" id="filtro-AVANZADO" class="filtro-btn px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Avanzado</button>
+              <button onclick="window.filtrarDirectorio('INTERMEDIO')" id="filtro-INTERMEDIO" class="filtro-btn px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Intermedio</button>
+              <button onclick="window.filtrarDirectorio('PRINCIPIANTE')" id="filtro-PRINCIPIANTE" class="filtro-btn px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Principiante</button>
+              <button onclick="window.filtrarDirectorio('ADULTOS')" id="filtro-ADULTOS" class="filtro-btn px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Adultos</button>
+              <button onclick="window.filtrarDirectorio('INACTIVO')" id="filtro-INACTIVO" class="filtro-btn px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Inactivos</button>
             </div>
           </div>
         </div>
@@ -330,9 +332,14 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
   function renderizarMetricas() {
     const contenedor = document.getElementById('metricasDashboard');
     
-    const totalActivos = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo').length;
-    const activosAvanzado = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === 'AVANZADO' && (a.estatus || 'activo').toLowerCase() !== 'inactivo').length;
-    const activosIntermedio = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === 'INTERMEDIO' && (a.estatus || 'activo').toLowerCase() !== 'inactivo').length;
+    const alumnosActivos = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo');
+    const totalActivos = alumnosActivos.length;
+
+    const activosProspecto = alumnosActivos.filter(a => (a.nivel || '').toUpperCase() === 'PROSPECTO').length;
+    const activosAvanzado = alumnosActivos.filter(a => (a.nivel || '').toUpperCase() === 'AVANZADO').length;
+    const activosIntermedio = alumnosActivos.filter(a => (a.nivel || '').toUpperCase() === 'INTERMEDIO').length;
+    const activosPrincipiante = alumnosActivos.filter(a => (a.nivel || '').toUpperCase() === 'PRINCIPIANTE').length;
+    const activosAdultos = alumnosActivos.filter(a => (a.nivel || '').toUpperCase() === 'ADULTOS').length;
     
     const fechaActual = new Date();
     const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -355,8 +362,15 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-gray-500 mb-1">Distribución Niveles</p>
-          <p class="text-sm font-bold text-gray-900 mt-1">Avz: <span class="text-blue-600">${activosAvanzado}</span> | Int: <span class="text-green-600">${activosIntermedio}</span></p>
-          <p class="text-xs text-gray-400 mt-1">Principiantes: ${totalActivos - activosAvanzado - activosIntermedio}</p>
+          <p class="text-xs font-bold text-gray-900 mt-1">
+            Prosp: <span class="text-amber-600">${activosProspecto}</span> | 
+            Avz: <span class="text-blue-600">${activosAvanzado}</span> | 
+            Int: <span class="text-green-600">${activosIntermedio}</span>
+          </p>
+          <p class="text-xs font-bold text-gray-500 mt-1">
+            Princ: <span class="text-gray-800">${activosPrincipiante}</span> | 
+            Adultos: <span class="text-purple-600">${activosAdultos}</span>
+          </p>
         </div>
         <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center text-2xl">🚲</div>
       </div>
@@ -425,7 +439,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       const idPagoSeguro = escaparHTML(pago.id);
       const montoSeguro = Number(pago.monto) || 0;
 
-      // BADGES ELEGANTES
       let badgeEstado = '';
       let btnAccion = '';
 
@@ -437,7 +450,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         btnAccion = `<button onclick="window.aprobarPago('${idPagoSeguro}', ${montoSeguro})" class="inline-flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold shadow-sm transition">✓ Aprobar</button>`;
       }
 
-      // BOTÓN ELIMINAR CON ÍCONO ELEGANTE (SOLO SUPERADMIN)
       const btnEliminarPagoHtml = esSuperAdmin 
         ? `<button onclick="window.eliminarPago('${idPagoSeguro}')" class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition border border-transparent hover:border-red-200" title="Eliminar recibo de prueba">
              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
@@ -533,9 +545,12 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         }
       }
 
-      let colorNivel = 'text-gray-500';
-      if (alumno.nivel === 'AVANZADO') colorNivel = 'text-blue-600 font-bold';
-      if (alumno.nivel === 'INTERMEDIO') colorNivel = 'text-green-600 font-bold';
+      let colorNivel = 'text-gray-600 font-medium';
+      const nivelUpper = (alumno.nivel || '').toUpperCase();
+      if (nivelUpper === 'PROSPECTO') colorNivel = 'text-amber-600 font-bold';
+      else if (nivelUpper === 'AVANZADO') colorNivel = 'text-blue-600 font-bold';
+      else if (nivelUpper === 'INTERMEDIO') colorNivel = 'text-green-600 font-bold';
+      else if (nivelUpper === 'ADULTOS') colorNivel = 'text-purple-600 font-bold';
 
       const telefonoLim = formatearTelefonoWhatsApp(alumno.telefono);
       const btnWp = telefonoLim
@@ -812,6 +827,8 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
                 <option value="PRINCIPIANTE" ${alumno.nivel === 'PRINCIPIANTE' ? 'selected' : ''}>PRINCIPIANTE</option>
                 <option value="INTERMEDIO" ${alumno.nivel === 'INTERMEDIO' ? 'selected' : ''}>INTERMEDIO</option>
                 <option value="AVANZADO" ${alumno.nivel === 'AVANZADO' ? 'selected' : ''}>AVANZADO</option>
+                <option value="PROSPECTO" ${alumno.nivel === 'PROSPECTO' ? 'selected' : ''}>PROSPECTO</option>
+                <option value="ADULTOS" ${alumno.nivel === 'ADULTOS' ? 'selected' : ''}>ADULTOS</option>
               </select>
             </div>
             <div>

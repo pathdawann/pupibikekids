@@ -71,16 +71,18 @@ import Layout from '../layouts/Layout.astro';
           </div>
           <div>
             <label for="nivel" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Nivel a Inscribir</label>
-            <select id="nivel" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2 appearance-none">
+            <select id="nivel" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
               <option value="PRINCIPIANTE">PRINCIPIANTE (RUEDITAS / BALANCE)</option>
               <option value="INTERMEDIO">INTERMEDIO (MTB BÁSICO)</option>
               <option value="AVANZADO">AVANZADO (COMPETICIÓN)</option>
+              <option value="PROSPECTO">PROSPECTOS (ALTO RENDIMIENTO)</option>
+              <option value="ADULTOS">ENTRENAMIENTO PARA ADULTOS (TÉCNICA Y RESISTENCIA)</option>
             </select>
           </div>
           <!-- Tipo de Sangre (Opcional) -->
           <div>
             <label for="tipo_sangre" class="block text-sm font-black uppercase italic mb-2 text-zinc-300 tracking-wider">Tipo de Sangre (Opcional)</label>
-            <select id="tipo_sangre" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2 appearance-none">
+            <select id="tipo_sangre" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
               <option value="">-- NO ESPECIFICADO --</option>
               <option value="O+">O+</option>
               <option value="O-">O-</option>
@@ -145,10 +147,10 @@ import Layout from '../layouts/Layout.astro';
   const mensaje = document.getElementById('mensaje');
   const btnSubmit = document.getElementById('btnSubmit');
 
-  // Preselección segura desde la URL (?nivel=...)
+  // Preselección segura desde la URL (?nivel=...) incluyendo PROSPECTO y ADULTOS
   const urlParams = new URLSearchParams(window.location.search);
   const nivelUrl = urlParams.get('nivel')?.toUpperCase();
-  const nivelesValidos = ['PRINCIPIANTE', 'INTERMEDIO', 'AVANZADO'];
+  const nivelesValidos = ['PRINCIPIANTE', 'INTERMEDIO', 'AVANZADO', 'PROSPECTO', 'ADULTOS'];
   if (nivelUrl && nivelesValidos.includes(nivelUrl)) {
     const selectNivel = document.getElementById('nivel');
     if (selectNivel) {
@@ -172,7 +174,6 @@ import Layout from '../layouts/Layout.astro';
     const tipo_sangre = document.getElementById('tipo_sangre').value;
     const fotoFile = document.getElementById('fotoFile').files[0];
 
-    // Validar tamaño de imagen ANTES de crear el usuario en Auth
     if (fotoFile && fotoFile.size > 5 * 1024 * 1024) {
       mensaje.textContent = "La fotografía supera los 5 MB. Por favor elige una imagen más liviana.";
       mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-pink-600 text-white block mt-2";
@@ -186,7 +187,6 @@ import Layout from '../layouts/Layout.astro';
     let fotoUrlFinal = '';
 
     try {
-      // 1. Crear usuario en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: email,
         password: password,
@@ -197,7 +197,6 @@ import Layout from '../layouts/Layout.astro';
       const userId = authData.user?.id;
       if (!userId) throw new Error("No se pudo obtener el ID del usuario.");
 
-      // 2. Foto a Storage (Opcional y protegida para no interrumpir la creación de la ficha)
       if (fotoFile) {
         try {
           btnSubmit.textContent = "SUBIENDO FOTOGRAFÍA...";
@@ -222,7 +221,6 @@ import Layout from '../layouts/Layout.astro';
         }
       }
 
-      // 3. Bicicleta (Se guarda solo si escribieron datos)
       const listaBicicletas = [];
       const biciRin = document.getElementById('biciRin').value.trim().toUpperCase();
       const biciMarca = document.getElementById('biciMarca').value.trim().toUpperCase();
@@ -237,7 +235,6 @@ import Layout from '../layouts/Layout.astro';
         });
       }
 
-      // 4. Guardar registro en la tabla alumnos
       btnSubmit.textContent = "GUARDANDO FICHA...";
       const { error: errorAlumno } = await supabase
         .from('alumnos')
@@ -259,7 +256,6 @@ import Layout from '../layouts/Layout.astro';
 
       form.reset();
 
-      // Si Supabase requiere confirmación de email y no inició sesión automáticamente:
       if (!authData.session) {
         mensaje.textContent = "¡Inscripción registrada! Revisa tu correo para confirmar tu cuenta antes de iniciar sesión.";
         mensaje.className = "p-4 text-center font-black italic uppercase transform -skew-x-6 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] bg-cyan-400 text-black block mt-2";

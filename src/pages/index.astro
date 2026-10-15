@@ -74,60 +74,112 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </header>
 
-  <!-- SECCIÓN: Niveles -->
+  <!-- SECCIÓN: Niveles (5 Tarjetas Simétricas y Alineadas) -->
   <section id="niveles" class="py-24 bg-zinc-900 border-t border-zinc-800 relative">
     <div class="container mx-auto px-4 max-w-7xl relative z-10">
       <div class="text-center mb-16">
-        <h2 class="text-4xl md:text-5xl font-black uppercase italic text-white transform -skew-x-6 drop-shadow-md">Nuestros <span class="text-pink-500">Niveles</span></h2>
-        <p class="text-zinc-400 mt-4 font-bold italic text-lg">El plan perfecto para cada etapa de su desarrollo deportivo.</p>
+        <h2 class="text-4xl md:text-5xl font-black uppercase italic text-white transform -skew-x-6 drop-shadow-md">
+          Nuestros <span class="text-pink-500">Niveles</span>
+        </h2>
+        <p class="text-zinc-400 mt-4 font-bold italic text-lg">
+          El plan perfecto para cada etapa deportiva, desde iniciación hasta alto rendimiento y adultos.
+        </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <!-- Contenedor Flex Centrado: Garantiza que las 5 tarjetas tengan el mismo ancho y alto -->
+      <div class="flex flex-wrap justify-center gap-8">
+        
         <!-- Nivel 1: Principiante -->
-        <div class="bg-zinc-950 p-8 border-2 border-cyan-400 transform -skew-x-2 shadow-[8px_8px_0px_#00d2ff] hover:-translate-y-2 transition-transform flex flex-col justify-between">
+        <div class="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] bg-zinc-950 p-7 border-2 border-cyan-400 transform -skew-x-2 shadow-[8px_8px_0px_#00d2ff] hover:-translate-y-2 transition-transform flex flex-col justify-between">
           <div>
-            <h3 class="text-2xl font-black italic uppercase text-cyan-400 mb-4 tracking-wider">Principiante</h3>
-            <ul class="text-zinc-200 font-medium space-y-3 mb-6">
+            <div class="flex items-center justify-between gap-2 mb-5">
+              <h3 class="text-2xl font-black italic uppercase text-cyan-400 tracking-wider">Principiante</h3>
+              <span class="bg-cyan-400 text-black text-[10px] font-black uppercase italic px-2.5 py-1 transform -skew-x-6">Iniciación</span>
+            </div>
+            <ul class="text-zinc-200 text-sm font-medium space-y-3 mb-8">
               <li>✓ Dominio de rueditas y equilibrio.</li>
               <li>✓ Fundamentos de seguridad y frenado.</li>
               <li>✓ Juegos y adaptación a la bicicleta.</li>
             </ul>
           </div>
-          <a href="/registro?nivel=PRINCIPIANTE" class="block bg-zinc-950 hover:bg-cyan-400 hover:text-black p-3 text-sm font-black uppercase italic text-center border-2 border-cyan-400 text-cyan-400 shadow-[3px_3px_0px_#00d2ff] transition-colors">
+          <a href="/registro?nivel=PRINCIPIANTE" class="block bg-zinc-950 hover:bg-cyan-400 hover:text-black p-3 text-xs font-black uppercase italic text-center border-2 border-cyan-400 text-cyan-400 shadow-[3px_3px_0px_#00d2ff] transition-colors">
             Inscribirse en Principiante →
           </a>
         </div>
 
         <!-- Nivel 2: Intermedio -->
-        <div class="bg-zinc-950 p-8 border-2 border-lime-400 transform -skew-x-2 shadow-[8px_8px_0px_#a3e635] hover:-translate-y-2 transition-transform md:-mt-4 flex flex-col justify-between">
+        <div class="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] bg-zinc-950 p-7 border-2 border-lime-400 transform -skew-x-2 shadow-[8px_8px_0px_#a3e635] hover:-translate-y-2 transition-transform flex flex-col justify-between">
           <div>
-            <h3 class="text-2xl font-black italic uppercase text-lime-400 mb-4 tracking-wider">Intermedio</h3>
-            <ul class="text-zinc-200 font-medium space-y-3 mb-6">
+            <div class="flex items-center justify-between gap-2 mb-5">
+              <h3 class="text-2xl font-black italic uppercase text-lime-400 tracking-wider">Intermedio</h3>
+              <span class="bg-lime-400 text-black text-[10px] font-black uppercase italic px-2.5 py-1 transform -skew-x-6">Desarrollo</span>
+            </div>
+            <ul class="text-zinc-200 text-sm font-medium space-y-3 mb-8">
               <li>✓ Iniciación al Mountain Bike (MTB).</li>
               <li>✓ Postura y superación de obstáculos.</li>
               <li>✓ Rutas guiadas de resistencia media.</li>
             </ul>
           </div>
-          <a href="/registro?nivel=INTERMEDIO" class="block bg-zinc-950 hover:bg-lime-400 hover:text-black p-3 text-sm font-black uppercase italic text-center border-2 border-lime-400 text-lime-400 shadow-[3px_3px_0px_#a3e635] transition-colors">
+          <a href="/registro?nivel=INTERMEDIO" class="block bg-zinc-950 hover:bg-lime-400 hover:text-black p-3 text-xs font-black uppercase italic text-center border-2 border-lime-400 text-lime-400 shadow-[3px_3px_0px_#a3e635] transition-colors">
             Inscribirse en Intermedio →
           </a>
         </div>
 
         <!-- Nivel 3: Avanzado -->
-        <div class="bg-zinc-950 p-8 border-2 border-pink-500 transform -skew-x-2 shadow-[8px_8px_0px_#db2777] hover:-translate-y-2 transition-transform flex flex-col justify-between">
+        <div class="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] bg-zinc-950 p-7 border-2 border-pink-500 transform -skew-x-2 shadow-[8px_8px_0px_#db2777] hover:-translate-y-2 transition-transform flex flex-col justify-between">
           <div>
-            <h3 class="text-2xl font-black italic uppercase text-pink-500 mb-4 tracking-wider">Avanzado</h3>
-            <ul class="text-zinc-200 font-medium space-y-3 mb-6">
+            <div class="flex items-center justify-between gap-2 mb-5">
+              <h3 class="text-2xl font-black italic uppercase text-pink-500 tracking-wider">Avanzado</h3>
+              <span class="bg-pink-600 text-white text-[10px] font-black uppercase italic px-2.5 py-1 transform -skew-x-6">Competición</span>
+            </div>
+            <ul class="text-zinc-200 text-sm font-medium space-y-3 mb-8">
               <li>✓ Preparación física para competencia.</li>
               <li>✓ Técnicas avanzadas de ruta y descenso.</li>
               <li>✓ Turno académico: <span class="text-yellow-400 font-bold">Lunes a Viernes</span>.</li>
             </ul>
           </div>
-          <a href="/registro?nivel=AVANZADO" class="block bg-pink-600 hover:bg-pink-500 text-white p-3 text-sm font-black uppercase italic text-center shadow-[3px_3px_0px_#db2777] transition-colors">
+          <a href="/registro?nivel=AVANZADO" class="block bg-zinc-950 hover:bg-pink-600 hover:text-white p-3 text-xs font-black uppercase italic text-center border-2 border-pink-500 text-pink-500 shadow-[3px_3px_0px_#db2777] transition-colors">
             Inscribirse en Avanzado →
           </a>
         </div>
-      </div> 
+
+        <!-- Nivel 4: Prospectos -->
+        <div class="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] bg-zinc-950 p-7 border-2 border-yellow-400 transform -skew-x-2 shadow-[8px_8px_0px_#facc15] hover:-translate-y-2 transition-transform flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-5">
+              <h3 class="text-2xl font-black italic uppercase text-yellow-400 tracking-wider">Prospectos</h3>
+              <span class="bg-yellow-400 text-black text-[10px] font-black uppercase italic px-2.5 py-1 transform -skew-x-6">Alto Rendimiento</span>
+            </div>
+            <ul class="text-zinc-200 text-sm font-medium space-y-3 mb-8">
+              <li>✓ Plan especial de desempeño competitivo.</li>
+              <li>✓ Entrenamiento de potencia y estrategia.</li>
+              <li>✓ Proyección deportiva de alto nivel.</li>
+            </ul>
+          </div>
+          <a href="/registro?nivel=PROSPECTO" class="block bg-zinc-950 hover:bg-yellow-400 hover:text-black p-3 text-xs font-black uppercase italic text-center border-2 border-yellow-400 text-yellow-400 shadow-[3px_3px_0px_#facc15] transition-colors">
+            Inscribirse en Prospectos →
+          </a>
+        </div>
+
+        <!-- Nivel 5: Plan Adultos -->
+        <div class="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] bg-zinc-950 p-7 border-2 border-blue-500 transform -skew-x-2 shadow-[8px_8px_0px_#3b82f6] hover:-translate-y-2 transition-transform flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-5">
+              <h3 class="text-2xl font-black italic uppercase text-blue-400 tracking-wider">Plan Adultos</h3>
+              <span class="bg-blue-600 text-white text-[10px] font-black uppercase italic px-2.5 py-1 transform -skew-x-6">Técnica y Ruta</span>
+            </div>
+            <ul class="text-zinc-200 text-sm font-medium space-y-3 mb-8">
+              <li>✓ Técnica de manejo, curvas y ascenso.</li>
+              <li>✓ Desarrollo de fondo físico y resistencia.</li>
+              <li>✓ Sesiones guiadas de MTB y ruta.</li>
+            </ul>
+          </div>
+          <a href="/registro?nivel=ADULTOS" class="block bg-zinc-950 hover:bg-blue-600 hover:text-white p-3 text-xs font-black uppercase italic text-center border-2 border-blue-500 text-blue-400 shadow-[3px_3px_0px_#3b82f6] transition-colors">
+            Inscribirse en Plan Adultos →
+          </a>
+        </div>
+
+      </div>
     </div>
   </section>
 
