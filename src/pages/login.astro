@@ -68,10 +68,10 @@ import Layout from '../layouts/Layout.astro';
       </button>
       
       <div class="text-center mt-2 flex flex-col gap-2">
-        <button type="button" id="btnRecuperarClave" class="text-sm font-bold text--500 hover:text-cyan-400 italic transition focus:outline-none">
+        <button type="button" id="btnRecuperarClave" class="text-xs font-bold text-zinc-500 hover:text-cyan-400 italic transition focus:outline-none">
           ¿Olvidaste tu contraseña?
         </button>
-        <a href="/registro" class="text-sm font-bold text-white-400 hover:text-pink-500 italic transition">¿Aún no estás inscrito? Regístrate aquí</a>
+        <a href="/registro" class="text-sm font-bold text-zinc-400 hover:text-pink-500 italic transition">¿Aún no estás inscrito? Regístrate aquí</a>
       </div>
     </form>
   </main>
@@ -155,7 +155,7 @@ import Layout from '../layouts/Layout.astro';
       if (error) throw error;
 
       // Lista de correos administradores
-      const correosAdmin = ["pathdawann@gmail.com", "cesar@gmail.com"];
+      const correosAdmin = ["pathdawann@gmail.com", "pupibikekids27@gmail.com"];
 
       if (data.user?.email && correosAdmin.includes(data.user.email)) {
         window.location.href = '/admin';

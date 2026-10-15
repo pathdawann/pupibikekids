@@ -12,11 +12,14 @@ if (!user || error) {
   return Astro.redirect('/login');
 }
 
-// 3. Verificamos autorización administrativa
-const correosAutorizados = ["pathdawann@gmail.com", "cesar@gmail.com"];
+// 3. Verificamos autorización administrativa y roles
+const correosAutorizados = ["pathdawann@gmail.com", "pupibikekids27@gmail.com"];
 if (!user.email || !correosAutorizados.includes(user.email)) {
   return Astro.redirect('/dashboard');
 }
+
+// Solo Patricia Mago tiene permisos destructivos (eliminar atletas/datos)
+const esSuperAdmin = user.email === "pathdawann@gmail.com";
 ---
 
 <Layout title="Panel Administrativo | Pupi Bike Kids" noindex={true}>
@@ -40,7 +43,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     </div>
   </nav>
 
-  <main id="adminContenido" class="bg-gray-50 min-h-screen pb-12">
+  <main id="adminContenido" data-superadmin={esSuperAdmin ? "true" : "false"} class="bg-gray-50 min-h-screen pb-12">
     <div class="container mx-auto px-4 lg:px-8 py-8 max-w-7xl">
       
       <!-- Encabezado y Acciones Globales -->
@@ -224,9 +227,11 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
   let tasaActualDolar = 0;
   let filtroActual = 'TODOS';
 
+  // Verificamos si la usuaria actual es la Super Administradora
+  const esSuperAdmin = document.getElementById('adminContenido')?.dataset.superadmin === 'true';
+
   const FOTO_DEFAULT = 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80';
 
-  // Función auxiliar para sanitizar texto y prevenir errores de HTML/XSS
   function escaparHTML(texto) {
     if (texto === null || texto === undefined) return '';
     return String(texto)
@@ -237,7 +242,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       .replace(/'/g, '&#039;');
   }
 
-  // Función para normalizar números telefónicos de Venezuela para WhatsApp
   function formatearTelefonoWhatsApp(telefonoRaw) {
     let limpio = (telefonoRaw || '').replace(/\D/g, '');
     if (limpio.startsWith('0')) {
@@ -250,7 +254,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
 
   document.addEventListener('DOMContentLoaded', async () => {
     try {
-      // 1. Cargar Tasa del Día Global
       const { data: tasaData } = await supabase.from('configuracion').select('valor, updated_at').eq('clave', 'tasa_dolar').single();
       
       if (tasaData) {
@@ -260,9 +263,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
         document.getElementById('fechaTasa').textContent = `Act. ${fechaUpd}`;
       }
 
-      // 2. Cargar datos base
       await cargarDatosGlobales();
-
     } catch (err) {
       console.error("Error inicial:", err);
     }
@@ -289,7 +290,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     const activosAvanzado = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === 'AVANZADO' && (a.estatus || 'activo').toLowerCase() !== 'inactivo').length;
     const activosIntermedio = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === 'INTERMEDIO' && (a.estatus || 'activo').toLowerCase() !== 'inactivo').length;
     
-    // Calcular ingresos del mes (Solo aprobados del mes en curso)
     const fechaActual = new Date();
     const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
@@ -339,7 +339,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     const tbody = document.getElementById('tablaPagosPendientes');
     tbody.innerHTML = '';
     
-    // Limitar visualización a 30 para rendimiento de admin, el CSV baja todos
     const pagosLimitados = cachePagos.slice(0, 30);
     document.getElementById('contadorPagosMes').textContent = `Últimos ${pagosLimitados.length}`;
 
@@ -354,7 +353,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       const nombreAtleta = atleta ? atleta.nombre : 'Atleta Eliminado';
       const cedulaAtleta = atleta ? atleta.cedula : 'N/A';
 
-      // LÓGICA DE TASA HISTÓRICA
       let stringBs = '<span class="text-gray-400 text-xs">Pendiente</span>';
       if (pago.monto_bs && pago.tasa_historica) {
         stringBs = `<span class="font-medium text-gray-900">${Number(pago.monto_bs).toLocaleString('es-VE')} Bs</span> <br> <span class="text-[10px] text-gray-500">Tasa: ${escaparHTML(pago.tasa_historica)}</span>`;
@@ -401,12 +399,10 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     });
   }
 
-  // Lógica de Tabs del Directorio
   window.filtrarDirectorio = function(filtro) {
     filtroActual = filtro;
     document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(`filtro-${filtro}`)?.classList.add('active');
-    
     renderizarDirectorio();
   };
 
@@ -518,10 +514,8 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     btn.disabled = true;
 
     try {
-      // 1. Calculamos el equivalente en Bs en este instante exacto
       const calculoBs = (pagoPendiente.usd * tasaActualDolar).toFixed(2);
 
-      // 2. Guardamos estado, tasa histórica y monto bs en la base de datos
       const { error } = await supabase
         .from('pagos')
         .update({ 
@@ -534,7 +528,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       if (error) throw error;
       modalConfirmar.classList.add('hidden');
 
-      await cargarDatosGlobales(); // Refresca UI
+      await cargarDatosGlobales();
     } catch (err) {
       console.error(err);
       alert("Error al aprobar pago.");
@@ -545,7 +539,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   });
 
-  // Revertir Pago
   let pagoRevertirId = null;
   const modalRevertir = document.getElementById('modalRevertirPago');
   
@@ -566,7 +559,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     btn.disabled = true;
 
     try {
-      // Al revertir, borramos la tasa histórica para evitar cruces
       const { error } = await supabase
         .from('pagos')
         .update({ estado: 'revision', tasa_historica: null, monto_bs: null })
@@ -585,7 +577,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   });
 
-  // Tasa del Dólar Guardar
   document.getElementById('formTasa').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnGuardarTasa');
@@ -613,7 +604,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   });
 
-  // Funciones de Respaldo CSV (Optimizadas con Nombre y Cedula)
   document.getElementById('btnExportarPagos')?.addEventListener('click', () => {
     if (!cachePagos.length) return alert("No hay pagos para exportar.");
     
@@ -650,7 +640,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     link.click();
   }
 
-  // Correo Masivo
   document.getElementById('btnCorreoMasivo')?.addEventListener('click', () => {
     const emails = cacheAlumnos.map(a => a.email).filter(Boolean).join(',');
     if (!emails) return alert("No hay correos registrados.");
@@ -679,6 +668,13 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     const idSeguro = escaparHTML(alumno.id);
     const fotoSegura = alumno.foto_url ? escaparHTML(alumno.foto_url) : FOTO_DEFAULT;
 
+    // El botón eliminar solo se genera para Patricia Mago (SuperAdmin)
+    const botonEliminarHtml = esSuperAdmin 
+      ? `<button type="button" onclick="window.eliminarAtletaDefinitivo('${idSeguro}')" class="px-3 py-1.5 text-xs font-bold rounded-md border bg-red-50 text-red-700 border-red-200 hover:bg-red-100 transition shadow-sm">
+           🗑️ Eliminar
+         </button>` 
+      : '';
+
     const cont = document.getElementById('contenidoFichaAtleta');
     cont.innerHTML = `
       <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-200">
@@ -695,9 +691,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
            <button type="button" onclick="window.alternarEstatusAtleta('${idSeguro}', '${esInactivo ? 'activo' : 'inactivo'}')" class="px-3 py-1.5 text-xs font-bold rounded-md border ${esInactivo ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100'} transition shadow-sm">
              ${esInactivo ? '✓ Reactivar' : '⏸ Suspender'}
            </button>
-           <button type="button" onclick="window.eliminarAtletaDefinitivo('${idSeguro}')" class="px-3 py-1.5 text-xs font-bold rounded-md border bg-red-50 text-red-700 border-red-200 hover:bg-red-100 transition shadow-sm">
-             🗑️ Eliminar
-           </button>
+           ${botonEliminarHtml}
         </div>
       </div>
 
@@ -822,7 +816,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       </form>
     `;
 
-    // Evento para guardar cambios en la BD
     document.getElementById('formAdminEditarAtleta').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btnAdminGuardarAtleta');
@@ -875,8 +868,8 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
         if (error) throw error;
         
         alert("¡Ficha actualizada exitosamente!");
-        await cargarDatosGlobales(); // Actualiza la tabla de fondo
-        window.verFichaAtleta(alumnoId); // Refresca el modal para mostrar datos nuevos
+        await cargarDatosGlobales();
+        window.verFichaAtleta(alumnoId);
       } catch (err) {
         console.error(err);
         alert("Error al actualizar la información.");
@@ -887,7 +880,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     });
   };
 
-  // Función para Suspender / Reactivar Atleta
   window.alternarEstatusAtleta = async function(alumnoId, nuevoEstatus) {
     const accion = nuevoEstatus === 'inactivo' ? 'suspender a No Activos' : 'reactivar';
     if (!confirm(`¿Estás seguro de ${accion} a este atleta?`)) return;
@@ -909,8 +901,13 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   };
 
-  // Función para Eliminar Atleta Definitivamente (busca el nombre de forma segura por ID)
+  // Solo SuperAdmin puede ejecutar esta función
   window.eliminarAtletaDefinitivo = async function(alumnoId) {
+    if (!esSuperAdmin) {
+      alert("Acción denegada: Solo la Super Administradora puede eliminar atletas.");
+      return;
+    }
+
     const alumno = cacheAlumnos.find(a => String(a.id) === String(alumnoId));
     const nombre = alumno ? alumno.nombre : 'este atleta';
 
@@ -918,10 +915,8 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     if (confirmacion !== 'ELIMINAR') return;
 
     try {
-      // 1. Borramos sus pagos por seguridad referencial
       await supabase.from('pagos').delete().eq('alumno_id', alumnoId);
 
-      // 2. Borramos la ficha del alumno
       const { error } = await supabase.from('alumnos').delete().eq('id', alumnoId);
       if (error) throw error;
 

@@ -12,15 +12,18 @@ if (!user || error) {
   return Astro.redirect('/login');
 }
 
-// 3. Verificamos autorización administrativa
-const correosAutorizados = ["pathdawann@gmail.com", "cesar@gmail.com"];
+// 3. Verificamos autorización administrativa y roles
+const correosAutorizados = ["pathdawann@gmail.com", "pupibikekids27@gmail.com"];
 if (!user.email || !correosAutorizados.includes(user.email)) {
   return Astro.redirect('/dashboard');
 }
+
+// Solo Patricia Mago tiene permisos de borrado permanente
+const esSuperAdmin = user.email === "pathdawann@gmail.com";
 ---
 
 <Layout title="Admin - Cambibara Race | Pupi Bike Kids" noindex={true}>
-  <main class="bg-zinc-950 text-white min-h-screen p-6 md:p-10">
+  <main id="adminCambibaraContenido" data-superadmin={esSuperAdmin ? "true" : "false"} class="bg-zinc-950 text-white min-h-screen p-6 md:p-10">
     
     <!-- ENCABEZADO -->
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 border-b border-zinc-800 pb-6">
@@ -202,7 +205,9 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
   let listaInscritos = [];
   let idParaEliminar = null;
 
-  // Función auxiliar para evitar que caracteres especiales rompan la tabla
+  // Verificamos si la usuaria actual es la Super Administradora
+  const esSuperAdmin = document.getElementById('adminCambibaraContenido')?.dataset.superadmin === 'true';
+
   function escaparHTML(texto) {
     if (!texto) return '';
     return String(texto)
@@ -266,6 +271,11 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       
       const urlSegura = item.comprobante_url ? escaparHTML(item.comprobante_url) : '';
 
+      // El botón Eliminar solo se genera para Patricia Mago (SuperAdmin)
+      const botonEliminarHtml = esSuperAdmin 
+        ? `<button data-id="${escaparHTML(item.id)}" class="btn-eliminar text-red-500 hover:text-red-400 font-bold text-xs uppercase underline">Eliminar</button>` 
+        : '';
+
       tr.innerHTML = `
         <td class="p-4 font-mono text-xs text-zinc-400">${escaparHTML(fecha)}</td>
         <td class="p-4">
@@ -288,7 +298,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
         </td>
         <td class="p-4 text-center space-x-2">
           <button data-id="${escaparHTML(item.id)}" class="btn-editar text-cyan-400 hover:text-cyan-300 font-bold text-xs uppercase underline">Editar</button>
-          <button data-id="${escaparHTML(item.id)}" class="btn-eliminar text-red-500 hover:text-red-400 font-bold text-xs uppercase underline">Eliminar</button>
+          ${botonEliminarHtml}
         </td>
       `;
       tbody.appendChild(tr);
@@ -298,12 +308,13 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       btn.addEventListener('click', (e) => abrirModalEditar(e.currentTarget.dataset.id));
     });
 
-    document.querySelectorAll('.btn-eliminar').forEach(btn => {
-      btn.addEventListener('click', (e) => abrirModalEliminar(e.currentTarget.dataset.id));
-    });
+    if (esSuperAdmin) {
+      document.querySelectorAll('.btn-eliminar').forEach(btn => {
+        btn.addEventListener('click', (e) => abrirModalEliminar(e.currentTarget.dataset.id));
+      });
+    }
   }
 
-  // --- CÁLCULO DE CATEGORÍA AUTOMÁTICA EN EL MODAL ---
   function calcularCategoriaModal() {
     const fecha = document.getElementById('editFechaNac').value;
     const genero = document.getElementById('editGenero').value;
@@ -338,24 +349,20 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
       catBase = "Open";
     }
 
-    // Mantiene el mismo formato que registro-cambibara.astro
     inputCat.value = `${catBase} - ${genero}`;
   }
 
   document.getElementById('editFechaNac').addEventListener('change', calcularCategoriaModal);
   document.getElementById('editGenero').addEventListener('change', calcularCategoriaModal);
 
-  // Filtro por categoría (insensible a mayúsculas/minúsculas)
   document.getElementById('filtroCategoria').addEventListener('change', aplicarFiltroActual);
 
-  // Copiar datos de pago
   document.getElementById('btnCopiarDatosPago').addEventListener('click', () => {
     const textoPago = `💳 *DATOS DE PAGO - CAMBIBARA RACE*\n\nBanco: Venezuela (0102)\nTeléfono: 0424-8781128\nCédula: 24469073\nTitular: Cesar Barrios\nMonto: $8.00 USD (Pago Móvil a tasa BCV)\n\n¡Envía tu capture y reporte de pago para confirmar tu inscripción!`;
     navigator.clipboard.writeText(textoPago);
     alert("¡Datos de pago copiados al portapapeles listos para enviar por WhatsApp!");
   });
 
-  // Modal de Edición
   const modal = document.getElementById('modalInscrito');
   const btnCerrarModal = document.getElementById('btnCerrarModal');
   const formInscrito = document.getElementById('formInscrito');
@@ -383,7 +390,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     modal.classList.remove('hidden');
   }
 
-  // Actualizar Registro
   formInscrito.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('editId').value;
@@ -412,12 +418,15 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   });
 
-  // --- MODAL DE ELIMINACIÓN Y BORRADO SEGURO ---
   const modalEliminar = document.getElementById('modalEliminar');
   const btnCancelarEliminar = document.getElementById('btnCancelarEliminar');
   const btnConfirmarEliminar = document.getElementById('btnConfirmarEliminar');
 
   function abrirModalEliminar(id) {
+    if (!esSuperAdmin) {
+      alert("Acción denegada: Solo la Super Administradora puede eliminar inscripciones.");
+      return;
+    }
     idParaEliminar = id;
     modalEliminar.classList.remove('hidden');
   }
@@ -428,7 +437,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
   });
 
   btnConfirmarEliminar.addEventListener('click', async () => {
-    if (!idParaEliminar) return;
+    if (!esSuperAdmin || !idParaEliminar) return;
 
     const { error } = await supabase
       .from('inscripciones_cambibara')
@@ -444,7 +453,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     }
   });
 
-  // Exportar a CSV compatible con Excel (UTF-8 con BOM)
   document.getElementById('btnExportarExcel').addEventListener('click', () => {
     if (listaInscritos.length === 0) return alert("No hay datos para exportar.");
     
@@ -480,6 +488,5 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     document.body.removeChild(link);
   });
 
-  // Carga inicial
   cargarInscritos();
 </script>
