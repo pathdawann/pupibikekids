@@ -18,12 +18,12 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
   return Astro.redirect('/dashboard');
 }
 
-// Solo Patricia Mago tiene permisos destructivos (eliminar atletas/datos)
+// Solo Patricia Mago tiene permisos de borrado permanente
 const esSuperAdmin = user.email === "pathdawann@gmail.com";
 ---
 
 <Layout title="Panel Administrativo | Pupi Bike Kids" noindex={true}>
-  <!-- Navegación Corporativa -->
+  <!-- Navegación Corporativa con ancho al 90% -->
   <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
     <div class="container mx-auto px-4 lg:px-8 max-w-[90%] flex justify-between items-center h-16">
       <div class="flex items-center gap-2">
@@ -68,7 +68,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         </div>
       </div>
 
-      <!-- DASHBOARD MÉTRICAS (Inyectado por JS) -->
+      <!-- DASHBOARD MÉTRICAS -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="metricasDashboard">
         <!-- Tarjetas de resumen estadístico -->
       </div>
@@ -99,18 +99,34 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4">Control Operativo e Instrucciones</h2>
           <div class="text-sm text-gray-600 space-y-2">
             <p>1. <strong>Tasa Histórica:</strong> Al aprobar un pago hoy, el sistema guardará automáticamente la tasa actual que configuraste arriba. Esto garantiza que el cálculo en Bolívares sea exacto al día de la operación.</p>
-            <p>2. <strong>Directorio:</strong> Usa la tabla inferior para buscar atletas por nombre o cédula. Haz clic en "Ficha" para modificar sus datos o niveles.</p>
+            <p>2. <strong>Directorio:</strong> Usa los buscadores para ubicar atletas por nombre o cédula. Haz clic en "Ficha" para modificar sus datos o niveles.</p>
             <p>3. <strong>Respaldos:</strong> Se recomienda descargar el CSV de pagos a final de cada mes para los cierres contables.</p>
           </div>
         </div>
       </div>
 
-      <!-- SECCIÓN: Historial Financiero (Pagos) -->
+      <!-- SECCIÓN: Historial Financiero (Pagos) CON BUSCADOR -->
       <div class="mb-10 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div class="border-b border-gray-200 px-6 py-4 bg-gray-50 flex justify-between items-center">
-          <h2 class="text-base font-bold text-gray-900">Historial de Recibos y Transferencias</h2>
-          <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-full" id="contadorPagosMes">Cargando...</span>
+        <div class="border-b border-gray-200 px-6 py-4 bg-gray-50 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div>
+            <h2 class="text-base font-bold text-gray-900">Historial de Recibos y Transferencias</h2>
+            <p class="text-xs text-gray-500">Reportes de transferencias y mensualidades recibidas.</p>
+          </div>
+          
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <div class="relative flex-1 sm:w-72">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 text-xs">🔍</span>
+              <input 
+                type="text" 
+                id="inputBuscarPago" 
+                placeholder="Buscar por atleta, cédula o ref..." 
+                class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1.5 rounded-md whitespace-nowrap" id="contadorPagosMes">Cargando...</span>
+          </div>
         </div>
+
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm whitespace-nowrap">
             <thead class="bg-white border-b border-gray-200 text-gray-500 font-medium">
@@ -122,6 +138,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
                 <th class="px-6 py-3 text-right">Monto BS (Tasa)</th>
                 <th class="px-6 py-3 text-center">Mes a Cancelar</th>
                 <th class="px-6 py-3 text-center">Estado</th>
+                <th class="px-6 py-3 text-center">Acciones</th>
               </tr>
             </thead>
             <tbody id="tablaPagosPendientes" class="divide-y divide-gray-100 text-gray-700 bg-white">
@@ -131,18 +148,34 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         </div>
       </div>
 
-      <!-- SECCIÓN: Directorio Total de Atletas -->
+      <!-- SECCIÓN: Directorio Total de Atletas CON BUSCADOR -->
       <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-12">
-        <div class="border-b border-gray-200 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50">
-          <h2 class="text-base font-bold text-gray-900">Directorio de Alumnos</h2>
+        <div class="border-b border-gray-200 px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4 bg-gray-50">
+          <div>
+            <h2 class="text-base font-bold text-gray-900">Directorio de Alumnos</h2>
+            <p class="text-xs text-gray-500">Gestión de fichas técnicas y solvencias.</p>
+          </div>
           
-          <!-- Filtros de Directorio -->
-          <div class="flex flex-wrap bg-gray-100 p-1 rounded-lg border border-gray-200">
-            <button onclick="window.filtrarDirectorio('TODOS')" id="filtro-TODOS" class="filtro-btn active px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Todos</button>
-            <button onclick="window.filtrarDirectorio('AVANZADO')" id="filtro-AVANZADO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Avanzado</button>
-            <button onclick="window.filtrarDirectorio('INTERMEDIO')" id="filtro-INTERMEDIO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Intermedio</button>
-            <button onclick="window.filtrarDirectorio('PRINCIPIANTE')" id="filtro-PRINCIPIANTE" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Principiante</button>
-            <button onclick="window.filtrarDirectorio('INACTIVO')" id="filtro-INACTIVO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Inactivos</button>
+          <div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+            <!-- Buscador de alumnos -->
+            <div class="relative w-full sm:w-72">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 text-xs">🔍</span>
+              <input 
+                type="text" 
+                id="inputBuscarAlumno" 
+                placeholder="Buscar por nombre, cédula o tel..." 
+                class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+            </div>
+
+            <!-- Filtros de Directorio -->
+            <div class="flex flex-wrap bg-gray-100 p-1 rounded-lg border border-gray-200 w-full sm:w-auto justify-center">
+              <button onclick="window.filtrarDirectorio('TODOS')" id="filtro-TODOS" class="filtro-btn active px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Todos</button>
+              <button onclick="window.filtrarDirectorio('AVANZADO')" id="filtro-AVANZADO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Avanzado</button>
+              <button onclick="window.filtrarDirectorio('INTERMEDIO')" id="filtro-INTERMEDIO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Intermedio</button>
+              <button onclick="window.filtrarDirectorio('PRINCIPIANTE')" id="filtro-PRINCIPIANTE" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Principiante</button>
+              <button onclick="window.filtrarDirectorio('INACTIVO')" id="filtro-INACTIVO" class="filtro-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Inactivos</button>
+            </div>
           </div>
         </div>
         
@@ -170,12 +203,12 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     <style>
       .filtro-btn.active {
         background-color: white;
-        color: #111827; /* gray-900 */
+        color: #111827;
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       }
     </style>
 
-    <!-- MODAL CONFIRMAR PAGO (Corporativo) -->
+    <!-- MODAL CONFIRMAR PAGO -->
     <div id="modalConfirmarPago" class="fixed inset-0 bg-gray-900/50 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
       <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 text-center border border-gray-200">
         <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4 text-green-600 text-xl">✓</div>
@@ -188,7 +221,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       </div>
     </div>
 
-    <!-- MODAL DESHACER PAGO (Corporativo) -->
+    <!-- MODAL DESHACER PAGO -->
     <div id="modalRevertirPago" class="fixed inset-0 bg-gray-900/50 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
       <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 text-center border border-gray-200">
         <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mx-auto mb-4 text-yellow-600 text-xl">⚠️</div>
@@ -201,7 +234,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       </div>
     </div>
 
-    <!-- MODAL EDICIÓN Y GESTIÓN TOTAL DEL ATLETA (Corporativo) -->
+    <!-- MODAL EDICIÓN Y GESTIÓN TOTAL DEL ATLETA -->
     <div id="modalFichaAtleta" class="fixed inset-0 bg-gray-900/60 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
       <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col relative">
         <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gray-50">
@@ -226,10 +259,11 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
   let cachePagos = [];
   let tasaActualDolar = 0;
   let filtroActual = 'TODOS';
+  
+  let textoBuscarPago = '';
+  let textoBuscarAlumno = '';
 
-  // Verificamos si la usuaria actual es la Super Administradora
   const esSuperAdmin = document.getElementById('adminContenido')?.dataset.superadmin === 'true';
-
   const FOTO_DEFAULT = 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80';
 
   function escaparHTML(texto) {
@@ -263,6 +297,16 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         document.getElementById('fechaTasa').textContent = `Act. ${fechaUpd}`;
       }
 
+      document.getElementById('inputBuscarPago')?.addEventListener('input', (e) => {
+        textoBuscarPago = e.target.value.trim().toLowerCase();
+        renderizarPagos();
+      });
+
+      document.getElementById('inputBuscarAlumno')?.addEventListener('input', (e) => {
+        textoBuscarAlumno = e.target.value.trim().toLowerCase();
+        renderizarDirectorio();
+      });
+
       await cargarDatosGlobales();
     } catch (err) {
       console.error("Error inicial:", err);
@@ -280,7 +324,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
 
     renderizarMetricas();
     renderizarPagos();
-    window.filtrarDirectorio(filtroActual);
+    renderizarDirectorio();
   }
 
   function renderizarMetricas() {
@@ -339,15 +383,33 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     const tbody = document.getElementById('tablaPagosPendientes');
     tbody.innerHTML = '';
     
-    const pagosLimitados = cachePagos.slice(0, 30);
-    document.getElementById('contadorPagosMes').textContent = `Últimos ${pagosLimitados.length}`;
+    let pagosFiltrados = cachePagos;
+    if (textoBuscarPago) {
+      pagosFiltrados = cachePagos.filter(p => {
+        const atleta = cacheAlumnos.find(a => a.id === p.alumno_id);
+        const nombre = (atleta?.nombre || '').toLowerCase();
+        const cedula = (atleta?.cedula || '').toLowerCase();
+        const ref = (p.referencia || '').toLowerCase();
+        const mes = (p.mes_correspondiente || '').toLowerCase();
+        const metodo = (p.metodo_pago || '').toLowerCase();
 
-    if (pagosLimitados.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500">No hay pagos registrados en el sistema.</td></tr>`;
+        return nombre.includes(textoBuscarPago) || 
+               cedula.includes(textoBuscarPago) || 
+               ref.includes(textoBuscarPago) || 
+               mes.includes(textoBuscarPago) ||
+               metodo.includes(textoBuscarPago);
+      });
+    }
+
+    const pagosMostrados = pagosFiltrados.slice(0, 50);
+    document.getElementById('contadorPagosMes').textContent = textoBuscarPago ? `${pagosMostrados.length} resultado(s)` : `Últimos ${pagosMostrados.length}`;
+
+    if (pagosMostrados.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-sm text-gray-500">No se encontraron pagos con ese criterio.</td></tr>`;
       return;
     }
 
-    pagosLimitados.forEach(pago => {
+    pagosMostrados.forEach(pago => {
       const fecha = new Date(pago.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
       const atleta = cacheAlumnos.find(a => a.id === pago.alumno_id);
       const nombreAtleta = atleta ? atleta.nombre : 'Atleta Eliminado';
@@ -363,19 +425,27 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       const idPagoSeguro = escaparHTML(pago.id);
       const montoSeguro = Number(pago.monto) || 0;
 
+      // BADGES ELEGANTES
       let badgeEstado = '';
       let btnAccion = '';
 
       if (pago.estado === 'aprobado') {
-        badgeEstado = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Aprobado</span>`;
-        btnAccion = `<button onclick="window.revertirPago('${idPagoSeguro}')" class="text-xs text-gray-500 hover:text-orange-600 underline focus:outline-none">Revertir</button>`;
+        badgeEstado = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Aprobado</span>`;
+        btnAccion = `<button onclick="window.revertirPago('${idPagoSeguro}')" class="inline-flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-amber-50 text-gray-600 hover:text-amber-700 border border-gray-200 hover:border-amber-300 rounded-md text-xs font-medium shadow-sm transition">↩ Revertir</button>`;
       } else {
-        badgeEstado = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">Revisión</span>`;
-        btnAccion = `<button onclick="window.aprobarPago('${idPagoSeguro}', ${montoSeguro})" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-700 shadow-sm transition">Aprobar</button>`;
+        badgeEstado = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">⏳ Revisión</span>`;
+        btnAccion = `<button onclick="window.aprobarPago('${idPagoSeguro}', ${montoSeguro})" class="inline-flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold shadow-sm transition">✓ Aprobar</button>`;
       }
 
+      // BOTÓN ELIMINAR CON ÍCONO ELEGANTE (SOLO SUPERADMIN)
+      const btnEliminarPagoHtml = esSuperAdmin 
+        ? `<button onclick="window.eliminarPago('${idPagoSeguro}')" class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition border border-transparent hover:border-red-200" title="Eliminar recibo de prueba">
+             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+           </button>` 
+        : '';
+
       tbody.innerHTML += `
-        <tr class="hover:bg-gray-50 transition">
+        <tr class="hover:bg-gray-50 transition border-b border-gray-50">
           <td class="px-6 py-4 text-gray-500 font-medium">${escaparHTML(fecha)}</td>
           <td class="px-6 py-4">
             <div class="text-sm font-bold text-gray-900 uppercase">${escaparHTML(nombreAtleta)}</div>
@@ -388,10 +458,11 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           <td class="px-6 py-4 text-right text-sm font-black text-gray-900">$${montoSeguro}</td>
           <td class="px-6 py-4 text-right text-sm leading-tight">${stringBs}</td>
           <td class="px-6 py-4 text-center text-sm text-gray-600">${escaparHTML(pago.mes_correspondiente)}</td>
+          <td class="px-6 py-4 text-center">${badgeEstado}</td>
           <td class="px-6 py-4 text-center">
-            <div class="flex flex-col items-center gap-2">
-              ${badgeEstado}
+            <div class="flex items-center justify-center gap-2">
               ${btnAccion}
+              ${btnEliminarPagoHtml}
             </div>
           </td>
         </tr>
@@ -399,6 +470,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     });
   }
 
+  // Lógica de Tabs del Directorio
   window.filtrarDirectorio = function(filtro) {
     filtroActual = filtro;
     document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
@@ -411,6 +483,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     tbody.innerHTML = '';
 
     let lista = cacheAlumnos;
+
     if (filtroActual === 'INACTIVO') {
       lista = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() === 'inactivo');
     } else if (filtroActual !== 'TODOS') {
@@ -419,8 +492,21 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       lista = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo');
     }
 
+    if (textoBuscarAlumno) {
+      lista = lista.filter(a => {
+        const nombre = (a.nombre || '').toLowerCase();
+        const cedula = (a.cedula || '').toLowerCase();
+        const tel = (a.telefono || '').toLowerCase();
+        const email = (a.email || '').toLowerCase();
+        return nombre.includes(textoBuscarAlumno) || 
+               cedula.includes(textoBuscarAlumno) || 
+               tel.includes(textoBuscarAlumno) || 
+               email.includes(textoBuscarAlumno);
+      });
+    }
+
     if (lista.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">No hay atletas en esta vista.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">No se encontraron atletas con ese criterio.</td></tr>`;
       return;
     }
 
@@ -486,6 +572,28 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       `;
     });
   }
+
+  // --- ELIMINAR RECIBO DE PAGO (SOLO SUPERADMIN) ---
+  window.eliminarPago = async function(pagoId) {
+    if (!esSuperAdmin) {
+      alert("Acción denegada: Solo la Super Administradora puede eliminar recibos de pago.");
+      return;
+    }
+
+    if (!confirm("¿Estás segura de eliminar permanentemente este recibo de pago?")) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from('pagos').delete().eq('id', pagoId);
+      if (error) throw error;
+      
+      await cargarDatosGlobales();
+    } catch (err) {
+      console.error(err);
+      alert("Error al eliminar el pago: " + (err.message || ""));
+    }
+  };
 
   // --- LÓGICA DE APROBACIÓN CON TASA HISTÓRICA ---
   let pagoPendiente = null;
@@ -668,7 +776,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     const idSeguro = escaparHTML(alumno.id);
     const fotoSegura = alumno.foto_url ? escaparHTML(alumno.foto_url) : FOTO_DEFAULT;
 
-    // El botón eliminar solo se genera para Patricia Mago (SuperAdmin)
     const botonEliminarHtml = esSuperAdmin 
       ? `<button type="button" onclick="window.eliminarAtletaDefinitivo('${idSeguro}')" class="px-3 py-1.5 text-xs font-bold rounded-md border bg-red-50 text-red-700 border-red-200 hover:bg-red-100 transition shadow-sm">
            🗑️ Eliminar
@@ -696,7 +803,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       </div>
 
       <form id="formAdminEditarAtleta" class="space-y-6">
-        <!-- 1. Datos Personales -->
         <div>
           <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3 border-b border-gray-100 pb-1 text-blue-600">1. Datos Personales y Académicos</h4>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -745,7 +851,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           </div>
         </div>
 
-        <!-- 2. Bicicletas -->
         <div>
           <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3 border-b border-gray-100 pb-1 text-blue-600">2. Inventario de Bicicletas</h4>
           <div class="space-y-4">
@@ -807,7 +912,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           </div>
         </div>
 
-        <!-- Acciones -->
         <div class="flex justify-end pt-4 border-t border-gray-200">
           <button type="submit" id="btnAdminGuardarAtleta" class="bg-blue-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-blue-700 transition shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
             💾 Guardar Cambios en Ficha
@@ -901,7 +1005,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     }
   };
 
-  // Solo SuperAdmin puede ejecutar esta función
   window.eliminarAtletaDefinitivo = async function(alumnoId) {
     if (!esSuperAdmin) {
       alert("Acción denegada: Solo la Super Administradora puede eliminar atletas.");
