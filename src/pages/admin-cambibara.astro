@@ -23,175 +23,216 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
 ---
 
 <Layout title="Admin - Cambibara Race | Pupi Bike Kids" noindex={true}>
-  <main id="adminCambibaraContenido" data-superadmin={esSuperAdmin ? "true" : "false"} class="bg-zinc-950 text-white min-h-screen p-6 md:p-10">
-    
-    <!-- ENCABEZADO -->
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 border-b border-zinc-800 pb-6">
-      <div>
-        <span class="text-green-500 font-black tracking-widest uppercase text-xs">PUPIBIKE ADMIN</span>
-        <h1 class="text-3xl md:text-4xl font-black italic uppercase tracking-wider text-white">
-          CAMBIBARA <span class="text-green-500">RACE</span>
-        </h1>
-      </div>
-      <div class="flex items-center gap-4">
-        <a href="/admin" class="text-green-400 font-black italic uppercase text-xs border border-green-500 px-4 py-2.5 hover:bg-green-500 hover:text-black transition">
-          ← Volver al Panel
+  <!-- Navegación Corporativa (Idéntica al Admin Principal) -->
+  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="container mx-auto px-4 lg:px-8 max-w-[90%] flex justify-between items-center h-16">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+          <span class="text-white font-black text-sm italic">CR</span>
+        </div>
+        <a href="/admin-cambibara" class="text-xl font-black italic tracking-tight text-gray-900">
+          CAMBIBARA <span class="text-green-600">RACE</span>
         </a>
       </div>
+      <div class="flex items-center gap-4">
+        <a href="/admin" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition">Panel Principal</a>
+        <button id="btnAdminLogout" class="text-sm font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-1.5 rounded-md transition">
+          Cerrar Sesión
+        </button>
+      </div>
     </div>
+  </nav>
 
-    <div class="max-w-7xl mx-auto space-y-8">
-
-      <!-- TARJETA DE DATOS BANCARIOS PARA COMPARTIR / COPIAR -->
-      <div class="bg-zinc-900 border-2 border-green-500 p-6 shadow-[6px_6px_0px_#22c55e] flex flex-col md:flex-row justify-between items-center gap-6">
+  <main id="adminCambibaraContenido" data-superadmin={esSuperAdmin ? "true" : "false"} class="bg-gray-50 min-h-screen pb-12">
+    <div class="container mx-auto px-4 lg:px-8 py-8 max-w-[90%]">
+      
+      <!-- Encabezado y Acciones Globales -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-          <h3 class="text-green-400 font-black italic uppercase text-lg mb-1">💳 Datos de Pago para Compartir</h3>
-          <p class="text-zinc-400 text-xs md:text-sm">Haz clic en el botón para copiar la información completa y enviarla por WhatsApp.</p>
+          <h1 class="text-2xl font-bold text-gray-900">Gestión de Carrera</h1>
+          <p class="text-sm text-gray-500 mt-1">Control operativo y financiero de la Cambibara Race.</p>
         </div>
-        <button id="btnCopiarDatosPago" class="bg-black border border-green-500 text-green-400 px-6 py-3 font-black italic uppercase text-xs tracking-wider hover:bg-green-500 hover:text-black transition shadow-[3px_3px_0px_#22c55e]">
-          📋 Copiar Datos Bancarios
-        </button>
-      </div>
-
-      <!-- MÉTRICAS Y CONTADORES -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-zinc-900 p-6 border-l-4 border-green-500 border-y border-r border-zinc-800 shadow-md">
-          <span class="text-zinc-400 text-xs font-black uppercase tracking-wider block mb-1">Total de Atletas Registrados</span>
-          <p id="contadorAtletas" class="text-4xl font-black italic text-white">0</p>
-        </div>
-        <div class="bg-zinc-900 p-6 border-l-4 border-green-500 border-y border-r border-zinc-800 shadow-md">
-          <span class="text-zinc-400 text-xs font-black uppercase tracking-wider block mb-1">Total Dinero Generado ($8.00 c/u)</span>
-          <p id="contadorDinero" class="text-4xl font-black italic text-green-500">$0.00 USD</p>
+        <div class="flex flex-wrap gap-2">
+          <button id="btnCopiarDatosPago" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
+            <span>📋</span> Copiar Datos Bancarios
+          </button>
+          <button id="btnExportarExcel" class="bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-green-700 shadow-sm transition flex items-center gap-2">
+            <span>📥</span> Exportar a Excel
+          </button>
         </div>
       </div>
 
-      <!-- CONTROLES Y FILTROS -->
-      <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-zinc-900 p-4 border border-zinc-800">
-        <div class="flex items-center gap-3 w-full md:w-auto">
-          <label for="filtroCategoria" class="text-xs font-black uppercase text-zinc-400">Filtrar Categoría:</label>
-          <select id="filtroCategoria" class="bg-zinc-950 text-white border border-zinc-700 px-4 py-2 font-bold uppercase text-xs focus:border-green-500 focus:outline-none">
-            <option value="TODAS">Todas las Categorías</option>
-            <option value="Balance">Balance</option>
-            <option value="5 y 6 años">5 y 6 años</option>
-            <option value="7 y 8 años">7 y 8 años</option>
-            <option value="9 y 10 años">9 y 10 años</option>
-            <option value="11 y 12 años">11 y 12 años</option>
-            <option value="13 y 14 años">13 y 14 años</option>
-            <option value="15 y 16 años">15 y 16 años</option>
-            <option value="Open">Open</option>
-          </select>
+      <!-- DASHBOARD MÉTRICAS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 mb-1">Inscripciones</p>
+            <p id="uiTotalAtletas" class="text-3xl font-black text-gray-900">0</p>
+          </div>
+          <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center text-2xl">🏁</div>
         </div>
 
-        <button id="btnExportarExcel" class="bg-zinc-950 border border-green-500 text-green-400 font-black italic uppercase text-xs px-5 py-2.5 hover:bg-green-500 hover:text-black transition">
-          📥 Exportar a CSV / Excel
-        </button>
+        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 mb-1">Recaudación ($8 c/u)</p>
+            <p id="uiTotalDinero" class="text-3xl font-black text-green-600">$0</p>
+          </div>
+          <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center text-2xl">💵</div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 mb-1">Distribución por Género</p>
+            <p class="text-sm font-bold text-gray-900 mt-1">Masc: <span id="uiMasc" class="text-blue-600">0</span> | Fem: <span id="uiFem" class="text-pink-500">0</span></p>
+          </div>
+          <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-2xl">👥</div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 mb-1">Flujo de Pago</p>
+            <p class="text-sm font-bold text-gray-900 mt-1">PM: <span id="uiPM">0</span> | Efvo: <span id="uiEfvo">0</span></p>
+          </div>
+          <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center text-2xl">💳</div>
+        </div>
       </div>
 
-      <!-- TABLA DE INSCRITOS -->
-      <div class="bg-zinc-900 border border-zinc-800 overflow-x-auto shadow-xl">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="bg-black border-b border-zinc-800 text-zinc-400 text-[11px] font-black uppercase tracking-wider">
-              <th class="p-4">Fecha R.</th>
-              <th class="p-4">Atleta</th>
-              <th class="p-4">Categoría</th>
-              <th class="p-4">Contacto</th>
-              <th class="p-4">Pago</th>
-              <th class="p-4 text-center">Capture</th>
-              <th class="p-4 text-center">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tablaInscritosBody" class="divide-y divide-zinc-800 text-sm">
-            <tr>
-              <td colspan="7" class="p-8 text-center text-zinc-500 italic">Cargando registros...</td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- DIRECTORIO Y FILTROS -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-12">
+        <div class="border-b border-gray-200 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50">
+          <h2 class="text-base font-bold text-gray-900">Listado de Corredores</h2>
+          
+          <div class="flex items-center gap-2">
+            <label for="filtroCategoria" class="text-xs font-bold text-gray-500 uppercase">Categoría:</label>
+            <select id="filtroCategoria" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-md px-3 py-1.5 focus:ring-green-500 focus:border-green-500 outline-none">
+              <option value="TODAS">Todas</option>
+              <option value="Balance">Balance</option>
+              <option value="5 y 6 años">5 y 6 años</option>
+              <option value="7 y 8 años">7 y 8 años</option>
+              <option value="9 y 10 años">9 y 10 años</option>
+              <option value="11 y 12 años">11 y 12 años</option>
+              <option value="13 y 14 años">13 y 14 años</option>
+              <option value="15 y 16 años">15 y 16 años</option>
+              <option value="Open">Open</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead class="bg-white border-b border-gray-200 text-gray-500 font-medium">
+              <tr>
+                <th class="px-6 py-3">Fecha R.</th>
+                <th class="px-6 py-3">Atleta</th>
+                <th class="px-6 py-3">Categoría / Género</th>
+                <th class="px-6 py-3">Contacto</th>
+                <th class="px-6 py-3">Info Pago</th>
+                <th class="px-6 py-3 text-center">Capture</th>
+                <th class="px-6 py-3 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaInscritosBody" class="divide-y divide-gray-100 text-gray-700 bg-white">
+              <tr>
+                <td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500">Cargando registros...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
 
     <!-- MODAL PARA EDITAR INSCRITO -->
-    <div id="modalInscrito" class="fixed inset-0 bg-black/90 z-[999] hidden flex items-center justify-center p-4">
-      <div class="bg-zinc-900 border-2 border-green-500 max-w-2xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto transform -skew-x-1 shadow-[8px_8px_0px_#22c55e]">
-        <h2 class="text-2xl font-black uppercase italic text-green-500 mb-6 tracking-wider">Editar Inscripción</h2>
+    <div id="modalInscrito" class="fixed inset-0 bg-gray-900/60 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col relative">
+        <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <h2 class="text-lg font-bold text-gray-900">Editar Inscripción</h2>
+          <button id="btnCerrarModal" aria-label="Cerrar" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
         
-        <form id="formInscrito" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="hidden" id="editId">
-          
-          <div>
-            <label for="editNombre" class="block text-xs font-black uppercase text-zinc-400 mb-1">Nombre</label>
-            <input type="text" id="editNombre" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
-          </div>
-          <div>
-            <label for="editApellido" class="block text-xs font-black uppercase text-zinc-400 mb-1">Apellido</label>
-            <input type="text" id="editApellido" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
-          </div>
-          <div>
-            <label for="editCedula" class="block text-xs font-black uppercase text-zinc-400 mb-1">Cédula</label>
-            <input type="text" id="editCedula" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
-          </div>
-          <div>
-            <label for="editFechaNac" class="block text-xs font-black uppercase text-zinc-400 mb-1">Fecha Nacimiento</label>
-            <input type="date" id="editFechaNac" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
-          </div>
-          <div>
-            <label for="editGenero" class="block text-xs font-black uppercase text-zinc-400 mb-1">Género</label>
-            <select id="editGenero" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
-              <option value="Masculino">Masculino</option>
-              <option value="Femenino">Femenino</option>
-            </select>
-          </div>
-          <div>
-            <label for="editCategoria" class="block text-xs font-black uppercase text-zinc-400 mb-1">Categoría (Se calcula sola)</label>
-            <input type="text" id="editCategoria" required readonly class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-green-400 font-bold uppercase text-sm cursor-not-allowed">
-          </div>
-          <div>
-            <label for="editEmail" class="block text-xs font-black uppercase text-zinc-400 mb-1">Correo Electrónico</label>
-            <input type="email" id="editEmail" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
-          </div>
-          <div>
-            <label for="editTelefono" class="block text-xs font-black uppercase text-zinc-400 mb-1">Teléfono</label>
-            <input type="text" id="editTelefono" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
-          </div>
-          <div>
-            <label for="editEstado" class="block text-xs font-black uppercase text-zinc-400 mb-1">Estado</label>
-            <input type="text" id="editEstado" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
-          </div>
-          <div>
-            <label for="editCiudad" class="block text-xs font-black uppercase text-zinc-400 mb-1">Ciudad</label>
-            <input type="text" id="editCiudad" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
-          </div>
-          <div>
-            <label for="editMetodoPago" class="block text-xs font-black uppercase text-zinc-400 mb-1">Método de Pago</label>
-            <select id="editMetodoPago" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-green-500 focus:outline-none">
-              <option value="Pago Movil">Pago Móvil</option>
-              <option value="Transferencia">Transferencia Nacional</option>
-              <option value="Efectivo Pista">Efectivo en Pista</option>
-            </select>
-          </div>
-          <div>
-            <label for="editReferencia" class="block text-xs font-black uppercase text-zinc-400 mb-1">Referencia</label>
-            <input type="text" id="editReferencia" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase text-sm focus:border-green-500 focus:outline-none">
-          </div>
+        <div class="p-6 overflow-y-auto bg-white flex-1">
+          <form id="formInscrito" class="space-y-6">
+            <input type="hidden" id="editId">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label for="editNombre" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Nombre</label>
+                <input type="text" id="editNombre" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              <div>
+                <label for="editApellido" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Apellido</label>
+                <input type="text" id="editApellido" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              <div>
+                <label for="editCedula" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Cédula</label>
+                <input type="text" id="editCedula" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              <div>
+                <label for="editFechaNac" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Fecha Nacimiento</label>
+                <input type="date" id="editFechaNac" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              <div>
+                <label for="editGenero" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Género</label>
+                <select id="editGenero" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                  <option value="Masculino">Masculino</option>
+                  <option value="Femenino">Femenino</option>
+                </select>
+              </div>
+              <div>
+                <label for="editCategoria" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Categoría</label>
+                <input type="text" id="editCategoria" required readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm text-green-600 font-bold uppercase cursor-not-allowed">
+              </div>
+              <div>
+                <label for="editEmail" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Correo Electrónico</label>
+                <input type="email" id="editEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              <div>
+                <label for="editTelefono" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Teléfono</label>
+                <input type="text" id="editTelefono" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              <div>
+                <label for="editEstado" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Estado</label>
+                <input type="text" id="editEstado" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              <div>
+                <label for="editCiudad" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Ciudad</label>
+                <input type="text" id="editCiudad" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              <div>
+                <label for="editMetodoPago" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Método de Pago</label>
+                <select id="editMetodoPago" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                  <option value="Pago Movil">Pago Móvil</option>
+                  <option value="Transferencia">Transferencia Nacional</option>
+                  <option value="Efectivo Pista">Efectivo en Pista</option>
+                </select>
+              </div>
+              <div>
+                <label for="editReferencia" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Referencia</label>
+                <input type="text" id="editReferencia" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+            </div>
 
-          <div class="md:col-span-2 flex justify-end gap-4 mt-6">
-            <button type="button" id="btnCerrarModal" class="bg-zinc-800 text-zinc-300 px-5 py-2.5 font-bold uppercase text-xs hover:bg-zinc-700 transition">Cancelar</button>
-            <button type="submit" class="bg-green-600 text-black px-6 py-2.5 font-black uppercase italic text-xs hover:bg-green-500 transition shadow-[3px_3px_0px_#fff]">Actualizar Registro</button>
-          </div>
-        </form>
+            <div class="flex justify-end pt-4 border-t border-gray-200">
+              <button type="submit" class="bg-green-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-green-700 transition shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none">
+                💾 Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
 
     <!-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN -->
-    <div id="modalEliminar" class="fixed inset-0 bg-black/90 z-[1000] hidden flex items-center justify-center p-4">
-      <div class="bg-zinc-900 border-2 border-red-500 max-w-md w-full p-6 text-center transform -skew-x-1 shadow-[8px_8px_0px_#ef4444]">
-        <div class="text-red-500 text-5xl mb-4">⚠️</div>
-        <h3 class="text-2xl font-black uppercase italic text-white mb-2">¿Eliminar Inscripción?</h3>
-        <p class="text-zinc-400 text-sm mb-6">Esta acción eliminará permanentemente al atleta seleccionado de la base de datos.</p>
-        <div class="flex justify-center gap-4">
-          <button id="btnCancelarEliminar" class="bg-zinc-800 text-zinc-300 px-5 py-2.5 font-bold uppercase text-xs hover:bg-zinc-700 transition">Cancelar</button>
-          <button id="btnConfirmarEliminar" class="bg-red-600 text-white px-6 py-2.5 font-black uppercase italic text-xs hover:bg-red-500 transition shadow-[3px_3px_0px_#fff]">Sí, Eliminar</button>
+    <div id="modalEliminar" class="fixed inset-0 bg-gray-900/50 z-[1000] hidden flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 text-center border border-gray-200">
+        <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4 text-red-600 text-xl">⚠️</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">¿Eliminar Inscripción?</h3>
+        <p class="text-sm text-gray-500 mb-6">Esta acción eliminará permanentemente al atleta seleccionado de la base de datos.</p>
+        <div class="flex justify-center gap-3">
+          <button id="btnCancelarEliminar" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+          <button id="btnConfirmarEliminar" class="px-5 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-sm">Sí, Eliminar</button>
         </div>
       </div>
     </div>
@@ -237,9 +278,17 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
   function actualizarMetricas(datos) {
     const totalAtletas = datos.length;
     const totalDinero = totalAtletas * 8.00;
+    const masculinos = datos.filter(d => d.genero === 'Masculino').length;
+    const femeninos = datos.filter(d => d.genero === 'Femenino').length;
+    const pagoMovil = datos.filter(d => d.metodo_pago === 'Pago Movil').length;
+    const efectivo = datos.filter(d => d.metodo_pago === 'Efectivo Pista').length;
 
-    document.getElementById('contadorAtletas').textContent = totalAtletas;
-    document.getElementById('contadorDinero').textContent = `$${totalDinero.toFixed(2)} USD`;
+    document.getElementById('uiTotalAtletas').textContent = totalAtletas;
+    document.getElementById('uiTotalDinero').textContent = `$${totalDinero.toFixed(2)}`;
+    document.getElementById('uiMasc').textContent = masculinos;
+    document.getElementById('uiFem').textContent = femeninos;
+    document.getElementById('uiPM').textContent = pagoMovil;
+    document.getElementById('uiEfvo').textContent = efectivo;
   }
 
   function aplicarFiltroActual() {
@@ -260,44 +309,46 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     tbody.innerHTML = "";
 
     if (datos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-zinc-500 italic">No hay atletas registrados en esta categoría.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500">No hay atletas registrados en esta categoría.</td></tr>`;
       return;
     }
 
     datos.forEach(item => {
       const fecha = new Date(item.created_at).toLocaleDateString('es-VE');
       const tr = document.createElement('tr');
-      tr.className = "hover:bg-zinc-950/50 transition-colors";
+      tr.className = "hover:bg-gray-50 transition border-b border-gray-50";
       
       const urlSegura = item.comprobante_url ? escaparHTML(item.comprobante_url) : '';
 
       // El botón Eliminar solo se genera para Patricia Mago (SuperAdmin)
       const botonEliminarHtml = esSuperAdmin 
-        ? `<button data-id="${escaparHTML(item.id)}" class="btn-eliminar text-red-500 hover:text-red-400 font-bold text-xs uppercase underline">Eliminar</button>` 
+        ? `<button data-id="${escaparHTML(item.id)}" class="btn-eliminar text-red-600 hover:text-red-800 font-bold text-xs uppercase underline">Eliminar</button>` 
         : '';
 
+      let colorMetodo = item.metodo_pago === 'Efectivo Pista' ? 'bg-yellow-100 text-yellow-800' : 'bg-emerald-100 text-emerald-800';
+
       tr.innerHTML = `
-        <td class="p-4 font-mono text-xs text-zinc-400">${escaparHTML(fecha)}</td>
-        <td class="p-4">
-          <p class="font-black uppercase text-white">${escaparHTML(item.nombre)} ${escaparHTML(item.apellido)}</p>
-          <span class="text-xs text-green-400 font-mono font-bold">${escaparHTML(item.cedula)}</span>
+        <td class="px-6 py-4 text-gray-500 text-xs font-medium">${escaparHTML(fecha)}</td>
+        <td class="px-6 py-4">
+          <div class="text-sm font-bold text-gray-900 uppercase">${escaparHTML(item.nombre)} ${escaparHTML(item.apellido)}</div>
+          <div class="text-xs text-gray-500">${escaparHTML(item.cedula)}</div>
         </td>
-        <td class="p-4">
-          <span class="inline-block bg-black border border-green-500/50 text-green-400 font-black text-xs px-2.5 py-1 uppercase">${escaparHTML(item.categoria)}</span>
+        <td class="px-6 py-4">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase">${escaparHTML(item.categoria)}</span>
         </td>
-        <td class="p-4">
-          <p class="text-xs text-zinc-300 font-mono">${escaparHTML(item.telefono)}</p>
-          <p class="text-xs text-zinc-500 font-mono">${escaparHTML(item.email)}</p>
+        <td class="px-6 py-4">
+          <div class="text-sm text-gray-700 font-mono">${escaparHTML(item.telefono)}</div>
+          <div class="text-xs text-gray-500">${escaparHTML(item.email)}</div>
         </td>
-        <td class="p-4">
-          <p class="font-bold text-xs uppercase text-zinc-200">${escaparHTML(item.metodo_pago)}</p>
-          <p class="text-xs font-mono text-zinc-400">Ref: ${escaparHTML(item.referencia)}</p>
+        <td class="px-6 py-4">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${colorMetodo} uppercase mb-1">${escaparHTML(item.metodo_pago)}</span>
+          <div class="text-xs font-mono text-gray-500">Ref: ${escaparHTML(item.referencia)}</div>
         </td>
-        <td class="p-4 text-center">
-          ${urlSegura ? `<a href="${urlSegura}" target="_blank" rel="noopener noreferrer" class="inline-block bg-zinc-800 text-green-400 border border-green-500/50 px-3 py-1 text-xs font-black uppercase hover:bg-green-500 hover:text-black transition">Ver Pago</a>` : '<span class="text-xs text-zinc-600">N/D</span>'}
+        <td class="px-6 py-4 text-center">
+          ${urlSegura ? `<a href="${urlSegura}" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1 rounded text-xs font-bold hover:bg-blue-100 transition">Ver Pago</a>` : '<span class="text-xs text-gray-400">N/D</span>'}
         </td>
-        <td class="p-4 text-center space-x-2">
-          <button data-id="${escaparHTML(item.id)}" class="btn-editar text-cyan-400 hover:text-cyan-300 font-bold text-xs uppercase underline">Editar</button>
+        <td class="px-6 py-4 text-center space-x-3">
+          <button data-id="${escaparHTML(item.id)}" class="btn-editar text-blue-600 hover:text-blue-800 font-bold text-xs uppercase underline">Editar</button>
           ${botonEliminarHtml}
         </td>
       `;
@@ -486,6 +537,12 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  });
+
+  // Logout Admin
+  document.getElementById('btnAdminLogout')?.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login';
   });
 
   cargarInscritos();
