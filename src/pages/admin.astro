@@ -99,7 +99,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4">Control Operativo e Instrucciones</h2>
           <div class="text-sm text-gray-600 space-y-2">
             <p>1. <strong>Tasa Histórica:</strong> Al aprobar un pago hoy, el sistema guardará automáticamente la tasa actual que configuraste arriba. Esto garantiza que el cálculo en Bolívares sea exacto al día de la operación.</p>
-            <p>2. <strong>Directorio:</strong> Usa los buscadores para ubicar atletas por nombre o cédula. Haz clic en "Ficha" para modificar sus datos o niveles.</p>
+            <p>2. <strong>Directorio e Inclusión:</strong> Los alumnos con observaciones de salud o neurodivergencia muestran la insignia <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">💙 Acompañamiento</span>. Haz clic en "Ficha" para ver las recomendaciones del representante.</p>
             <p>3. <strong>Respaldos:</strong> Se recomienda descargar el CSV de pagos a final de cada mes para los cierres contables.</p>
           </div>
         </div>
@@ -153,7 +153,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         <div class="border-b border-gray-200 px-6 py-4 flex flex-col xl:flex-row justify-between items-center gap-4 bg-gray-50">
           <div>
             <h2 class="text-base font-bold text-gray-900">Directorio de Alumnos</h2>
-            <p class="text-xs text-gray-500">Gestión de fichas técnicas y solvencias.</p>
+            <p class="text-xs text-gray-500">Gestión de fichas técnicas, acompañamiento y solvencias.</p>
           </div>
           
           <div class="flex flex-col sm:flex-row items-center gap-3 w-full xl:w-auto">
@@ -317,7 +317,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
 
   async function cargarDatosGlobales() {
     const [{ data: alumnos }, { data: pagos }] = await Promise.all([
-      supabase.from('alumnos').select('id, nombre, cedula, telefono, email, nivel, estatus, foto_url, tipo_sangre, direccion, fecha_nacimiento, tipos_bici').order('nombre', { ascending: true }),
+      supabase.from('alumnos').select('id, nombre, cedula, telefono, email, nivel, estatus, foto_url, tipo_sangre, condicion_especial, direccion, fecha_nacimiento, tipos_bici').order('nombre', { ascending: true }),
       supabase.from('pagos').select('*').order('created_at', { ascending: false })
     ]);
 
@@ -510,10 +510,12 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         const cedula = (a.cedula || '').toLowerCase();
         const tel = (a.telefono || '').toLowerCase();
         const email = (a.email || '').toLowerCase();
+        const cond = (a.condicion_especial || '').toLowerCase();
         return nombre.includes(textoBuscarAlumno) || 
                cedula.includes(textoBuscarAlumno) || 
                tel.includes(textoBuscarAlumno) || 
-               email.includes(textoBuscarAlumno);
+               email.includes(textoBuscarAlumno) ||
+               cond.includes(textoBuscarAlumno);
       });
     }
 
@@ -552,6 +554,13 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       else if (nivelUpper === 'INTERMEDIO') colorNivel = 'text-green-600 font-bold';
       else if (nivelUpper === 'ADULTOS') colorNivel = 'text-purple-600 font-bold';
 
+      // Verificar si tiene alguna condición o recomendación de acompañamiento en pista
+      const condTexto = (alumno.condicion_especial || '').trim();
+      const tieneCondicion = condTexto !== '' && condTexto.toUpperCase() !== 'NINGUNA';
+      const badgeCondicionHtml = tieneCondicion
+        ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 cursor-help" title="${escaparHTML(condTexto)}">💙 Acompañamiento</span>`
+        : '';
+
       const telefonoLim = formatearTelefonoWhatsApp(alumno.telefono);
       const btnWp = telefonoLim
         ? `<a href="https://wa.me/${telefonoLim}" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-800 transition" title="Escribir por WhatsApp"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 3.825 0 6.938 3.112 6.938 6.937 0 3.825-3.113 6.938-6.938 6.938z"/></svg></a>`
@@ -567,7 +576,10 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
                <img src="${fotoSegura}" alt="${escaparHTML(alumno.nombre)}" class="w-full h-full object-cover" onerror="this.src='${FOTO_DEFAULT}'">
             </div>
             <div>
-              <div class="text-sm font-bold text-gray-900 uppercase">${escaparHTML(alumno.nombre)}</div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-gray-900 uppercase">${escaparHTML(alumno.nombre)}</span>
+                ${badgeCondicionHtml}
+              </div>
               <div class="text-xs text-gray-500">${escaparHTML(alumno.cedula)}</div>
             </div>
           </td>
@@ -865,6 +877,10 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
               <label for="adminEditDireccion" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Dirección de Residencia</label>
               <input type="text" id="adminEditDireccion" value="${escaparHTML(alumno.direccion || '')}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
+            <div class="md:col-span-3 bg-indigo-50/60 p-3.5 rounded-lg border border-indigo-100">
+              <label for="adminEditCondicion" class="block text-xs font-bold text-indigo-900 mb-1 uppercase">💙 Condición Médica, Alergia o Neurodivergencia (Acompañamiento en Pista)</label>
+              <input type="text" id="adminEditCondicion" value="${escaparHTML(alumno.condicion_especial || 'NINGUNA')}" placeholder="NINGUNA" class="w-full px-3 py-2 bg-white border border-indigo-200 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
           </div>
         </div>
 
@@ -951,6 +967,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         const nuevaSangre = document.getElementById('adminEditSangre').value;
         const nuevoNacimiento = document.getElementById('adminEditNacimiento').value;
         const nuevaDir = document.getElementById('adminEditDireccion').value.trim().toUpperCase();
+        const nuevaCondicion = document.getElementById('adminEditCondicion').value.trim().toUpperCase() || 'NINGUNA';
 
         const listaBicis = [];
         const b1Tipo = document.getElementById('adminBici1Tipo').value;
@@ -982,6 +999,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
             tipo_sangre: nuevaSangre,
             fecha_nacimiento: nuevoNacimiento,
             direccion: nuevaDir,
+            condicion_especial: nuevaCondicion,
             tipos_bici: listaBicis
           })
           .eq('id', alumnoId);

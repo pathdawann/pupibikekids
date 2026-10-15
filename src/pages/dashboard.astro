@@ -22,7 +22,7 @@ import Layout from '../layouts/Layout.astro';
     <p class="text-cyan-400 font-black italic uppercase tracking-widest animate-pulse">Cargando perfil...</p>
   </div>
 
-  <!-- Contenido del Dashboard (Ampliado a max-w-7xl para mejor proporción) -->
+  <!-- Contenido del Dashboard -->
   <main id="dashboardContenido" class="container mx-auto px-4 py-12 max-w-7xl relative hidden min-h-[80vh]">
     <div class="absolute top-0 right-0 w-80 h-80 bg-pink-600 rounded-full mix-blend-screen filter blur-[120px] opacity-10 pointer-events-none"></div>
 
@@ -87,6 +87,10 @@ import Layout from '../layouts/Layout.astro';
                 <p class="text-zinc-300 text-xs font-black uppercase tracking-wider mb-1">Tipo de Sangre</p>
                 <p id="uiTipoSangre" class="text-pink-400 text-sm font-black bg-zinc-950 px-4 py-2.5 border border-zinc-800 transform -skew-x-2">...</p>
               </div>
+              <div>
+                <p class="text-zinc-300 text-xs font-black uppercase tracking-wider mb-1">Condición / Observación en Pista</p>
+                <p id="uiCondicionEspecial" class="text-cyan-400 text-sm font-bold bg-zinc-950 px-4 py-2.5 border border-zinc-800 transform -skew-x-2 truncate" title="">...</p>
+              </div>
               <div class="md:col-span-2">
                 <p class="text-zinc-300 text-xs font-black uppercase tracking-wider mb-1">Dirección / Residencia</p>
                 <p id="uiDireccion" class="text-white text-sm font-bold bg-zinc-950 px-4 py-2.5 border border-zinc-800 transform -skew-x-2">...</p>
@@ -125,10 +129,9 @@ import Layout from '../layouts/Layout.astro';
           <a href="/historial" class="block text-center text-cyan-400 text-xs font-bold hover:text-white transition italic underline focus:outline-none focus:text-white">Ver historial completo</a>
         </section>
 
-        <!-- TARJETA DINÁMICA: DATOS DE PAGO MÓVIL Y ARANCELES (Alineada y Uniforme) -->
+        <!-- TARJETA DINÁMICA: DATOS DE PAGO MÓVIL Y ARANCELES -->
         <section class="bg-zinc-900 p-6 shadow-[8px_8px_0px_#00d2ff] border-2 border-cyan-400 flex-1 flex flex-col justify-between">
           <div>
-            <!-- Cabecera en una sola línea limpia -->
             <div class="flex flex-wrap items-center justify-between gap-2 mb-4 border-b border-zinc-700 pb-3">
               <h2 class="text-xl font-black italic uppercase text-cyan-400 tracking-wide whitespace-nowrap">Datos Pago Móvil</h2>
               <div class="bg-zinc-950 text-lime-400 border border-lime-400 px-3 py-1 font-mono font-black text-xs whitespace-nowrap shadow">
@@ -136,7 +139,6 @@ import Layout from '../layouts/Layout.astro';
               </div>
             </div>
 
-            <!-- Montos convertidos a Bs en una sola línea sin saltos feos -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
               <!-- Inscripción -->
               <div class="bg-zinc-950 px-3 py-3 border border-zinc-800 text-center">
@@ -227,7 +229,6 @@ import Layout from '../layouts/Layout.astro';
           </div>
 
           <div class="flex flex-col gap-4">
-            <!-- Evento 1 -->
             <div class="bg-zinc-950 p-4 border-l-4 border-green-500 shadow flex items-center gap-4 hover:translate-x-1 transition-transform">
               <div class="bg-green-500 text-black font-black text-center px-3 py-2 flex flex-col justify-center min-w-[65px] transform -skew-x-3">
                 <span class="text-xs leading-none">OCT</span>
@@ -239,7 +240,6 @@ import Layout from '../layouts/Layout.astro';
               </div>
             </div>
 
-            <!-- Evento 2 -->
             <div class="bg-zinc-950 p-4 border-l-4 border-pink-500 shadow flex items-center gap-4 hover:translate-x-1 transition-transform">
               <div class="bg-pink-500 text-white font-black text-center px-3 py-2 flex flex-col justify-center min-w-[65px] transform -skew-x-3">
                 <span class="text-xs leading-none">OCT</span>
@@ -251,7 +251,6 @@ import Layout from '../layouts/Layout.astro';
               </div>
             </div>
 
-            <!-- Evento 3 -->
             <div class="bg-zinc-950 p-4 border-l-4 border-lime-400 shadow flex items-center gap-4 hover:translate-x-1 transition-transform">
               <div class="bg-lime-400 text-black font-black text-center px-3 py-2 flex flex-col justify-center min-w-[65px] transform -skew-x-3">
                 <span class="text-xs leading-none">OCT</span>
@@ -298,7 +297,6 @@ import Layout from '../layouts/Layout.astro';
       <div class="transform md:skew-x-2">
         <h2 class="text-2xl font-black uppercase italic text-pink-500 mb-5 border-b border-zinc-800 pb-2">Reportar Transferencia</h2>
         <form id="formPago" class="flex flex-col gap-4">
-          <!-- Concepto del Pago -->
           <div>
             <label for="inputConcepto" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Concepto del Pago</label>
             <select id="inputConcepto" required class="w-full px-4 py-2.5 bg-zinc-950 border border-zinc-700 text-lime-400 font-bold text-sm focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
@@ -309,7 +307,6 @@ import Layout from '../layouts/Layout.astro';
             </select>
           </div>
 
-          <!-- Método de Pago -->
           <div>
             <label for="inputMetodo" class="block text-xs font-black uppercase tracking-wider text-zinc-300 mb-1">Método de Pago</label>
             <select id="inputMetodo" required class="w-full px-4 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400">
@@ -347,7 +344,7 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </div>
 
-  <!-- MODAL EDITAR FICHA (Compacto, sin campo de contraseña y sin barra de scroll fea) -->
+  <!-- MODAL EDITAR FICHA -->
   <div id="modalEditar" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-2 md:p-4">
     <div class="modal-scroll bg-zinc-900 border-2 border-lime-400 shadow-[8px_8px_0px_#a3e635] p-5 md:p-7 w-full max-w-3xl mx-auto relative transform md:-skew-x-2 max-h-[94vh] overflow-y-auto">
       <button type="button" id="btnCerrarModalEditar" aria-label="Cerrar modal de edición" class="absolute top-3 right-4 text-zinc-400 hover:text-lime-400 transform md:skew-x-2 text-2xl font-black z-10 focus:outline-none focus:text-white">X</button>
@@ -407,9 +404,13 @@ import Layout from '../layouts/Layout.astro';
                   <option value="ADULTOS">ADULTOS</option>
                 </select>
               </div>
-              <div class="md:col-span-3">
-                <label for="editFotoFile" class="block text-[11px] font-black uppercase tracking-wider text-zinc-300 mb-1">Actualizar Fotografía (Opcional - Máx 5MB)</label>
-                <input type="file" id="editFotoFile" accept="image/*" class="w-full px-3 py-1.5 bg-zinc-950 border border-zinc-700 text-white text-xs font-bold file:mr-4 file:py-1 file:px-3 file:border-0 file:text-xs file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer">
+              <div class="md:col-span-2">
+                <label for="editCondicion" class="block text-[11px] font-black uppercase tracking-wider text-cyan-400 mb-1">💙 Condición Médica, Alergia o Neurodivergencia</label>
+                <input type="text" id="editCondicion" placeholder="NINGUNA (o detalla recomendaciones para el entrenador)" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-white text-sm font-bold uppercase focus:outline-none focus:border-cyan-400">
+              </div>
+              <div>
+                <label for="editFotoFile" class="block text-[11px] font-black uppercase tracking-wider text-zinc-300 mb-1">Fotografía (Máx 5MB)</label>
+                <input type="file" id="editFotoFile" accept="image/*" class="w-full px-2 py-1.5 bg-zinc-950 border border-zinc-700 text-white text-xs font-bold file:mr-2 file:py-1 file:px-2.5 file:border-0 file:text-[10px] file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer">
               </div>
             </div>
           </div>
@@ -451,7 +452,7 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </div>
 
-  <!-- NUEVO MODAL INDEPENDIENTE: CAMBIAR CONTRASEÑA (Sin scroll) -->
+  <!-- MODAL INDEPENDIENTE: CAMBIAR CONTRASEÑA -->
   <div id="modalPassword" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
     <div class="bg-zinc-900 border-2 border-cyan-400 shadow-[8px_8px_0px_#00d2ff] p-6 md:p-8 w-full max-w-md mx-auto relative transform md:-skew-x-2">
       <button type="button" id="btnCerrarModalPassword" aria-label="Cerrar modal de contraseña" class="absolute top-3 right-4 text-zinc-400 hover:text-cyan-400 transform md:skew-x-2 text-2xl font-black z-10 focus:outline-none focus:text-white">X</button>
@@ -500,7 +501,6 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </div>
 
-  <!-- Estilo para que los modales nunca muestren una barra de scroll blanca en Windows -->
   <style>
     .modal-scroll {
       scrollbar-width: thin;
@@ -555,7 +555,6 @@ import Layout from '../layouts/Layout.astro';
     }
   }
 
-  // Abrir el nuevo modal independiente de Cambiar Contraseña
   function abrirModalCambiarClave(mostrarAvisoRecuperacion = false) {
     const modalPassword = document.getElementById('modalPassword');
     const msgPass = document.getElementById('mensajePassword');
@@ -576,7 +575,6 @@ import Layout from '../layouts/Layout.astro';
     setTimeout(() => inputPass?.focus(), 100);
   }
 
-  // Detectar si el usuario viene de un enlace de recuperación de contraseña por correo
   const vieneDeRecuperacion = window.location.hash.includes('type=recovery');
   supabase.auth.onAuthStateChange((event) => {
     if (event === 'PASSWORD_RECOVERY') {
@@ -591,7 +589,6 @@ import Layout from '../layouts/Layout.astro';
     inicializarSelectorMeses();
 
     try {
-      // 1. Sesión activa
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { 
         window.location.href = '/login'; 
@@ -600,7 +597,6 @@ import Layout from '../layouts/Layout.astro';
 
       currentUser = session.user;
 
-      // 2. Cargar perfil del atleta y Tasa del Día en paralelo
       const [{ data: alumno, error }, { data: tasaConfig }] = await Promise.all([
         supabase.from('alumnos').select('*').eq('user_id', currentUser.id).single(),
         supabase.from('configuracion').select('valor').eq('clave', 'tasa_dolar').single()
@@ -610,7 +606,6 @@ import Layout from '../layouts/Layout.astro';
 
       currentAlumno = alumno;
 
-      // 3. Renderizar Tasa y Conversiones en Bolívares
       const tasaValor = parseFloat(tasaConfig?.valor || 0);
       const uiTasa = document.getElementById('uiTasaValor');
       const uiInscripcionBs = document.getElementById('uiTotalInscripcionBs');
@@ -645,6 +640,7 @@ import Layout from '../layouts/Layout.astro';
       window.currentDireccion = alumno.direccion || '';
       window.currentNacimientoRaw = alumno.fecha_nacimiento || '';
       window.currentTipoSangre = alumno.tipo_sangre || '';
+      window.currentCondicion = alumno.condicion_especial || 'NINGUNA';
       window.currentBicicletas = alumno.tipos_bici || [];
 
       // Renderizar datos en pantalla
@@ -655,6 +651,13 @@ import Layout from '../layouts/Layout.astro';
       document.getElementById('uiEmail').textContent = alumno.email || currentUser.email;
       document.getElementById('uiTipoSangre').textContent = alumno.tipo_sangre || 'NO REGISTRADO';
       
+      const elCondicion = document.getElementById('uiCondicionEspecial');
+      if (elCondicion) {
+        const textoCond = alumno.condicion_especial || 'NINGUNA';
+        elCondicion.textContent = textoCond;
+        elCondicion.title = textoCond;
+      }
+      
       const [anio, mes, dia] = alumno.fecha_nacimiento ? alumno.fecha_nacimiento.split('-') : ['--', '--', '--'];
       document.getElementById('uiNacimiento').textContent = `${dia}/${mes}/${anio}`;
       document.getElementById('uiTelefono').textContent = alumno.telefono || 'NO REGISTRADO';
@@ -664,7 +667,6 @@ import Layout from '../layouts/Layout.astro';
         document.getElementById('uiFoto').src = alumno.foto_url;
       }
 
-      // Renderizar bicicletas de forma segura
       const contenedorBicis = document.getElementById('contenedorBicicletasVisual');
       contenedorBicis.innerHTML = '';
       const bicisList = alumno.tipos_bici || []; 
@@ -685,7 +687,6 @@ import Layout from '../layouts/Layout.astro';
         contenedorBicis.innerHTML = `<p class="text-zinc-400 text-sm italic">No hay bicicletas registradas.</p>`;
       }
 
-      // 4. Verificación de Solvencia Inteligente (Sin abrir modal intrusivo al iniciar sesión)
       const fechaActual = new Date();
       const mesActualStr = `${MESES_NOMBRES[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
 
@@ -729,7 +730,6 @@ import Layout from '../layouts/Layout.astro';
       pantallaCarga.classList.add('hidden');
       dashboardContenido.classList.remove('hidden');
 
-      // Si entró desde el enlace de recuperación de correo, abre directo el modal de Cambiar Contraseña
       if (vieneDeRecuperacion) {
         abrirModalCambiarClave(true);
       }
@@ -741,14 +741,13 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // Logout
   document.getElementById('btnLogout')?.addEventListener('click', async () => {
     sessionStorage.clear();
     await supabase.auth.signOut();
     window.location.href = '/login';
   });
 
-  // --- FLUJO DE REPORTAR PAGO (Muestra recordatorio al hacer clic en Reportar Pago) ---
+  // --- FLUJO DE REPORTAR PAGO ---
   const modalDeuda = document.getElementById('modalRecordatorioDeuda');
   const modalPago = document.getElementById('modalPago');
 
@@ -778,7 +777,6 @@ import Layout from '../layouts/Layout.astro';
     inicializarSelectorMeses();
   });
 
-  // Envío del Formulario de Pagos
   document.getElementById('formPago')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnEnviarPago');
@@ -901,6 +899,7 @@ import Layout from '../layouts/Layout.astro';
     document.getElementById('editDireccion').value = (window.currentDireccion || '').toUpperCase();
     document.getElementById('editNivel').value = (currentAlumno?.nivel || 'PRINCIPIANTE').toUpperCase();
     document.getElementById('editTipoSangre').value = window.currentTipoSangre || '';
+    document.getElementById('editCondicion').value = (window.currentCondicion || 'NINGUNA').toUpperCase();
     document.getElementById('editFotoFile').value = '';
     document.getElementById('mensajeEditar')?.classList.add('hidden');
 
@@ -961,6 +960,8 @@ import Layout from '../layouts/Layout.astro';
         listaBicicletas.push(...bicisPrevias.slice(1));
       }
 
+      const valorCondicion = document.getElementById('editCondicion').value.trim().toUpperCase() || 'NINGUNA';
+
       const { error } = await supabase.from('alumnos').update({
         nombre: document.getElementById('editNombre').value.trim().toUpperCase(),
         cedula: document.getElementById('editCedula').value.trim().toUpperCase(),
@@ -969,6 +970,7 @@ import Layout from '../layouts/Layout.astro';
         direccion: document.getElementById('editDireccion').value.trim().toUpperCase(),
         telefono: document.getElementById('editTelefono').value.trim().toUpperCase(),
         tipo_sangre: document.getElementById('editTipoSangre').value,
+        condicion_especial: valorCondicion,
         foto_url: fotoUrlFinal,
         tipos_bici: listaBicicletas
       }).eq('user_id', userId);
