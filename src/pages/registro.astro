@@ -23,184 +23,187 @@ import Layout from '../layouts/Layout.astro';
     <p class="text-zinc-100 mb-10 text-center italic text-lg font-medium">Crea tu cuenta de representante o atleta y registra tu ficha técnica.</p>
 
     <!-- Formulario -->
-    <form id="registroForm" class="bg-zinc-900 p-8 md:p-10 shadow-[8px_8px_0px_#a3e635] border-2 border-lime-400 flex flex-col gap-8 relative z-10">
+<form id="registroForm" class="bg-zinc-900 p-8 md:p-10 shadow-[8px_8px_0px_#a3e635] border-2 border-lime-400 flex flex-col gap-8 relative z-10">
+  
+  <!-- SECCIÓN 1: Credenciales -->
+  <div>
+    <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#00d2ff] mb-6">
+      <h2 class="text-xl font-black uppercase italic text-cyan-400 tracking-wider">1. Credenciales de Acceso</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="email" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Correo Electrónico</label>
+        <input type="email" id="email" autocomplete="email" placeholder="tucorreo@ejemplo.com" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2 lowercase placeholder-zinc-500">
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Crear Contraseña</label>
+        <div class="relative transform -skew-x-2">
+          <input 
+            type="password" 
+            id="password" 
+            autocomplete="new-password" 
+            required 
+            minlength="6" 
+            placeholder="Mínimo 6 caracteres" 
+            class="w-full pl-4 pr-12 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition placeholder-zinc-500"
+          >
+          <button 
+            type="button" 
+            id="btnTogglePassword" 
+            aria-label="Mostrar u ocultar contraseña" 
+            class="absolute inset-y-0 right-0 pr-4 flex items-center text-zinc-300 hover:text-lime-400 transition focus:outline-none"
+          >
+            <!-- Ícono ojo abierto (ver) -->
+            <svg id="iconoOjoAbierto" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <!-- Ícono ojo tachado (ocultar) -->
+            <svg id="iconoOjoCerrado" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: Ficha del Atleta -->
+  <div>
+    <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#00d2ff] mb-6 mt-4">
+      <h2 class="text-xl font-black uppercase italic text-cyan-400 tracking-wider">2. Ficha del Atleta</h2>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <label for="nombre" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Nombre y Apellido del Atleta</label>
+        <input type="text" id="nombre" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
+      </div>
+      <div>
+        <label for="cedula" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Cédula (Atleta o Representante)</label>
+        <input type="text" id="cedula" placeholder="V-12345678" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2 placeholder-zinc-500">
+      </div>
+      <div>
+        <label for="telefono" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Teléfono / WhatsApp</label>
+        <input type="text" id="telefono" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
+      </div>
+      <div>
+        <label for="fecha_nacimiento" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Fecha de Nacimiento</label>
+        <input type="date" id="fecha_nacimiento" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
+      </div>
+      <div>
+        <label for="direccion" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Dirección / Residencia</label>
+        <input type="text" id="direccion" placeholder="Urbanización, Sector, Ciudad." required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2 placeholder-zinc-500">
+      </div>
+      <div>
+        <label for="nivel" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Nivel a Inscribir</label>
+        <select id="nivel" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
+          <option value="PRINCIPIANTE">PRINCIPIANTE (RUEDITAS / BALANCE)</option>
+          <option value="INTERMEDIO">INTERMEDIO (MTB BÁSICO)</option>
+          <option value="AVANZADO">AVANZADO (COMPETICIÓN)</option>
+          <option value="PROSPECTO">PROSPECTOS (ALTO RENDIMIENTO)</option>
+          <option value="ADULTOS">ENTRENAMIENTO PARA ADULTOS (TÉCNICA Y RESISTENCIA)</option>
+        </select>
+      </div>
+      <!-- Tipo de Sangre (Opcional) -->
+      <div>
+        <label for="tipo_sangre" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Tipo de Sangre (Opcional)</label>
+        <select id="tipo_sangre" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
+          <option value="">-- NO ESPECIFICADO --</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+        </select>
+      </div>
+
+      <!-- Fotografía del Atleta -->
+      <div>
+        <label for="fotoFile" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Fotografía del Atleta</label>
+        <input type="file" id="fotoFile" accept="image/*" class="w-full px-4 py-2.5 bg-zinc-950 border-2 border-zinc-700 text-white font-bold file:mr-4 file:py-1.5 file:px-4 file:border-0 file:text-xs file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer transform -skew-x-2">
+      </div>
+
+      <!-- APARTADO INCLUSIVO: Neurodivergencia / Condición de Salud / Acompañamiento -->
+      <div class="md:col-span-2 bg-zinc-950 p-6 border-2 border-cyan-400 mt-2">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <label for="tieneCondicion" class="block text-base font-black uppercase italic text-cyan-400 tracking-wider">
+              💙 ¿Presentas alguna condición médica, alergia o neurodivergencia?
+            </label>
+            <p class="text-sm text-white font-medium italic mt-2 leading-relaxed">
+              Saber esto nos ayuda a brindar un acompañamiento adecuado, más seguro y personalizado.
+            </p>
+          </div>
+          <div class="w-full md:w-72 flex-shrink-0">
+            <select id="tieneCondicion" class="w-full px-4 py-3 bg-zinc-900 border-2 border-zinc-600 text-white font-bold uppercase focus:outline-none focus:border-cyan-400 transition">
+              <option value="NO">NO</option>
+              <option value="SI">SÍ</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Cuadro desplegable cuando seleccionan SÍ -->
+        <div id="bloqueDetalleCondicion" class="hidden mt-5 pt-4 border-t border-zinc-800">
+          <label for="detalleCondicion" class="block text-xs font-black uppercase italic text-lime-400 mb-2 tracking-wider">
+            Detalla la condición o recomendaciones especiales para el entrenador:
+          </label>
+          <textarea 
+            id="detalleCondicion" 
+            rows="3" 
+            placeholder="Ej: TEA, TDAH, asma, alergias, sensibilidad a ruidos fuertes (como silbatos) o sugerencias prácticas para su aprendizaje en pista..." 
+            class="w-full px-4 py-3 bg-zinc-900 border-2 border-zinc-600 text-white text-sm font-medium focus:outline-none focus:border-lime-400 transition placeholder-zinc-400"
+          ></textarea>
+          <span class="text-md text-zinc-100 font-medium italic block mt-2">
+            🔒 Información confidencial de uso exclusivo para el equipo de instructores.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3: Bicicleta Principal -->
+    <div class="bg-zinc-950 p-6 border-2 border-zinc-800 mt-6">
+      <h3 class="text-lime-400 font-black italic uppercase text-lg mb-4">Información de la Bicicleta Principal (Opcional)</h3>
       
-      <!-- SECCIÓN 1: Credenciales -->
-      <div>
-        <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#00d2ff] mb-6">
-          <h2 class="text-xl font-black uppercase italic text-cyan-400 tracking-wider">1. Credenciales de Acceso</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label for="biciTipo" class="block text-xs font-black uppercase tracking-wider text-zinc-200 mb-1">Tipo de Bici</label>
+          <select id="biciTipo" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold">
+            <option value="MTB">MTB</option>
+            <option value="RUTA">RUTA</option>
+            <option value="GRAVEL">GRAVEL</option>
+            <option value="BALANCE">BALANCE</option>
+          </select>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label for="email" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Correo Electrónico</label>
-            <input type="email" id="email" autocomplete="email" placeholder="tucorreo@ejemplo.com" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2 lowercase placeholder-zinc-500">
-          </div>
-          <div>
-            <label for="password" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Crear Contraseña</label>
-            <div class="relative transform -skew-x-2">
-              <input 
-                type="password" 
-                id="password" 
-                autocomplete="new-password" 
-                required 
-                minlength="6" 
-                placeholder="Mínimo 6 caracteres" 
-                class="w-full pl-4 pr-12 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition placeholder-zinc-500"
-              >
-              <button 
-                type="button" 
-                id="btnTogglePassword" 
-                aria-label="Mostrar u ocultar contraseña" 
-                class="absolute inset-y-0 right-0 pr-4 flex items-center text-zinc-300 hover:text-lime-400 transition focus:outline-none"
-              >
-                <!-- Ícono ojo abierto (ver) -->
-                <svg id="iconoOjoAbierto" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                <!-- Ícono ojo tachado (ocultar) -->
-                <svg id="iconoOjoCerrado" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                </svg>
-              </button>
-            </div>
-          </div>
+        <div>
+          <label for="biciRin" class="block text-xs font-black uppercase tracking-wider text-zinc-200 mb-1">Rin</label>
+          <input type="text" id="biciRin" placeholder="Ej: 29" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 placeholder-zinc-500">
+        </div>
+        <div>
+          <label for="biciMarca" class="block text-xs font-black uppercase tracking-wider text-zinc-200 mb-1">Marca</label>
+          <input type="text" id="biciMarca" placeholder="Ej: Giant" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 placeholder-zinc-500">
+        </div>
+        <div>
+          <label for="biciColor" class="block text-xs font-black uppercase tracking-wider text-zinc-200 mb-1">Color</label>
+          <input type="text" id="biciColor" placeholder="Ej: Verde" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 placeholder-zinc-500">
         </div>
       </div>
+    </div>
 
-      <!-- SECCIÓN 2: Ficha del Atleta -->
-      <div>
-        <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 shadow-[4px_4px_0px_#00d2ff] mb-6 mt-4">
-          <h2 class="text-xl font-black uppercase italic text-cyan-400 tracking-wider">2. Ficha del Atleta</h2>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label for="nombre" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Nombre y Apellido del Atleta</label>
-            <input type="text" id="nombre" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
-          </div>
-          <div>
-            <label for="cedula" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Cédula (Atleta o Representante)</label>
-            <input type="text" id="cedula" placeholder="V-12345678" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2 placeholder-zinc-500">
-          </div>
-          <div>
-            <label for="telefono" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Teléfono / WhatsApp</label>
-            <input type="text" id="telefono" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
-          </div>
-          <div>
-            <label for="fecha_nacimiento" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Fecha de Nacimiento</label>
-            <input type="date" id="fecha_nacimiento" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
-          </div>
-          <div>
-            <label for="direccion" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Dirección / Residencia</label>
-            <input type="text" id="direccion" placeholder="Ciudad, Urbanización, Calle" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2 placeholder-zinc-500">
-          </div>
-          <div>
-            <label for="nivel" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Nivel a Inscribir</label>
-            <select id="nivel" required class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
-              <option value="PRINCIPIANTE">PRINCIPIANTE (RUEDITAS / BALANCE)</option>
-              <option value="INTERMEDIO">INTERMEDIO (MTB BÁSICO)</option>
-              <option value="AVANZADO">AVANZADO (COMPETICIÓN)</option>
-              <option value="PROSPECTO">PROSPECTOS (ALTO RENDIMIENTO)</option>
-              <option value="ADULTOS">ENTRENAMIENTO PARA ADULTOS (TÉCNICA Y RESISTENCIA)</option>
-            </select>
-          </div>
-          <!-- Tipo de Sangre (Opcional) -->
-          <div>
-            <label for="tipo_sangre" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Tipo de Sangre (Opcional)</label>
-            <select id="tipo_sangre" class="w-full px-4 py-3 bg-zinc-950 border-2 border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 transition transform -skew-x-2">
-              <option value="">-- NO ESPECIFICADO --</option>
-              <option value="O+">O+</option>
-              <option value="O-">O-</option>
-              <option value="A+">A+</option>
-              <option value="A-">A-</option>
-              <option value="B+">B+</option>
-              <option value="B-">B-</option>
-              <option value="AB+">AB+</option>
-              <option value="AB-">AB-</option>
-            </select>
-          </div>
+  </div>
 
-          <!-- Fotografía -->
-          <div>
-            <label for="fotoFile" class="block text-sm font-black uppercase italic mb-2 text-white tracking-wider">Fotografía del Atleta (Opcional - Máx 5MB)</label>
-            <input type="file" id="fotoFile" accept="image/*" class="w-full px-4 py-2.5 bg-zinc-950 border-2 border-zinc-700 text-white font-bold file:mr-4 file:py-1.5 file:px-4 file:border-0 file:text-xs file:font-black file:bg-lime-400 file:text-black hover:file:bg-lime-300 cursor-pointer transform -skew-x-2">
-          </div>
+  <div id="mensaje" class="hidden"></div>
 
-          <!-- APARTADO INCLUSIVO: Neurodivergencia / Condición de Salud / Acompañamiento -->
-          <div class="md:col-span-2 bg-zinc-950 p-6 border-2 border-cyan-400 mt-2">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div>
-                <label for="tieneCondicion" class="block text-base font-black uppercase italic text-cyan-400 tracking-wider">
-                  💙 ¿El atleta presenta alguna condición médica, alergia o neurodivergencia?
-                </label>
-                <p class="text-sm text-white font-medium italic mt-2 leading-relaxed">
-                  En Pupi Bike Kids promovemos un ciclismo inclusivo. Esta información es confidencial para nuestros entrenadores y nos permite adaptar la metodología de enseñanza y el acompañamiento en pista.
-                </p>
-              </div>
-              <div class="w-full md:w-72 flex-shrink-0">
-                <select id="tieneCondicion" class="w-full px-4 py-3 bg-zinc-900 border-2 border-zinc-600 text-white font-bold uppercase focus:outline-none focus:border-cyan-400 transition">
-                  <option value="NO">NO (NINGUNA)</option>
-                  <option value="SI">SÍ (ESPECIFICAR AL ENTRENADOR)</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Cuadro desplegable cuando seleccionan SÍ -->
-            <div id="bloqueDetalleCondicion" class="hidden mt-5 pt-4 border-t border-zinc-800">
-              <label for="detalleCondicion" class="block text-xs font-black uppercase italic text-lime-400 mb-2 tracking-wider">
-                Detalla la condición o recomendaciones especiales para el entrenador:
-              </label>
-              <textarea 
-                id="detalleCondicion" 
-                rows="3" 
-                placeholder="Ej: TEA, TDAH, asma, alergias, sensibilidad a ruidos fuertes (como silbatos) o sugerencias prácticas para su aprendizaje en pista..." 
-                class="w-full px-4 py-3 bg-zinc-900 border-2 border-zinc-600 text-white text-sm font-medium focus:outline-none focus:border-lime-400 transition placeholder-zinc-400"
-              ></textarea>
-              <span class="text-xs text-zinc-100 font-medium italic block mt-2">
-                🔒 Información confidencial de uso exclusivo para el equipo de instructores.
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- SECCIÓN 3: Bicicleta Principal -->
-        <div class="bg-zinc-950 p-6 border-2 border-zinc-800 mt-6">
-          <h3 class="text-lime-400 font-black italic uppercase text-lg mb-4">Información de la Bicicleta Principal (Opcional)</h3>
-          
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label for="biciTipo" class="block text-xs font-black uppercase tracking-wider text-zinc-200 mb-1">Tipo de Bici</label>
-              <select id="biciTipo" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold">
-                <option value="MTB">MTB</option>
-                <option value="RUTA">RUTA</option>
-                <option value="GRAVEL">GRAVEL</option>
-                <option value="BALANCE">BALANCE</option>
-              </select>
-            </div>
-            <div>
-              <label for="biciRin" class="block text-xs font-black uppercase tracking-wider text-zinc-200 mb-1">Rin</label>
-              <input type="text" id="biciRin" placeholder="Ej: 29" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 placeholder-zinc-500">
-            </div>
-            <div>
-              <label for="biciMarca" class="block text-xs font-black uppercase tracking-wider text-zinc-200 mb-1">Marca</label>
-              <input type="text" id="biciMarca" placeholder="Ej: Giant" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 placeholder-zinc-500">
-            </div>
-            <div>
-              <label for="biciColor" class="block text-xs font-black uppercase tracking-wider text-zinc-200 mb-1">Color</label>
-              <input type="text" id="biciColor" placeholder="Ej: Verde" class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase focus:outline-none focus:border-lime-400 placeholder-zinc-500">
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div id="mensaje" class="hidden"></div>
-
-      <button type="submit" id="btnSubmit" class="bg-lime-400 text-black font-black italic uppercase text-2xl py-4 hover:bg-lime-300 transition-all transform -skew-x-6 shadow-[6px_6px_0px_#db2777] hover:translate-y-1 hover:shadow-[2px_2px_0px_#db2777] mt-6 border-2 border-transparent">
-        Crear Cuenta
-      </button>
-    </form>
+  <!-- Botón Centrado y Compacto -->
+  <div class="flex justify-center w-full mt-4">
+    <button type="submit" id="btnSubmit" class="w-full max-w-sm bg-lime-400 text-black font-black italic uppercase text-xl py-3.5 hover:bg-lime-300 transition-all transform -skew-x-6 shadow-[6px_6px_0px_#db2777] hover:translate-y-1 hover:shadow-[2px_2px_0px_#db2777] border-2 border-transparent">
+      Crear Cuenta
+    </button>
+  </div>
+</form>
   </main>
 </Layout>
 

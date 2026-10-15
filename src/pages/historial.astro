@@ -71,7 +71,6 @@ import Layout from '../layouts/Layout.astro';
     const mensajeVacio = document.getElementById('mensajeVacio');
 
     try {
-      // 1. Verificar Sesión
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         window.location.href = '/login';
@@ -80,7 +79,6 @@ import Layout from '../layouts/Layout.astro';
 
       const user = session.user;
 
-      // 2. Obtener el ID del Alumno
       const { data: alumno, error: errAlumno } = await supabase
         .from('alumnos')
         .select('id')
@@ -89,7 +87,6 @@ import Layout from '../layouts/Layout.astro';
 
       if (errAlumno || !alumno) throw new Error("No se pudo identificar al alumno.");
 
-      // 3. Buscar pagos del alumno ordenados por fecha descendente
       const { data: pagos, error: errPagos } = await supabase
         .from('pagos')
         .select('*')
@@ -112,7 +109,6 @@ import Layout from '../layouts/Layout.astro';
             year: 'numeric' 
           });
 
-          // Badge dinámico según el estado real del recibo
           let badgeEstadoHtml = '';
           if (pago.estado === 'aprobado') {
             badgeEstadoHtml = `<span class="text-xs font-black bg-lime-400 text-black px-3 py-1 uppercase tracking-widest border border-lime-300 mt-2">✓ Aprobado</span>`;
@@ -120,7 +116,6 @@ import Layout from '../layouts/Layout.astro';
             badgeEstadoHtml = `<span class="text-xs font-black bg-cyan-400/20 text-cyan-400 px-3 py-1 uppercase tracking-widest border border-cyan-400 mt-2">⏳ En Revisión</span>`;
           }
 
-          // Mostrar detalle en Bs si fue aprobado con tasa histórica
           const detalleBsHtml = (pago.monto_bs && pago.tasa_historica)
             ? `<p class="text-xs text-zinc-400 font-mono mt-1">${Number(pago.monto_bs).toLocaleString('es-VE')} Bs (Tasa: ${escaparHTML(pago.tasa_historica)})</p>`
             : '';
@@ -128,13 +123,11 @@ import Layout from '../layouts/Layout.astro';
           const tarjetaHtml = `
             <div class="bg-zinc-900 border-l-8 ${pago.estado === 'aprobado' ? 'border-lime-400' : 'border-pink-500'} p-6 md:p-8 shadow-[6px_6px_0px_rgba(0,0,0,0.3)] transform -skew-x-2 hover:-translate-y-1 transition-transform border-y border-r border-zinc-800">
               <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 transform skew-x-2">
-                
                 <div class="flex-1">
                   <p class="${pago.estado === 'aprobado' ? 'text-lime-400' : 'text-pink-500'} font-black uppercase italic tracking-wider text-xl mb-1">${escaparHTML(pago.mes_correspondiente)}</p>
                   <p class="text-white font-bold text-lg mb-1">${escaparHTML(pago.metodo_pago)} <span class="text-zinc-500">|</span> Ref: ${escaparHTML(pago.referencia)}</p>
                   <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Reportado el: ${escaparHTML(fechaReporte)}</p>
                 </div>
-
                 <div class="text-left md:text-right flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center">
                   <div>
                     <p class="text-3xl font-black text-lime-400 italic">${escaparHTML(pago.monto)}$</p>
@@ -142,7 +135,6 @@ import Layout from '../layouts/Layout.astro';
                   </div>
                   ${badgeEstadoHtml}
                 </div>
-
               </div>
             </div>
           `;

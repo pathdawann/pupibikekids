@@ -10,8 +10,8 @@ interface Props {
 
 const { 
   title = "Pupi Bike Kids - Academia de Ciclismo MTB", 
-  description = "Academia de ciclismo infantil y juvenil en Lechería y Barcelona, Anzoátegui. Clases de iniciación, balance y competición MTB para niños.",
-  image = "/fondo-hero.jpg",
+  description = "Academia de ciclismo infantil, juvenil, prospectos y entrenamiento para adultos en Lechería y Barcelona, Anzoátegui. Iniciación, balance, técnica y competición MTB.",
+  image = "/hero2.png",
   noindex = false
 } = Astro.props;
 
@@ -55,6 +55,7 @@ const imageURL = new URL(image, Astro.site || "https://www.pupibikekids.com");
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/faviconbig.png" />
   </head>
   <body class="bg-zinc-950 text-white font-sans selection:bg-lime-500 selection:text-black antialiased">
     <slot />

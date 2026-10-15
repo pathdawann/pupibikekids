@@ -1,0 +1,223 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { supabaseServer } from '../lib/supabase-server.js';
+
+// 1. Inicializamos cliente de servidor
+const supabase = supabaseServer(Astro);
+
+// 2. Verificamos la autenticidad
+const { data: { user }, error } = await supabase.auth.getUser();
+
+if (!user || error) {
+  return Astro.redirect('/login');
+}
+
+// 3. Verificamos autorización administrativa y roles
+const correosAutorizados = ["pathdawann@gmail.com", "pupibikekids27@gmail.com"];
+if (!user.email || !correosAutorizados.includes(user.email)) {
+  return Astro.redirect('/dashboard');
+}
+
+const esSuperAdmin = user.email === "pathdawann@gmail.com";
+---
+
+<Layout title="Gestión de Leads y Suscriptores | Pupi Bike Admin" noindex={true}>
+  <!-- Navegación Corporativa -->
+  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="container mx-auto px-4 lg:px-8 max-w-[90%] flex justify-between items-center h-16">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+          <span class="text-white font-black text-sm italic">PK</span>
+        </div>
+        <a href="/admin" class="text-xl font-black italic tracking-tight text-gray-900">
+          PUPIBIKE <span class="text-blue-600">ADMIN</span>
+        </a>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/admin" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition">← Volver al Panel Principal</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="adminLeadsContenido" data-superadmin={esSuperAdmin ? "true" : "false"} class="bg-gray-50 min-h-screen pb-12">
+    <div class="container mx-auto px-4 lg:px-8 py-8 max-w-[90%]">
+      
+      <!-- Encabezado y Acciones Globales -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Suscriptores y Leads (Interesados)</h1>
+          <p class="text-sm text-gray-500 mt-1">Base de datos de correos captados desde el formulario de la página principal.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button id="btnCopiarCorreos" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
+            <span>📋</span> Copiar Todos los Correos
+          </button>
+          <button id="btnExportarLeads" class="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm transition flex items-center gap-2">
+            <span>📥</span> Exportar CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- MÉTRICA RÁPIDA -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 mb-1">Total Suscriptores</p>
+            <p id="uiTotalLeads" class="text-3xl font-black text-gray-900">0</p>
+          </div>
+          <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl">📧</div>
+        </div>
+      </div>
+
+      <!-- TABLA DE LEADS -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-12">
+        <div class="border-b border-gray-200 px-6 py-4 bg-gray-50 flex justify-between items-center">
+          <h2 class="text-base font-bold text-gray-900">Directorio de Correos Captados</h2>
+          <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-full" id="contadorLeadsBadge">Cargando...</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead class="bg-white border-b border-gray-200 text-gray-500 font-medium">
+              <tr>
+                <th class="px-6 py-3">#</th>
+                <th class="px-6 py-3">Fecha de Registro</th>
+                <th class="px-6 py-3">Correo Electrónico</th>
+                <th class="px-6 py-3 text-center">Acciones Rápidas</th>
+              </tr>
+            </thead>
+            <tbody id="tablaLeadsBody" class="divide-y divide-gray-100 text-gray-700 bg-white">
+              <tr>
+                <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500">Cargando suscriptores...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</Layout>
+
+<script type="module">
+  import { supabase } from '../lib/supabase.js';
+
+  let cacheLeads = [];
+  const esSuperAdmin = document.getElementById('adminLeadsContenido')?.dataset.superadmin === 'true';
+
+  function escaparHTML(texto) {
+    if (!texto) return '';
+    return String(texto)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  async function cargarLeads() {
+    const { data, error } = await supabase
+      .from('leads_eventos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error("Error al cargar leads:", error);
+      return;
+    }
+
+    cacheLeads = data || [];
+    renderizarTabla(cacheLeads);
+  }
+
+  function renderizarTabla(datos) {
+    const tbody = document.getElementById('tablaLeadsBody');
+    tbody.innerHTML = "";
+    document.getElementById('uiTotalLeads').textContent = datos.length;
+    document.getElementById('contadorLeadsBadge').textContent = `${datos.length} registrado(s)`;
+
+    if (datos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500">No hay correos registrados todavía.</td></tr>`;
+      return;
+    }
+
+    datos.forEach((item, index) => {
+      const fecha = new Date(item.created_at).toLocaleDateString('es-VE', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      const tr = document.createElement('tr');
+      tr.className = "hover:bg-gray-50 transition border-b border-gray-50";
+
+      const btnEliminarHtml = esSuperAdmin 
+        ? `<button data-id="${escaparHTML(item.id)}" class="btn-eliminar-lead text-red-600 hover:text-red-800 font-bold text-xs uppercase underline">Eliminar</button>` 
+        : '';
+
+      tr.innerHTML = `
+        <td class="px-6 py-4 text-gray-400 font-mono text-xs">${index + 1}</td>
+        <td class="px-6 py-4 text-gray-600 text-xs font-medium">${escaparHTML(fecha)}</td>
+        <td class="px-6 py-4">
+          <a href="mailto:${escaparHTML(item.email)}" class="text-sm font-bold text-blue-600 hover:underline font-mono lowercase">${escaparHTML(item.email)}</a>
+        </td>
+        <td class="px-6 py-4 text-center space-x-3">
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=${escaparHTML(item.email)}&su=Novedades%20Pupi%20Bike%20Kids" target="_blank" rel="noopener noreferrer" class="text-emerald-600 hover:text-emerald-800 font-bold text-xs uppercase underline">Enviar Correo</a>
+          ${btnEliminarHtml}
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    if (esSuperAdmin) {
+      document.querySelectorAll('.btn-eliminar-lead').forEach(btn => {
+        btn.addEventListener('click', (e) => eliminarLead(e.currentTarget.dataset.id));
+      });
+    }
+  }
+
+  // Copiar todos los correos separados por coma
+  document.getElementById('btnCopiarCorreos').addEventListener('click', () => {
+    if (cacheLeads.length === 0) return alert("No hay correos para copiar.");
+    const correosStr = cacheLeads.map(l => l.email).filter(Boolean).join(', ');
+    navigator.clipboard.writeText(correosStr);
+    alert("¡Todos los correos han sido copiados al portapapeles!");
+  });
+
+  // Exportar a CSV
+  document.getElementById('btnExportarLeads').addEventListener('click', () => {
+    if (cacheLeads.length === 0) return alert("No hay datos para exportar.");
+    
+    const exportData = cacheLeads.map(row => ({
+      Fecha_Registro: new Date(row.created_at).toLocaleDateString('es-VE'),
+      Correo_Electronico: row.email || ''
+    }));
+
+    const keys = Object.keys(exportData[0]);
+    const csvContent = "\uFEFF" + [
+      keys.join(","),
+      ...exportData.map(r => keys.map(k => JSON.stringify(r[k] ?? "")).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `PupiBike_Suscriptores_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+
+  async function eliminarLead(id) {
+    if (!confirm("¿Estás segura de eliminar este correo de la lista de suscriptores?")) return;
+    const { error } = await supabase.from('leads_eventos').delete().eq('id', id);
+    if (error) {
+      alert("Error al eliminar: " + error.message);
+    } else {
+      cargarLeads();
+    }
+  }
+
+  cargarLeads();
+</script>
