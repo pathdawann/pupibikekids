@@ -31,7 +31,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           <span class="text-white font-black text-sm italic">PK</span>
         </div>
         <a href="/admin" class="text-xl font-black italic tracking-tight text-gray-900">
-          PUPIBIKE <span class="text-blue-600">ADMIN</span>
+          PUPIBIKE<span class="text-blue-600">ADMIN</span>
         </a>
       </div>
       <div class="flex items-center gap-4">
@@ -79,22 +79,50 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       <!-- SECCIÓN SUPERIOR: Tasa e Ingresos -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         
-        <!-- Tasa del Día -->
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col justify-between">
+        <!-- Tasa del Día (Rediseñada) -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex flex-col justify-between">
           <div>
-            <div class="flex justify-between items-center mb-4">
-              <label for="inputTasa" class="text-sm font-bold text-gray-900 uppercase tracking-wide">Tasa de Cambio (BCV)</label>
-              <span id="fechaTasa" class="text-xs text-gray-400">Actualizando...</span>
-            </div>
-            <form id="formTasa" class="flex items-center gap-3">
-              <div class="relative flex-1">
-                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 font-medium">Bs.</span>
-                <input type="number" step="0.01" id="inputTasa" required class="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="0.00">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <label for="inputTasa" class="text-xs font-black text-gray-600 uppercase tracking-wider">
+                  Tasa Oficial (BCV)
+                </label>
               </div>
-              <button type="submit" id="btnGuardarTasa" class="bg-blue-600 text-white font-medium px-4 py-2 rounded-md hover:bg-blue-700 transition shadow-sm">Guardar</button>
+              <span id="fechaTasa" class="text-[11px] font-semibold text-gray-400 bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-md">
+                Actualizando...
+              </span>
+            </div>
+
+            <!-- Input Group Moderno -->
+            <form id="formTasa" class="mt-2">
+              <div class="flex rounded-lg shadow-sm border border-gray-300 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-600/20 overflow-hidden transition">
+                <span class="inline-flex items-center px-3.5 bg-gray-50 text-gray-500 font-black text-2sm border-r border-gray-200 select-none">
+                  Bs.
+                </span>
+                <input 
+                  type="number" 
+                  step="0.01" 
+                  id="inputTasa" 
+                  required 
+                  class="flex-1 min-w-0 px-3.5 py-2.5 bg-white text-gray-900 font-black text-lg focus:outline-none placeholder-gray-300" 
+                  placeholder="0.00"
+                >
+                <button 
+                  type="submit" 
+                  id="btnGuardarTasa" 
+                  class="inline-flex items-center px-4 py-2.5 bg-blue-600 text-white font-bold text-xs uppercase tracking-wider hover:bg-blue-700 active:bg-blue-800 transition focus:outline-none"
+                >
+                  Guardar
+                </button>
+              </div>
             </form>
           </div>
-          <p id="mensajeTasa" class="text-xs font-medium mt-3 text-center hidden"></p>
+
+          <div class="mt-4 pt-3 border-t border-gray-50 flex items-center justify-between text-[14px] text-gray-500">
+            <span>⚡ Conversión directa para recibos</span>
+            <p id="mensajeTasa" class="font-bold hidden"></p>
+          </div>
         </div>
 
         <!-- Resumen Financiero -->
@@ -108,7 +136,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         </div>
       </div>
 
-      <!-- SECCIÓN: Historial Financiero (Pagos) CON BUSCADOR -->
+      <!-- SECCIÓN: Historial Financiero (Pagos) CON CAPTURE Y BUSCADOR -->
       <div class="mb-10 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div class="border-b border-gray-200 px-6 py-4 bg-gray-50 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div>
@@ -140,6 +168,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
                 <th class="px-6 py-3 text-right">Monto USD</th>
                 <th class="px-6 py-3 text-right">Monto BS (Tasa)</th>
                 <th class="px-6 py-3 text-center">Mes a Cancelar</th>
+                <th class="px-6 py-3 text-center">Capture</th>
                 <th class="px-6 py-3 text-center">Estado</th>
                 <th class="px-6 py-3 text-center">Acciones</th>
               </tr>
@@ -160,7 +189,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           </div>
           
           <div class="flex flex-col sm:flex-row items-center gap-3 w-full xl:w-auto">
-            <!-- Buscador de alumnos -->
             <div class="relative w-full sm:w-64">
               <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 text-xs">🔍</span>
               <input 
@@ -171,7 +199,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
               >
             </div>
 
-            <!-- Filtros de Directorio incluyendo Prospecto y Adultos -->
             <div class="flex flex-wrap bg-gray-100 p-1 rounded-lg border border-gray-200 w-full sm:w-auto justify-center">
               <button onclick="window.filtrarDirectorio('TODOS')" id="filtro-TODOS" class="filtro-btn active px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Todos</button>
               <button onclick="window.filtrarDirectorio('PROSPECTO')" id="filtro-PROSPECTO" class="filtro-btn px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Prospectos</button>
@@ -202,9 +229,8 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         </div>
       </div>
       
-    </div> <!-- End Container -->
+    </div>
 
-    <!-- ESTILOS PARA LOS BOTONES DE FILTRO -->
     <style>
       .filtro-btn.active {
         background-color: white;
@@ -354,44 +380,59 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     const pagosRevision = cachePagos.filter(p => p.estado === 'revision').length;
 
     contenedor.innerHTML = `
+      <!-- 1. Matrícula Total -->
       <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
         <div>
-          <p class="text-sm font-medium text-gray-500 mb-1">Matrícula Total</p>
-          <p class="text-3xl font-black text-gray-900">${totalActivos}</p>
+          <p class="text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Matrícula Total</p>
+          <p class="text-4xl font-black text-gray-900 tracking-tight">${totalActivos}</p>
+          <span class="text-2xs text-gray-400 font-medium">Atletas activos</span>
         </div>
-        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl">🎓</div>
+        <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl shadow-sm">🎓</div>
       </div>
 
+      <!-- 2. Distribución de Niveles (Legible y con Badges) -->
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-sm font-bold text-gray-500 uppercase tracking-wide">Distribución Niveles</p>
+          <div class="w-9 h-9 bg-green-50 text-green-600 rounded-xl flex items-center justify-center text-xl shadow-sm">🚲</div>
+        </div>
+        <div class="flex flex-wrap gap-1.5 mt-1">
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200" title="Prospectos">
+            Prospecto: <strong class="text-sm font-black text-amber-900">${activosProspecto}</strong>
+          </span>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200" title="Avanzado">
+            Avanzado: <strong class="text-sm font-black text-blue-900">${activosAvanzado}</strong>
+          </span>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200" title="Intermedio">
+            Intermedio: <strong class="text-sm font-black text-emerald-900">${activosIntermedio}</strong>
+          </span>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold bg-zinc-100 text-zinc-800 border border-zinc-200" title="Principiante">
+            Principiante: <strong class="text-sm font-black text-zinc-900">${activosPrincipiante}</strong>
+          </span>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold bg-purple-50 text-purple-800 border border-purple-200" title="Adultos">
+            Adultos: <strong class="text-sm font-black text-purple-900">${activosAdultos}</strong>
+          </span>
+        </div>
+      </div>
+
+      <!-- 3. Ingresos del Mes -->
       <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
         <div>
-          <p class="text-sm font-medium text-gray-500 mb-1">Distribución Niveles</p>
-          <p class="text-xs font-bold text-gray-900 mt-1">
-            Prosp: <span class="text-amber-600">${activosProspecto}</span> | 
-            Avz: <span class="text-blue-600">${activosAvanzado}</span> | 
-            Int: <span class="text-green-600">${activosIntermedio}</span>
-          </p>
-          <p class="text-xs font-bold text-gray-500 mt-1">
-            Princ: <span class="text-gray-800">${activosPrincipiante}</span> | 
-            Adultos: <span class="text-purple-600">${activosAdultos}</span>
-          </p>
+          <p class="text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Ingresos (${mesesNombres[fechaActual.getMonth()]})</p>
+          <p class="text-4xl font-black text-gray-900 tracking-tight">$${totalIngresos}</p>
+          <span class="text-2xs text-emerald-600 font-semibold">${pagosMesAprobados.length} pagos aprobados</span>
         </div>
-        <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center text-2xl">🚲</div>
+        <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-3xl shadow-sm">💵</div>
       </div>
 
-      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
+      <!-- 4. Pagos en Revisión -->
+      <div class="bg-white rounded-xl border ${pagosRevision > 0 ? 'border-orange-300 bg-orange-50/40' : 'border-gray-200'} p-5 shadow-sm flex items-center justify-between">
         <div>
-          <p class="text-sm font-medium text-gray-500 mb-1">Ingresos Aprobados (${mesesNombres[fechaActual.getMonth()]})</p>
-          <p class="text-3xl font-black text-gray-900">$${totalIngresos}</p>
+          <p class="text-sm font-bold ${pagosRevision > 0 ? 'text-orange-700' : 'text-gray-500'} uppercase tracking-wide mb-1">Pagos en Revisión</p>
+          <p class="text-4xl font-black ${pagosRevision > 0 ? 'text-orange-600' : 'text-gray-900'} tracking-tight">${pagosRevision}</p>
+          <span class="text-2xs ${pagosRevision > 0 ? 'text-orange-700 font-bold' : 'text-gray-400 font-medium'}">${pagosRevision > 0 ? 'Requieren aprobación' : 'Al día'}</span>
         </div>
-        <div class="w-12 h-12 bg-gray-50 text-gray-700 rounded-full flex items-center justify-center text-2xl">💵</div>
-      </div>
-
-      <div class="bg-white rounded-xl border ${pagosRevision > 0 ? 'border-orange-300 bg-orange-50/30' : 'border-gray-200'} p-5 shadow-sm flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium ${pagosRevision > 0 ? 'text-orange-600' : 'text-gray-500'} mb-1">Pagos en Revisión</p>
-          <p class="text-3xl font-black ${pagosRevision > 0 ? 'text-orange-600' : 'text-gray-900'}">${pagosRevision}</p>
-        </div>
-        <div class="w-12 h-12 ${pagosRevision > 0 ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'} rounded-full flex items-center justify-center text-2xl">⏳</div>
+        <div class="w-14 h-14 ${pagosRevision > 0 ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'} rounded-2xl flex items-center justify-center text-3xl shadow-sm">⏳</div>
       </div>
     `;
   }
@@ -422,7 +463,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     document.getElementById('contadorPagosMes').textContent = textoBuscarPago ? `${pagosMostrados.length} resultado(s)` : `Últimos ${pagosMostrados.length}`;
 
     if (pagosMostrados.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-sm text-gray-500">No se encontraron pagos con ese criterio.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500">No se encontraron pagos con ese criterio.</td></tr>`;
       return;
     }
 
@@ -441,6 +482,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
 
       const idPagoSeguro = escaparHTML(pago.id);
       const montoSeguro = Number(pago.monto) || 0;
+      const urlCapture = pago.comprobante_url ? escaparHTML(pago.comprobante_url) : '';
 
       let badgeEstado = '';
       let btnAccion = '';
@@ -473,6 +515,9 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           <td class="px-6 py-4 text-right text-sm font-black text-gray-900">$${montoSeguro}</td>
           <td class="px-6 py-4 text-right text-sm leading-tight">${stringBs}</td>
           <td class="px-6 py-4 text-center text-sm text-gray-600">${escaparHTML(pago.mes_correspondiente)}</td>
+          <td class="px-6 py-4 text-center">
+            ${urlCapture ? `<a href="${urlCapture}" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded text-xs font-bold hover:bg-blue-100 transition">Ver Pago</a>` : '<span class="text-xs text-gray-400">N/D</span>'}
+          </td>
           <td class="px-6 py-4 text-center">${badgeEstado}</td>
           <td class="px-6 py-4 text-center">
             <div class="flex items-center justify-center gap-2">
@@ -557,7 +602,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       else if (nivelUpper === 'INTERMEDIO') colorNivel = 'text-green-600 font-bold';
       else if (nivelUpper === 'ADULTOS') colorNivel = 'text-purple-600 font-bold';
 
-      // Verificar si tiene alguna condición o recomendación de acompañamiento en pista
       const condTexto = (alumno.condicion_especial || '').trim();
       const tieneCondicion = condTexto !== '' && condTexto.toUpperCase() !== 'NINGUNA';
       const badgeCondicionHtml = tieneCondicion
@@ -757,6 +801,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         Monto_BS: p.monto_bs || 'N/A',
         Metodo: p.metodo_pago,
         Referencia: p.referencia,
+        Capture_URL: p.comprobante_url || 'N/D',
         Estado: p.estado
       };
     });
