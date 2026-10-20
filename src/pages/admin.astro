@@ -23,9 +23,9 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
 ---
 
 <Layout title="Panel Administrativo | Pupi Bike Kids" noindex={true}>
-  <!-- Navegación Corporativa con ancho al 90% -->
+  <!-- Navegación Corporativa con ancho al 96% -->
   <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-    <div class="container mx-auto px-4 lg:px-8 max-w-[90%] flex justify-between items-center h-16">
+    <div class="container mx-auto px-4 lg:px-8 max-w-[96%] flex justify-between items-center h-16">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
           <span class="text-white font-black text-sm italic">PK</span>
@@ -44,7 +44,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
   </nav>
 
   <main id="adminContenido" data-superadmin={esSuperAdmin ? "true" : "false"} class="bg-gray-50 min-h-screen pb-12">
-    <div class="container mx-auto px-4 lg:px-8 py-8 max-w-[90%]">
+    <div class="container mx-auto px-4 lg:px-8 py-8 max-w-[96%]">
       
       <!-- Encabezado y Acciones Globales -->
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -136,31 +136,43 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         </div>
       </div>
 
-      <!-- SECCIÓN: Historial Financiero (Pagos) CON CAPTURE Y BUSCADOR -->
+      <!-- SECCIÓN: Historial Financiero (Pagos) CON PESTAÑAS Y BUSCADOR -->
       <div class="mb-10 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div class="border-b border-gray-200 px-6 py-4 bg-gray-50 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="border-b border-gray-200 px-6 py-4 bg-gray-50 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
           <div>
-            <h2 class="text-base font-bold text-gray-900">Historial de Recibos y Transferencias</h2>
-            <p class="text-xs text-gray-500">Reportes de transferencias y mensualidades recibidas.</p>
+            <h2 class="text-base font-bold text-gray-900">Historial de Pagos</h2>
+            <p class="text-xs text-gray-500">Reportes de transferencias y mensualidades.</p>
           </div>
           
-          <div class="flex items-center gap-3 w-full sm:w-auto">
-            <div class="relative flex-1 sm:w-72">
+          <div class="flex flex-col sm:flex-row items-center gap-3 w-full xl:w-auto">
+            <div class="relative w-full sm:w-64">
               <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 text-xs">🔍</span>
               <input 
                 type="text" 
                 id="inputBuscarPago" 
-                placeholder="Buscar por atleta, cédula o ref..." 
+                placeholder="Buscar por atleta o ref..." 
                 class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
             </div>
-            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1.5 rounded-md whitespace-nowrap" id="contadorPagosMes">Cargando...</span>
+            
+            <!-- Pestañas de Filtro de Pagos -->
+            <div class="flex bg-gray-100 p-1 rounded-lg border border-gray-200 w-full sm:w-auto justify-center">
+              <button onclick="window.filtrarPagos('REVISION')" id="filtro-pago-REVISION" class="filtro-pago-btn active px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900 flex items-center gap-1.5">
+                ⏳ Pendientes <span id="badgePagosPendientes" class="bg-orange-200 text-orange-800 px-1.5 py-0.5 rounded-full text-[10px] leading-none">0</span>
+              </button>
+              <button onclick="window.filtrarPagos('APROBADO')" id="filtro-pago-APROBADO" class="filtro-pago-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">
+                ✓ Aprobados
+              </button>
+              <button onclick="window.filtrarPagos('TODOS')" id="filtro-pago-TODOS" class="filtro-pago-btn px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">
+                Todos
+              </button>
+            </div>
           </div>
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm whitespace-nowrap">
-            <thead class="bg-white border-b border-gray-200 text-gray-500 font-medium">
+          <table class="w-full text-left text-base whitespace-normal md:whitespace-nowrap">
+            <<thead class="bg-white border-b border-gray-200 text-gray-600 text-base font-bold hidden md:table-header-group">
               <tr>
                 <th class="px-6 py-3">Fecha</th>
                 <th class="px-6 py-3">Atleta (Cédula)</th>
@@ -212,8 +224,8 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         </div>
         
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm whitespace-nowrap">
-            <thead class="bg-white border-b border-gray-200 text-gray-500 font-medium">
+          <table class="w-full text-left text-sm whitespace-normal md:whitespace-nowrap">
+            <thead class="bg-white border-b border-gray-200 text-gray-500 font-medium hidden md:table-header-group">
               <tr>
                 <th class="px-6 py-3">Alumno</th>
                 <th class="px-6 py-3">Contacto</th>
@@ -232,7 +244,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     </div>
 
     <style>
-      .filtro-btn.active {
+      .filtro-btn.active, .filtro-pago-btn.active {
         background-color: white;
         color: #111827;
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -289,7 +301,8 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
   let cacheAlumnos = [];
   let cachePagos = [];
   let tasaActualDolar = 0;
-  let filtroActual = 'TODOS';
+  let filtroActual = 'TODOS'; // Para alumnos
+  let filtroPagoActual = 'REVISION'; // NUEVO: Por defecto vemos los pendientes
   
   let textoBuscarPago = '';
   let textoBuscarAlumno = '';
@@ -437,13 +450,34 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     `;
   }
 
+  // NUEVA FUNCIÓN: Control de Pestañas de Pagos
+  window.filtrarPagos = function(filtro) {
+    filtroPagoActual = filtro;
+    document.querySelectorAll('.filtro-pago-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`filtro-pago-${filtro}`)?.classList.add('active');
+    renderizarPagos();
+  };
+
   function renderizarPagos() {
     const tbody = document.getElementById('tablaPagosPendientes');
     tbody.innerHTML = '';
     
+    // 1. Actualizar el contador del badge naranja de pendientes
+    const cantidadPendientes = cachePagos.filter(p => p.estado === 'revision').length;
+    const badge = document.getElementById('badgePagosPendientes');
+    if (badge) badge.textContent = cantidadPendientes;
+    
+    // 2. Aplicar filtro de pestaña (En Revisión, Aprobados, Todos)
     let pagosFiltrados = cachePagos;
+    if (filtroPagoActual === 'REVISION') {
+      pagosFiltrados = cachePagos.filter(p => p.estado === 'revision');
+    } else if (filtroPagoActual === 'APROBADO') {
+      pagosFiltrados = cachePagos.filter(p => p.estado === 'aprobado');
+    }
+
+    // 3. Aplicar filtro de buscador de texto (si existe)
     if (textoBuscarPago) {
-      pagosFiltrados = cachePagos.filter(p => {
+      pagosFiltrados = pagosFiltrados.filter(p => {
         const atleta = cacheAlumnos.find(a => a.id === p.alumno_id);
         const nombre = (atleta?.nombre || '').toLowerCase();
         const cedula = (atleta?.cedula || '').toLowerCase();
@@ -460,12 +494,17 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     }
 
     const pagosMostrados = pagosFiltrados.slice(0, 50);
-    document.getElementById('contadorPagosMes').textContent = textoBuscarPago ? `${pagosMostrados.length} resultado(s)` : `Últimos ${pagosMostrados.length}`;
 
     if (pagosMostrados.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500">No se encontraron pagos con ese criterio.</td></tr>`;
+      const msjVacío = filtroPagoActual === 'REVISION' 
+        ? '¡Al día! No hay pagos pendientes por revisar.' 
+        : 'No se encontraron pagos con ese criterio.';
+      tbody.innerHTML = `<tr><td colspan="9" class="px-6 py-12 text-center text-sm font-medium text-gray-500">${msjVacío}</td></tr>`;
       return;
     }
+
+    // (Aquí mantienes intacto el código de generación de HTML que ya tenías)
+    // pagosMostrados.forEach(pago => { ... todo igual hasta el });
 
     pagosMostrados.forEach(pago => {
       const fecha = new Date(pago.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
@@ -473,54 +512,101 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       const nombreAtleta = atleta ? atleta.nombre : 'Atleta Eliminado';
       const cedulaAtleta = atleta ? atleta.cedula : 'N/A';
 
-      let stringBs = '<span class="text-gray-400 text-xs">Pendiente</span>';
+      // "Pendiente" y montos a text-base
+      let stringBs = '<span class="text-gray-400 text-base font-medium">Pendiente</span>';
       if (pago.monto_bs && pago.tasa_historica) {
-        stringBs = `<span class="font-medium text-gray-900">${Number(pago.monto_bs).toLocaleString('es-VE')} Bs</span> <br> <span class="text-[10px] text-gray-500">Tasa: ${escaparHTML(pago.tasa_historica)}</span>`;
+        stringBs = `<span class="font-bold text-gray-900 text-base">${Number(pago.monto_bs).toLocaleString('es-VE')} Bs</span> <br> <span class="text-sm text-gray-500">Tasa: ${escaparHTML(pago.tasa_historica)}</span>`;
       } else if (pago.estado === 'aprobado') {
-        stringBs = '<span class="text-gray-400 text-xs">No registrada</span>';
+        stringBs = '<span class="text-gray-400 text-base">No registrada</span>';
       }
 
       const idPagoSeguro = escaparHTML(pago.id);
       const montoSeguro = Number(pago.monto) || 0;
       const urlCapture = pago.comprobante_url ? escaparHTML(pago.comprobante_url) : '';
 
+      // Botones y Badges uniformes a text-sm
       let badgeEstado = '';
       let btnAccion = '';
 
       if (pago.estado === 'aprobado') {
-        badgeEstado = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Aprobado</span>`;
-        btnAccion = `<button onclick="window.revertirPago('${idPagoSeguro}')" class="inline-flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-amber-50 text-gray-600 hover:text-amber-700 border border-gray-200 hover:border-amber-300 rounded-md text-xs font-medium shadow-sm transition">↩ Revertir</button>`;
+        badgeEstado = `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Aprobado</span>`;
+        btnAccion = `<button onclick="window.revertirPago('${idPagoSeguro}')" class="w-full md:w-auto inline-flex justify-center items-center gap-1 px-4 py-2 bg-white hover:bg-amber-50 text-gray-700 hover:text-amber-700 border border-gray-300 hover:border-amber-300 rounded-md text-sm font-bold shadow-sm transition">↩ Revertir</button>`;
       } else {
-        badgeEstado = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">⏳ Revisión</span>`;
-        btnAccion = `<button onclick="window.aprobarPago('${idPagoSeguro}', ${montoSeguro})" class="inline-flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold shadow-sm transition">✓ Aprobar</button>`;
+        badgeEstado = `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold bg-amber-50 text-amber-700 border border-amber-200">⏳ Revisión</span>`;
+        btnAccion = `<button onclick="window.aprobarPago('${idPagoSeguro}', ${montoSeguro})" class="w-full md:w-auto inline-flex justify-center items-center gap-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-bold shadow-sm transition">✓ Aprobar</button>`;
       }
 
       const btnEliminarPagoHtml = esSuperAdmin 
-        ? `<button onclick="window.eliminarPago('${idPagoSeguro}')" class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition border border-transparent hover:border-red-200" title="Eliminar recibo de prueba">
-             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        ? `<button onclick="window.eliminarPago('${idPagoSeguro}')" class="w-full md:w-auto flex justify-center items-center gap-2 px-4 py-2 md:p-2 text-red-600 md:text-gray-400 bg-red-50 md:bg-transparent hover:text-red-600 hover:bg-red-50 rounded-md transition border border-red-200 md:border-transparent font-bold text-sm" title="Eliminar recibo">
+             <span class="md:hidden">🗑️ Eliminar</span>
+             <svg class="w-5 h-5 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
            </button>` 
         : '';
 
       tbody.innerHTML += `
-        <tr class="hover:bg-gray-50 transition border-b border-gray-50">
-          <td class="px-6 py-4 text-gray-500 font-medium">${escaparHTML(fecha)}</td>
-          <td class="px-6 py-4">
-            <div class="text-sm font-bold text-gray-900 uppercase">${escaparHTML(nombreAtleta)}</div>
-            <div class="text-xs text-gray-500">${escaparHTML(cedulaAtleta)}</div>
+        <tr class="border-b border-gray-200 flex flex-col md:table-row p-5 md:p-0 gap-3 md:gap-0 hover:bg-gray-50 transition relative">
+          <!-- Fecha -->
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
+            <div class="flex justify-between md:block items-center pb-2 md:pb-0 border-b border-gray-100 md:border-0">
+              <span class="text-sm font-bold text-gray-400 uppercase md:hidden">Fecha Registro</span>
+              <span class="text-gray-500 text-base font-medium">${escaparHTML(fecha)}</span>
+            </div>
           </td>
-          <td class="px-6 py-4">
-            <div class="text-sm text-gray-900 font-mono">${escaparHTML(pago.referencia)}</div>
-            <div class="text-xs text-gray-500">${escaparHTML(pago.metodo_pago)}</div>
+
+          <!-- Atleta y Cédula (text-base) -->
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
+            <div class="text-base font-black text-gray-900 uppercase leading-tight">${escaparHTML(nombreAtleta)}</div>
+            <div class="text-base text-gray-500 mt-0.5">${escaparHTML(cedulaAtleta)}</div>
           </td>
-          <td class="px-6 py-4 text-right text-sm font-black text-gray-900">$${montoSeguro}</td>
-          <td class="px-6 py-4 text-right text-sm leading-tight">${stringBs}</td>
-          <td class="px-6 py-4 text-center text-sm text-gray-600">${escaparHTML(pago.mes_correspondiente)}</td>
-          <td class="px-6 py-4 text-center">
-            ${urlCapture ? `<a href="${urlCapture}" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded text-xs font-bold hover:bg-blue-100 transition">Ver Pago</a>` : '<span class="text-xs text-gray-400">N/D</span>'}
+
+          <!-- Referencia y Método (text-base) -->
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
+            <div class="flex md:block items-start gap-3">
+               <span class="text-sm font-bold text-gray-400 uppercase md:hidden w-16 pt-1">Pago:</span>
+               <div>
+                 <div class="text-base text-gray-900 font-mono font-bold tracking-wide">${escaparHTML(pago.referencia)}</div>
+                 <div class="text-base text-gray-500 uppercase mt-0.5">${escaparHTML(pago.metodo_pago)}</div>
+               </div>
+            </div>
           </td>
-          <td class="px-6 py-4 text-center">${badgeEstado}</td>
-          <td class="px-6 py-4 text-center">
-            <div class="flex items-center justify-center gap-2">
+
+          <!-- Montos (text-base) -->
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle text-left md:text-right">
+             <div class="flex md:block items-center justify-between gap-3">
+                <span class="text-sm font-bold text-gray-400 uppercase md:hidden">Monto USD:</span>
+                <span class="text-base font-black text-gray-900">$${montoSeguro}</span>
+             </div>
+          </td>
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle text-left md:text-right">
+             <div class="flex md:block items-start justify-between gap-3">
+                <span class="text-sm font-bold text-gray-400 uppercase md:hidden pt-0.5">Monto Bs:</span>
+                <div class="text-base leading-tight text-right">${stringBs}</div>
+             </div>
+          </td>
+
+          <!-- Mes (text-base) y Capture -->
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle text-left md:text-center">
+             <div class="flex md:block items-center justify-between gap-3">
+                <span class="text-sm font-bold text-gray-400 uppercase md:hidden">Mes Pagado:</span>
+                <span class="text-base text-gray-700 font-bold">${escaparHTML(pago.mes_correspondiente)}</span>
+             </div>
+          </td>
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle text-left md:text-center">
+            <div class="flex md:block items-center justify-between gap-3">
+                <span class="text-sm font-bold text-gray-400 uppercase md:hidden">Capture:</span>
+                ${urlCapture ? `<a href="${urlCapture}" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-50 text-blue-600 border border-blue-200 px-4 py-1.5 md:px-3 md:py-1 rounded-md text-sm font-bold hover:bg-blue-100 transition shadow-sm">Ver Foto</a>` : '<span class="text-sm text-gray-400 italic">N/D</span>'}
+            </div>
+          </td>
+
+          <!-- Estado y Acciones -->
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle text-left md:text-center">
+             <div class="flex md:block items-center justify-between gap-3">
+                <span class="text-sm font-bold text-gray-400 uppercase md:hidden">Estado:</span>
+                ${badgeEstado}
+             </div>
+          </td>
+          <td class="block md:table-cell px-0 pt-4 pb-0 md:px-6 md:py-4 md:align-middle text-center border-t border-gray-100 md:border-0 mt-1 md:mt-0">
+            <div class="flex flex-col sm:flex-row items-center justify-between md:justify-center gap-2">
               ${btnAccion}
               ${btnEliminarPagoHtml}
             </div>
@@ -582,16 +668,16 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       
       let badgeEstatusMes = '';
       if ((alumno.estatus || 'activo').toLowerCase() === 'inactivo') {
-        badgeEstatusMes = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">Retirado</span>`;
+        badgeEstatusMes = `<span class="inline-flex items-center px-2.5 py-1 md:px-2 md:py-0.5 rounded-md md:rounded text-sm md:text-xs font-bold md:font-medium bg-gray-100 text-gray-800">Retirado</span>`;
       } else if (pagoMes?.estado === 'aprobado') {
-        badgeEstatusMes = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Al Día</span>`;
+        badgeEstatusMes = `<span class="inline-flex items-center px-2.5 py-1 md:px-2 md:py-0.5 rounded-md md:rounded text-sm md:text-xs font-bold md:font-medium bg-green-100 text-green-800">Al Día</span>`;
       } else if (pagoMes?.estado === 'revision') {
-        badgeEstatusMes = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">Revisión</span>`;
+        badgeEstatusMes = `<span class="inline-flex items-center px-2.5 py-1 md:px-2 md:py-0.5 rounded-md md:rounded text-sm md:text-xs font-bold md:font-medium bg-orange-100 text-orange-800">En Revisión</span>`;
       } else {
         if (fechaActual.getDate() > 5) {
-          badgeEstatusMes = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">Moroso</span>`;
+          badgeEstatusMes = `<span class="inline-flex items-center px-2.5 py-1 md:px-2 md:py-0.5 rounded-md md:rounded text-sm md:text-xs font-bold md:font-medium bg-red-100 text-red-800">Moroso</span>`;
         } else {
-          badgeEstatusMes = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">Pendiente</span>`;
+          badgeEstatusMes = `<span class="inline-flex items-center px-2.5 py-1 md:px-2 md:py-0.5 rounded-md md:rounded text-sm md:text-xs font-bold md:font-medium bg-yellow-100 text-yellow-800">Pendiente</span>`;
         }
       }
 
@@ -605,40 +691,69 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       const condTexto = (alumno.condicion_especial || '').trim();
       const tieneCondicion = condTexto !== '' && condTexto.toUpperCase() !== 'NINGUNA';
       const badgeCondicionHtml = tieneCondicion
-        ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 cursor-help" title="${escaparHTML(condTexto)}">💙 Acompañamiento</span>`
+        ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 cursor-help" title="${escaparHTML(condTexto)}">💙 Apoyo</span>`
         : '';
 
       const telefonoLim = formatearTelefonoWhatsApp(alumno.telefono);
       const btnWp = telefonoLim
-        ? `<a href="https://wa.me/${telefonoLim}" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-800 transition" title="Escribir por WhatsApp"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 3.825 0 6.938 3.112 6.938 6.937 0 3.825-3.113 6.938-6.938 6.938z"/></svg></a>`
+        ? `<a href="https://wa.me/${telefonoLim}" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto flex justify-center items-center gap-2 px-4 py-2 md:p-0 bg-green-50 md:bg-transparent text-green-700 md:text-green-600 border border-green-200 md:border-transparent hover:text-green-800 rounded-md transition font-bold text-sm" title="Escribir por WhatsApp">
+             <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 3.825 0 6.938 3.112 6.938 6.937 0 3.825-3.113 6.938-6.938 6.938z"/></svg>
+             <span class="md:hidden">WhatsApp</span>
+           </a>`
         : '';
 
       const idAlumnoSeguro = escaparHTML(alumno.id);
       const fotoSegura = alumno.foto_url ? escaparHTML(alumno.foto_url) : FOTO_DEFAULT;
 
       tbody.innerHTML += `
-        <tr class="hover:bg-gray-50 transition border-b border-gray-50">
-          <td class="px-6 py-4 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-gray-200 overflow-hidden border border-gray-300 flex-shrink-0">
-               <img src="${fotoSegura}" alt="${escaparHTML(alumno.nombre)}" class="w-full h-full object-cover" onerror="this.src='${FOTO_DEFAULT}'">
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-bold text-gray-900 uppercase">${escaparHTML(alumno.nombre)}</span>
-                ${badgeCondicionHtml}
+        <tr class="border-b border-gray-200 flex flex-col md:table-row p-6 md:p-0 gap-4 md:gap-0 hover:bg-gray-50 transition relative">
+          <!-- Alumno -->
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
+            <div class="flex items-center gap-3">
+              <div class="w-14 h-14 md:w-8 md:h-8 rounded-full bg-gray-200 overflow-hidden border border-gray-300 flex-shrink-0 shadow-sm">
+                 <img src="${fotoSegura}" alt="${escaparHTML(alumno.nombre)}" class="w-full h-full object-cover" onerror="this.src='${FOTO_DEFAULT}'">
               </div>
-              <div class="text-xs text-gray-500">${escaparHTML(alumno.cedula)}</div>
+              <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-lg md:text-sm font-black text-gray-900 uppercase leading-tight">${escaparHTML(alumno.nombre)}</span>
+                  ${badgeCondicionHtml}
+                </div>
+                <div class="text-sm md:text-xs text-gray-500 mt-0.5">${escaparHTML(alumno.cedula)}</div>
+              </div>
             </div>
           </td>
-          <td class="px-6 py-4">
-            <div class="text-sm text-gray-700 font-mono">${escaparHTML(alumno.telefono)}</div>
-            <div class="text-xs text-gray-500">${escaparHTML(alumno.email)}</div>
+
+          <!-- Contacto -->
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
+             <div class="flex md:block items-start gap-3 mt-1 md:mt-0">
+                <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20 pt-0.5">Contacto:</span>
+                <div>
+                  <div class="text-base md:text-sm text-gray-800 font-mono font-medium">${escaparHTML(alumno.telefono)}</div>
+                  <div class="text-sm md:text-xs text-gray-500 lowercase break-all">${escaparHTML(alumno.email)}</div>
+                </div>
+             </div>
           </td>
-          <td class="px-6 py-4 text-center text-xs ${colorNivel}">${escaparHTML(alumno.nivel || 'N/A')}</td>
-          <td class="px-6 py-4 text-center">${badgeEstatusMes}</td>
-          <td class="px-6 py-4 text-center">
-            <div class="flex justify-center items-center gap-3">
-              <button onclick="window.verFichaAtleta('${idAlumnoSeguro}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium transition focus:outline-none">Ficha</button>
+
+          <!-- Nivel -->
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle md:text-center">
+             <div class="flex md:block items-center gap-3">
+                <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20">Nivel:</span>
+                <span class="text-sm md:text-xs ${colorNivel} uppercase bg-gray-50 md:bg-transparent px-2.5 py-1 md:p-0 rounded border border-gray-100 md:border-0 font-bold">${escaparHTML(alumno.nivel || 'N/A')}</span>
+             </div>
+          </td>
+
+          <!-- Solvencia -->
+          <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle md:text-center">
+             <div class="flex md:block items-center gap-3">
+                <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20">Solvencia:</span>
+                ${badgeEstatusMes}
+             </div>
+          </td>
+
+          <!-- Acciones -->
+          <td class="block md:table-cell px-0 pt-4 pb-0 md:px-6 md:py-4 md:align-middle md:text-center mt-2 md:mt-0 border-t border-gray-100 md:border-0">
+            <div class="flex flex-col sm:flex-row items-center justify-between md:justify-center gap-3">
+              <button onclick="window.verFichaAtleta('${idAlumnoSeguro}')" class="w-full md:w-auto text-center bg-blue-50 md:bg-transparent text-blue-600 hover:text-blue-800 border border-blue-100 md:border-transparent rounded-md px-4 py-2 md:p-0 text-sm font-bold transition focus:outline-none">Ficha Completa</button>
               ${btnWp}
             </div>
           </td>
