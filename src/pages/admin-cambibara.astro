@@ -25,7 +25,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
 <Layout title="Admin - Cambibara Race | Pupi Bike Kids" noindex={true}>
   <!-- Navegación Corporativa (Idéntica al Admin Principal) -->
   <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-    <div class="container mx-auto px-4 lg:px-8 max-w-[90%] flex justify-between items-center h-16">
+    <div class="container mx-auto px-4 lg:px-8 max-w-[96%] flex justify-between items-center h-16">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
           <span class="text-white font-black text-sm italic">CR</span>
@@ -44,19 +44,21 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
   </nav>
 
   <main id="adminCambibaraContenido" data-superadmin={esSuperAdmin ? "true" : "false"} class="bg-gray-50 min-h-screen pb-12">
-    <div class="container mx-auto px-4 lg:px-8 py-8 max-w-[90%]">
+    <div class="container mx-auto px-4 lg:px-8 py-8 max-w-[96%]">
       
+      <!-- Encabezado y Acciones Globales -->
       <!-- Encabezado y Acciones Globales -->
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">Gestión de Carrera</h1>
-          <p class="text-sm text-gray-500 mt-1">Control operativo y financiero de la Cambibara Race.</p>
+          <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Panel Administrativo</h1>
+          <p class="text-sm md:text-base text-gray-500 mt-1">Control Operativo la Carrera.</p>
         </div>
-        <div class="flex flex-wrap gap-2">
-          <button id="btnCopiarDatosPago" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
+        <!-- Optimización Móvil: flex-col en móviles, botones w-full -->
+        <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <button id="btnCopiarDatosPago" class="w-full sm:w-auto justify-center bg-white border border-gray-300 text-gray-700 text-sm md:text-base font-bold px-4 py-2.5 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
             <span>📋</span> Copiar Datos Bancarios
           </button>
-          <button id="btnExportarExcel" class="bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-green-700 shadow-sm transition flex items-center gap-2">
+          <button id="btnExportarExcel" class="w-full sm:w-auto justify-center bg-green-600 text-white text-sm md:text-base font-bold px-4 py-2.5 rounded-md hover:bg-green-700 shadow-sm transition flex items-center gap-2">
             <span>📥</span> Exportar a Excel
           </button>
         </div>
@@ -66,46 +68,47 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Inscripciones</p>
+            <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Inscripciones</p>
             <p id="uiTotalAtletas" class="text-3xl font-black text-gray-900">0</p>
           </div>
-          <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center text-2xl">🏁</div>
+          <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center text-xl">🏁</div>
         </div>
 
         <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Recaudación ($8 c/u)</p>
+            <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Recaudación</p>
             <p id="uiTotalDinero" class="text-3xl font-black text-green-600">$0</p>
           </div>
-          <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center text-2xl">💵</div>
+          <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center text-xl">💵</div>
         </div>
 
         <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Distribución por Género</p>
-            <p class="text-sm font-bold text-gray-900 mt-1">Masc: <span id="uiMasc" class="text-blue-600">0</span> | Fem: <span id="uiFem" class="text-pink-500">0</span></p>
+            <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Por Género</p>
+            <p class="text-sm md:text-base font-bold text-gray-900 mt-1">Masc: <span id="uiMasc" class="text-blue-600">0</span> | Fem: <span id="uiFem" class="text-pink-500">0</span></p>
           </div>
-          <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-2xl">👥</div>
+          <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-xl">👥</div>
         </div>
 
         <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Flujo de Pago</p>
-            <p class="text-sm font-bold text-gray-900 mt-1">PM: <span id="uiPM">0</span> | Efvo: <span id="uiEfvo">0</span></p>
+            <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Tipo de Pago</p>
+            <p class="text-sm md:text-base font-bold text-gray-900 mt-1">P. Móvil: <span id="uiPM">0</span> | Efvo: <span id="uiEfvo">0</span></p>
           </div>
-          <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center text-2xl">💳</div>
+          <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center text-xl">💳</div>
         </div>
       </div>
 
       <!-- DIRECTORIO Y FILTROS -->
       <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-12">
-        <div class="border-b border-gray-200 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50">
-          <h2 class="text-base font-bold text-gray-900">Listado de Corredores</h2>
+        <div class="border-b border-gray-200 px-6 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gray-50">
+          <h2 class="text-lg md:text-xl font-bold text-gray-900">Listado de Corredores</h2>
           
-          <div class="flex items-center gap-2">
-            <label for="filtroCategoria" class="text-xs font-bold text-gray-500 uppercase">Categoría:</label>
-            <select id="filtroCategoria" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-md px-3 py-1.5 focus:ring-green-500 focus:border-green-500 outline-none">
-              <option value="TODAS">Todas</option>
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full md:w-auto">
+            <label for="filtroCategoria" class="text-sm font-bold text-gray-500 uppercase">Categoría:</label>
+            <select id="filtroCategoria" class="w-full sm:w-auto bg-white border border-gray-300 text-gray-900 text-sm md:text-base rounded-md px-4 py-2 focus:ring-green-500 focus:border-green-500 outline-none">
+              <!-- (Tus opciones <option> se mantienen igual) -->
+              <option value="TODAS">Todas las Categorías</option>
               <option value="Balance">Balance</option>
               <option value="5 y 6 años">5 y 6 años</option>
               <option value="7 y 8 años">7 y 8 años</option>
@@ -117,16 +120,17 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
             </select>
           </div>
         </div>
+        <!-- (El resto de tu tabla se mantiene igual) -->
         
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm whitespace-nowrap">
-            <thead class="bg-white border-b border-gray-200 text-gray-500 font-medium">
+          <table class="w-full text-left text-base whitespace-normal md:whitespace-nowrap">
+            <thead class="bg-white border-b border-gray-200 text-gray-500 font-medium hidden md:table-header-group">
               <tr>
-                <th class="px-6 py-3">Fecha R.</th>
-                <th class="px-6 py-3">Atleta</th>
+                <th class="px-6 py-3">Fecha</th>
+                <th class="px-6 py-3">Nombre y Apellido</th>
                 <th class="px-6 py-3">Categoría / Género</th>
                 <th class="px-6 py-3">Contacto</th>
-                <th class="px-6 py-3">Info Pago</th>
+                <th class="px-6 py-3">Referencia</th>
                 <th class="px-6 py-3 text-center">Capture</th>
                 <th class="px-6 py-3 text-center">Acciones</th>
               </tr>
@@ -158,50 +162,50 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label for="editNombre" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Nombre</label>
+                <label for="editNombre" class="block text-base font-bold text-gray-700 mb-1 uppercase">Nombre</label>
                 <input type="text" id="editNombre" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
               </div>
               <div>
-                <label for="editApellido" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Apellido</label>
+                <label for="editApellido" class="block text-base font-bold text-gray-700 mb-1 uppercase">Apellido</label>
                 <input type="text" id="editApellido" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
               </div>
               <div>
-                <label for="editCedula" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Cédula</label>
+                <label for="editCedula" class="block text-base font-bold text-gray-700 mb-1 uppercase">Cédula</label>
                 <input type="text" id="editCedula" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
               </div>
               <div>
-                <label for="editFechaNac" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Fecha Nacimiento</label>
+                <label for="editFechaNac" class="block text-base font-bold text-gray-700 mb-1 uppercase">Fecha Nacimiento</label>
                 <input type="date" id="editFechaNac" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
               </div>
               <div>
-                <label for="editGenero" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Género</label>
+                <label for="editGenero" class="block text-base font-bold text-gray-700 mb-1 uppercase">Género</label>
                 <select id="editGenero" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
                   <option value="Masculino">Masculino</option>
                   <option value="Femenino">Femenino</option>
                 </select>
               </div>
               <div>
-                <label for="editCategoria" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Categoría</label>
+                <label for="editCategoria" class="block text-base font-bold text-gray-700 mb-1 uppercase">Categoría</label>
                 <input type="text" id="editCategoria" required readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm text-green-600 font-bold uppercase cursor-not-allowed">
               </div>
               <div>
-                <label for="editEmail" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Correo Electrónico</label>
+                <label for="editEmail" class="block text-base font-bold text-gray-700 mb-1 uppercase">Correo Electrónico</label>
                 <input type="email" id="editEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
               </div>
               <div>
-                <label for="editTelefono" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Teléfono</label>
+                <label for="editTelefono" class="block text-base font-bold text-gray-700 mb-1 uppercase">Teléfono</label>
                 <input type="text" id="editTelefono" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
               </div>
               <div>
-                <label for="editEstado" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Estado</label>
+                <label for="editEstado" class="block text-base font-bold text-gray-700 mb-1 uppercase">Estado</label>
                 <input type="text" id="editEstado" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
               </div>
               <div>
-                <label for="editCiudad" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Ciudad</label>
+                <label for="editCiudad" class="block text-base font-bold text-gray-700 mb-1 uppercase">Ciudad</label>
                 <input type="text" id="editCiudad" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
               </div>
               <div>
-                <label for="editMetodoPago" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Método de Pago</label>
+                <label for="editMetodoPago" class="block text-base font-bold text-gray-700 mb-1 uppercase">Método de Pago</label>
                 <select id="editMetodoPago" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
                   <option value="Pago Movil">Pago Móvil</option>
                   <option value="Transferencia">Transferencia Nacional</option>
@@ -209,7 +213,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
                 </select>
               </div>
               <div>
-                <label for="editReferencia" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Referencia</label>
+                <label for="editReferencia" class="block text-base font-bold text-gray-700 mb-1 uppercase">Referencia</label>
                 <input type="text" id="editReferencia" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
               </div>
             </div>
@@ -316,42 +320,79 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     datos.forEach(item => {
       const fecha = new Date(item.created_at).toLocaleDateString('es-VE');
       const tr = document.createElement('tr');
-      tr.className = "hover:bg-gray-50 transition border-b border-gray-50";
       
+      // 1. Asignamos la clase al TR (diseño de tarjeta móvil vs fila de tabla PC)
+      tr.className = "border-b border-gray-200 flex flex-col md:table-row p-6 md:p-0 gap-4 md:gap-0 hover:bg-gray-50 transition";
+      
+      // 2. Declaramos las variables auxiliares UNA SOLA VEZ
       const urlSegura = item.comprobante_url ? escaparHTML(item.comprobante_url) : '';
-
-      // El botón Eliminar solo se genera para Patricia Mago (SuperAdmin)
       const botonEliminarHtml = esSuperAdmin 
-        ? `<button data-id="${escaparHTML(item.id)}" class="btn-eliminar text-red-600 hover:text-red-800 font-bold text-xs uppercase underline">Eliminar</button>` 
+        ? `<button data-id="${escaparHTML(item.id)}" class="btn-eliminar text-red-600 hover:text-red-800 font-bold text-sm uppercase px-4 py-2 md:px-0 md:py-0 md:bg-transparent bg-red-50 md:underline rounded-md w-full md:w-auto text-center border border-red-100 md:border-0 transition">Eliminar</button>` 
         : '';
+      const colorMetodo = item.metodo_pago === 'Efectivo Pista' ? 'bg-yellow-100 text-yellow-800' : 'bg-emerald-100 text-emerald-800';
 
-      let colorMetodo = item.metodo_pago === 'Efectivo Pista' ? 'bg-yellow-100 text-yellow-800' : 'bg-emerald-100 text-emerald-800';
-
+      // 3. Insertamos el HTML
       tr.innerHTML = `
-        <td class="px-6 py-4 text-gray-500 text-xs font-medium">${escaparHTML(fecha)}</td>
-        <td class="px-6 py-4">
-          <div class="text-sm font-bold text-gray-900 uppercase">${escaparHTML(item.nombre)} ${escaparHTML(item.apellido)}</div>
-          <div class="text-xs text-gray-500">${escaparHTML(item.cedula)}</div>
+        <!-- Fecha -->
+        <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
+          <div class="flex justify-between md:block items-center pb-3 md:pb-0 border-b border-gray-100 md:border-0">
+            <span class="text-xs font-bold text-gray-400 uppercase md:hidden">Fecha Registro</span>
+            <span class="text-gray-500 text-sm md:text-base font-medium">${escaparHTML(fecha)}</span>
+          </div>
         </td>
-        <td class="px-6 py-4">
-          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase">${escaparHTML(item.categoria)}</span>
+
+        <!-- Nombre y Cédula -->
+        <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
+          <div class="text-xl md:text-base font-black text-gray-900 uppercase leading-tight">${escaparHTML(item.nombre)} ${escaparHTML(item.apellido)}</div>
+          <div class="text-sm text-gray-500 mt-1">${escaparHTML(item.cedula)}</div>
         </td>
-        <td class="px-6 py-4">
-          <div class="text-sm text-gray-700 font-mono">${escaparHTML(item.telefono)}</div>
-          <div class="text-xs text-gray-500">${escaparHTML(item.email)}</div>
+
+        <!-- Categoría -->
+        <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
+          <span class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase">${escaparHTML(item.categoria)}</span>
         </td>
-        <td class="px-6 py-4">
-          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${colorMetodo} uppercase mb-1">${escaparHTML(item.metodo_pago)}</span>
-          <div class="text-xs font-mono text-gray-500">Ref: ${escaparHTML(item.referencia)}</div>
+
+        <!-- Contacto -->
+        <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
+           <div class="flex md:block items-start gap-3">
+              <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20 pt-1">Contacto:</span>
+              <div class="flex-1">
+                <div class="text-base text-gray-800 font-mono font-medium">${escaparHTML(item.telefono)}</div>
+                <div class="text-sm text-gray-500 lowercase break-all mt-0.5">${escaparHTML(item.email)}</div>
+              </div>
+           </div>
         </td>
-        <td class="px-6 py-4 text-center">
-          ${urlSegura ? `<a href="${urlSegura}" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1 rounded text-xs font-bold hover:bg-blue-100 transition">Ver Pago</a>` : '<span class="text-xs text-gray-400">N/D</span>'}
+
+        <!-- Pago y Referencia -->
+        <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
+           <div class="flex md:block items-start gap-3">
+              <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20 pt-1">Pago:</span>
+              <div class="flex-1">
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold ${colorMetodo} uppercase mb-1.5">${escaparHTML(item.metodo_pago)}</span>
+                <div class="text-sm font-mono text-gray-600">Ref: <span class="text-gray-900">${escaparHTML(item.referencia)}</span></div>
+              </div>
+           </div>
         </td>
-        <td class="px-6 py-4 text-center space-x-3">
-          <button data-id="${escaparHTML(item.id)}" class="btn-editar text-blue-600 hover:text-blue-800 font-bold text-xs uppercase underline">Editar</button>
-          ${botonEliminarHtml}
+
+        <!-- Capture -->
+        <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle md:text-center">
+          <div class="flex md:block items-center gap-3">
+              <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20">Capture:</span>
+              <div class="flex-1 text-left md:text-center">
+                 ${urlSegura ? `<a href="${urlSegura}" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-50 text-blue-600 border border-blue-200 px-4 py-1.5 rounded-md text-sm font-bold hover:bg-blue-100 transition shadow-sm">Ver Pago</a>` : '<span class="text-sm text-gray-400 italic">N/D</span>'}
+              </div>
+          </div>
+        </td>
+
+        <!-- Acciones -->
+        <td class="block md:table-cell px-0 pt-4 pb-0 md:px-6 md:py-4 md:align-middle md:text-center mt-2 md:mt-0 border-t border-gray-100 md:border-0">
+          <div class="flex items-center justify-between md:justify-center gap-3">
+            <button data-id="${escaparHTML(item.id)}" class="btn-editar text-blue-600 hover:text-blue-800 font-bold text-sm uppercase px-4 py-2 md:px-0 md:py-0 md:bg-transparent bg-blue-50 md:underline rounded-md w-full md:w-auto text-center border border-blue-100 md:border-0 transition">Editar</button>
+            ${botonEliminarHtml}
+          </div>
         </td>
       `;
+      
       tbody.appendChild(tr);
     });
 
@@ -400,7 +441,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       catBase = "Open";
     }
 
-    inputCat.value = `${catBase} - ${genero}`;
+    inputCat.value = `${catBase} ${genero}`;
   }
 
   document.getElementById('editFechaNac').addEventListener('change', calcularCategoriaModal);
