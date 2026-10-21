@@ -18,6 +18,7 @@
     "@supabase/supabase-js": "^2.117.3",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.4.0",
+    "nodemailer": "^10.1.7",
     "tailwindcss": "^4.3.3"
   },
   "allowScripts": {
