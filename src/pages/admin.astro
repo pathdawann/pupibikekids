@@ -59,6 +59,9 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           <a href="/admin-leads" class="bg-purple-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm transition flex items-center gap-2">
             <span>📧</span> Ver Suscriptores (Leads)
           </a>
+          <button id="btnRecordatorioPago" class="bg-yellow-50 border border-yellow-200 text-yellow-700 text-sm font-bold px-4 py-2 rounded-md hover:bg-yellow-100 shadow-sm transition flex items-center gap-2">
+            <span>🔔</span> Recordatorios Manuales
+          </button>
           <button id="btnCorreoMasivo" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
             <span>✉️</span> Enviar Correo (BCC)
           </button>
@@ -225,7 +228,8 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm whitespace-normal md:whitespace-nowrap">
-            <thead class="bg-white border-b border-gray-200 text-gray-500 font-medium hidden md:table-header-group">
+            <!-- Reemplaza el thead actual por este: -->
+            <thead class="bg-white border-b border-gray-200 text-gray-600 text-base font-bold hidden md:table-header-group">
               <tr>
                 <th class="px-6 py-3">Alumno</th>
                 <th class="px-6 py-3">Contacto</th>
@@ -244,10 +248,23 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     </div>
 
     <style>
+      /* Transición suave para todos los botones al hacer clic */
+      .filtro-btn, .filtro-pago-btn {
+        transition: all 0.3s ease;
+      }
+
+      /* Estilo para el botón SELECCIONADO (Azul PupiBike Admin) */
       .filtro-btn.active, .filtro-pago-btn.active {
-        background-color: white;
-        color: #111827;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        background-color: #2563eb !important; /* Fondo Azul (blue-600) */
+        color: #ffffff !important; /* Texto Blanco */
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3) !important; /* Sombra suave azulada */
+      }
+
+      /* Ajuste dinámico: Si el botón de "Pendientes" está activo, 
+         el circulito con el número cambia a blanco para que contraste perfecto */
+      .filtro-pago-btn.active #badgePagosPendientes {
+        background-color: #ffffff !important;
+        color: #2563eb !important;
       }
     </style>
 
@@ -359,7 +376,8 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
 
   async function cargarDatosGlobales() {
     const [{ data: alumnos }, { data: pagos }] = await Promise.all([
-      supabase.from('alumnos').select('id, nombre, cedula, telefono, email, nivel, estatus, foto_url, tipo_sangre, condicion_especial, direccion, fecha_nacimiento, tipos_bici').order('nombre', { ascending: true }),
+      // Añadimos "user_id," justo después de "id,"
+      supabase.from('alumnos').select('id, user_id, nombre, cedula, telefono, email, nivel, estatus, foto_url, tipo_sangre, condicion_especial, direccion, fecha_nacimiento, tipos_bici').order('nombre', { ascending: true }),
       supabase.from('pagos').select('*').order('created_at', { ascending: false })
     ]);
 
@@ -666,18 +684,19 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       const pagosAlumno = cachePagos.filter(p => p.alumno_id === alumno.id);
       const pagoMes = pagosAlumno.find(p => p.mes_correspondiente === mesActualStr);
       
+      // Badges de solvencia estandarizados a text-sm y más anchos
       let badgeEstatusMes = '';
       if ((alumno.estatus || 'activo').toLowerCase() === 'inactivo') {
-        badgeEstatusMes = `<span class="inline-flex items-center px-2.5 py-1 md:px-2 md:py-0.5 rounded-md md:rounded text-sm md:text-xs font-bold md:font-medium bg-gray-100 text-gray-800">Retirado</span>`;
+        badgeEstatusMes = `<span class="inline-flex items-center px-3 py-1 rounded-md text-sm font-bold bg-gray-100 text-gray-800">Retirado</span>`;
       } else if (pagoMes?.estado === 'aprobado') {
-        badgeEstatusMes = `<span class="inline-flex items-center px-2.5 py-1 md:px-2 md:py-0.5 rounded-md md:rounded text-sm md:text-xs font-bold md:font-medium bg-green-100 text-green-800">Al Día</span>`;
+        badgeEstatusMes = `<span class="inline-flex items-center px-3 py-1 rounded-md text-sm font-bold bg-green-100 text-green-800">Al Día</span>`;
       } else if (pagoMes?.estado === 'revision') {
-        badgeEstatusMes = `<span class="inline-flex items-center px-2.5 py-1 md:px-2 md:py-0.5 rounded-md md:rounded text-sm md:text-xs font-bold md:font-medium bg-orange-100 text-orange-800">En Revisión</span>`;
+        badgeEstatusMes = `<span class="inline-flex items-center px-3 py-1 rounded-md text-sm font-bold bg-orange-100 text-orange-800">En Revisión</span>`;
       } else {
         if (fechaActual.getDate() > 5) {
-          badgeEstatusMes = `<span class="inline-flex items-center px-2.5 py-1 md:px-2 md:py-0.5 rounded-md md:rounded text-sm md:text-xs font-bold md:font-medium bg-red-100 text-red-800">Moroso</span>`;
+          badgeEstatusMes = `<span class="inline-flex items-center px-3 py-1 rounded-md text-sm font-bold bg-red-100 text-red-800">Moroso</span>`;
         } else {
-          badgeEstatusMes = `<span class="inline-flex items-center px-2.5 py-1 md:px-2 md:py-0.5 rounded-md md:rounded text-sm md:text-xs font-bold md:font-medium bg-yellow-100 text-yellow-800">Pendiente</span>`;
+          badgeEstatusMes = `<span class="inline-flex items-center px-3 py-1 rounded-md text-sm font-bold bg-yellow-100 text-yellow-800">Pendiente</span>`;
         }
       }
 
@@ -697,7 +716,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       const telefonoLim = formatearTelefonoWhatsApp(alumno.telefono);
       const btnWp = telefonoLim
         ? `<a href="https://wa.me/${telefonoLim}" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto flex justify-center items-center gap-2 px-4 py-2 md:p-0 bg-green-50 md:bg-transparent text-green-700 md:text-green-600 border border-green-200 md:border-transparent hover:text-green-800 rounded-md transition font-bold text-sm" title="Escribir por WhatsApp">
-             <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 3.825 0 6.938 3.112 6.938 6.937 0 3.825-3.113 6.938-6.938 6.938z"/></svg>
+             <svg class="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 3.825 0 6.938 3.112 6.938 6.937 0 3.825-3.113 6.938-6.938 6.938z"/></svg>
              <span class="md:hidden">WhatsApp</span>
            </a>`
         : '';
@@ -710,15 +729,16 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           <!-- Alumno -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
             <div class="flex items-center gap-3">
-              <div class="w-14 h-14 md:w-8 md:h-8 rounded-full bg-gray-200 overflow-hidden border border-gray-300 flex-shrink-0 shadow-sm">
+              <!-- Aumentamos el tamaño de la foto en escritorio a w-10 h-10 -->
+              <div class="w-14 h-14 md:w-10 md:h-10 rounded-full bg-gray-200 overflow-hidden border border-gray-300 flex-shrink-0 shadow-sm">
                  <img src="${fotoSegura}" alt="${escaparHTML(alumno.nombre)}" class="w-full h-full object-cover" onerror="this.src='${FOTO_DEFAULT}'">
               </div>
               <div class="flex-1">
                 <div class="flex flex-wrap items-center gap-2">
-                  <span class="text-lg md:text-sm font-black text-gray-900 uppercase leading-tight">${escaparHTML(alumno.nombre)}</span>
+                  <span class="text-base font-black text-gray-900 uppercase leading-tight">${escaparHTML(alumno.nombre)}</span>
                   ${badgeCondicionHtml}
                 </div>
-                <div class="text-sm md:text-xs text-gray-500 mt-0.5">${escaparHTML(alumno.cedula)}</div>
+                <div class="text-base text-gray-500 mt-0.5">${escaparHTML(alumno.cedula)}</div>
               </div>
             </div>
           </td>
@@ -726,10 +746,10 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           <!-- Contacto -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
              <div class="flex md:block items-start gap-3 mt-1 md:mt-0">
-                <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20 pt-0.5">Contacto:</span>
+                <span class="text-sm font-bold text-gray-400 uppercase md:hidden w-20 pt-0.5">Contacto:</span>
                 <div>
-                  <div class="text-base md:text-sm text-gray-800 font-mono font-medium">${escaparHTML(alumno.telefono)}</div>
-                  <div class="text-sm md:text-xs text-gray-500 lowercase break-all">${escaparHTML(alumno.email)}</div>
+                  <div class="text-base text-gray-900 font-mono font-bold tracking-wide">${escaparHTML(alumno.telefono)}</div>
+                  <div class="text-base text-gray-500 lowercase break-all mt-0.5">${escaparHTML(alumno.email)}</div>
                 </div>
              </div>
           </td>
@@ -737,22 +757,22 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           <!-- Nivel -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle md:text-center">
              <div class="flex md:block items-center gap-3">
-                <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20">Nivel:</span>
-                <span class="text-sm md:text-xs ${colorNivel} uppercase bg-gray-50 md:bg-transparent px-2.5 py-1 md:p-0 rounded border border-gray-100 md:border-0 font-bold">${escaparHTML(alumno.nivel || 'N/A')}</span>
+                <span class="text-sm font-bold text-gray-400 uppercase md:hidden w-20">Nivel:</span>
+                <span class="text-sm ${colorNivel} uppercase bg-gray-50 md:bg-transparent px-2.5 py-1 md:p-0 rounded border border-gray-100 md:border-0 font-bold tracking-wide">${escaparHTML(alumno.nivel || 'N/A')}</span>
              </div>
           </td>
 
           <!-- Solvencia -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle md:text-center">
              <div class="flex md:block items-center gap-3">
-                <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20">Solvencia:</span>
+                <span class="text-sm font-bold text-gray-400 uppercase md:hidden w-20">Solvencia:</span>
                 ${badgeEstatusMes}
              </div>
           </td>
 
           <!-- Acciones -->
           <td class="block md:table-cell px-0 pt-4 pb-0 md:px-6 md:py-4 md:align-middle md:text-center mt-2 md:mt-0 border-t border-gray-100 md:border-0">
-            <div class="flex flex-col sm:flex-row items-center justify-between md:justify-center gap-3">
+            <div class="flex flex-col sm:flex-row items-center justify-between md:justify-center gap-4">
               <button onclick="window.verFichaAtleta('${idAlumnoSeguro}')" class="w-full md:w-auto text-center bg-blue-50 md:bg-transparent text-blue-600 hover:text-blue-800 border border-blue-100 md:border-transparent rounded-md px-4 py-2 md:p-0 text-sm font-bold transition focus:outline-none">Ficha Completa</button>
               ${btnWp}
             </div>
@@ -938,6 +958,34 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     link.click();
   }
 
+  document.getElementById('btnRecordatorioPago')?.addEventListener('click', () => {
+    const fechaActual = new Date();
+    const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
+
+    // 1. Alumnos activos
+    const alumnosActivos = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo');
+
+    // 2. Filtrar morosos (sin pago o en revisión)
+    const morosos = alumnosActivos.filter(alumno => {
+      const pagosAlumno = cachePagos.filter(p => p.alumno_id === alumno.id);
+      const pagoMes = pagosAlumno.find(p => p.mes_correspondiente === mesActualStr);
+      return !pagoMes || pagoMes.estado !== 'aprobado';
+    });
+
+    const emails = morosos.map(a => a.email).filter(Boolean).join(',');
+
+    if (!emails) {
+      return alert("¡Excelentes noticias! Todos los atletas están al día.");
+    }
+
+    // 3. Plantilla
+    const asunto = encodeURIComponent(`Recordatorio Amistoso de Mensualidad - ${mesActualStr} 🚴‍♂️`);
+    const cuerpo = encodeURIComponent(`¡Hola familia PupiBike! 🚴‍♀️🚴‍♂️\n\nEsperamos que se encuentren muy bien y listos para seguir pedaleando con energía.\n\nLes escribimos para notificarles que aún no hemos registrado en nuestro sistema su mensualidad correspondiente al mes de ${mesActualStr}.\n\nSabemos que el día a día puede ser ajetreado. Si ya realizaron su pago o transferencia, por favor omitan este mensaje o envíennos el comprobante por WhatsApp para actualizar la ficha del atleta de inmediato.\n\n¡Gracias por ser parte de nuestra academia y por su apoyo constante!\n\nAtentamente,\nEl equipo de Pupi Bike Kids.`);
+
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${emails}&su=${asunto}&body=${cuerpo}`, '_blank');
+  });
+
   document.getElementById('btnCorreoMasivo')?.addEventListener('click', () => {
     const emails = cacheAlumnos.map(a => a.email).filter(Boolean).join(',');
     if (!emails) return alert("No hay correos registrados.");
@@ -968,11 +1016,41 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
 
     const botonEliminarHtml = esSuperAdmin 
       ? `<button type="button" onclick="window.eliminarAtletaDefinitivo('${idSeguro}')" class="px-3 py-1.5 text-xs font-bold rounded-md border bg-red-50 text-red-700 border-red-200 hover:bg-red-100 transition shadow-sm">
-           🗑️ Eliminar
-         </button>` 
+          🗑️ Eliminar
+        </button>` 
       : '';
 
     const cont = document.getElementById('contenidoFichaAtleta');
+    
+    // --- LÓGICA PARA HISTORIAL DE PAGOS DEL ALUMNO ---
+    const pagosAlumno = cachePagos.filter(p => p.alumno_id === alumno.id);
+    let filasPagosHtml = '';
+    
+    if (pagosAlumno.length === 0) {
+      filasPagosHtml = `<tr><td colspan="4" class="px-4 py-6 text-center text-sm text-gray-500">No hay pagos registrados.</td></tr>`;
+    } else {
+      pagosAlumno.forEach(p => {
+        const pFecha = new Date(p.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+        const pEstado = p.estado === 'aprobado' 
+          ? '<span class="text-emerald-600 font-bold">✓ Aprobado</span>'
+          : '<span class="text-orange-600 font-bold">⏳ Revisión</span>';
+          
+        filasPagosHtml += `
+          <tr class="border-b border-gray-100 hover:bg-gray-50">
+            <td class="px-4 py-3 text-sm font-medium text-gray-500">${pFecha}</td>
+            <td class="px-4 py-3 text-sm font-bold text-gray-900">${escaparHTML(p.mes_correspondiente)}</td>
+            <td class="px-4 py-3 text-sm font-bold text-gray-900">$${p.monto}</td>
+            <td class="px-4 py-3 text-sm text-right">${pEstado}</td>
+          </tr>
+        `;
+      });
+    }
+
+    const fechaAct = new Date();
+    const mesesNom = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const mesSugeridoStr = `${mesesNom[fechaAct.getMonth()]} ${fechaAct.getFullYear()}`;
+
+    // --- INYECCIÓN HTML (FICHA + PAGOS) ---
     cont.innerHTML = `
       <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-200">
         <div class="flex items-center gap-4">
@@ -985,10 +1063,10 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           </div>
         </div>
         <div class="flex gap-2">
-           <button type="button" onclick="window.alternarEstatusAtleta('${idSeguro}', '${esInactivo ? 'activo' : 'inactivo'}')" class="px-3 py-1.5 text-xs font-bold rounded-md border ${esInactivo ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100'} transition shadow-sm">
-             ${esInactivo ? '✓ Reactivar' : '⏸ Suspender'}
-           </button>
-           ${botonEliminarHtml}
+          <button type="button" onclick="window.alternarEstatusAtleta('${idSeguro}', '${esInactivo ? 'activo' : 'inactivo'}')" class="px-3 py-1.5 text-xs font-bold rounded-md border ${esInactivo ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100'} transition shadow-sm">
+            ${esInactivo ? '✓ Reactivar' : '⏸ Suspender'}
+          </button>
+          ${botonEliminarHtml}
         </div>
       </div>
 
@@ -1021,15 +1099,15 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
             <div>
               <label for="adminEditSangre" class="block text-xs font-bold text-gray-700 mb-1 uppercase">Tipo de Sangre</label>
               <select id="adminEditSangre" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                 <option value="">-- No especificado --</option>
-                 <option value="O+" ${alumno.tipo_sangre === 'O+' ? 'selected' : ''}>O+</option>
-                 <option value="O-" ${alumno.tipo_sangre === 'O-' ? 'selected' : ''}>O-</option>
-                 <option value="A+" ${alumno.tipo_sangre === 'A+' ? 'selected' : ''}>A+</option>
-                 <option value="A-" ${alumno.tipo_sangre === 'A-' ? 'selected' : ''}>A-</option>
-                 <option value="B+" ${alumno.tipo_sangre === 'B+' ? 'selected' : ''}>B+</option>
-                 <option value="B-" ${alumno.tipo_sangre === 'B-' ? 'selected' : ''}>B-</option>
-                 <option value="AB+" ${alumno.tipo_sangre === 'AB+' ? 'selected' : ''}>AB+</option>
-                 <option value="AB-" ${alumno.tipo_sangre === 'AB-' ? 'selected' : ''}>AB-</option>
+                <option value="">-- No especificado --</option>
+                <option value="O+" ${alumno.tipo_sangre === 'O+' ? 'selected' : ''}>O+</option>
+                <option value="O-" ${alumno.tipo_sangre === 'O-' ? 'selected' : ''}>O-</option>
+                <option value="A+" ${alumno.tipo_sangre === 'A+' ? 'selected' : ''}>A+</option>
+                <option value="A-" ${alumno.tipo_sangre === 'A-' ? 'selected' : ''}>A-</option>
+                <option value="B+" ${alumno.tipo_sangre === 'B+' ? 'selected' : ''}>B+</option>
+                <option value="B-" ${alumno.tipo_sangre === 'B-' ? 'selected' : ''}>B-</option>
+                <option value="AB+" ${alumno.tipo_sangre === 'AB+' ? 'selected' : ''}>AB+</option>
+                <option value="AB-" ${alumno.tipo_sangre === 'AB-' ? 'selected' : ''}>AB-</option>
               </select>
             </div>
             <div>
@@ -1050,7 +1128,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         <div>
           <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3 border-b border-gray-100 pb-1 text-blue-600">2. Inventario de Bicicletas</h4>
           <div class="space-y-4">
-            
             <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <span class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 block">Principal</span>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -1114,7 +1191,69 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           </button>
         </div>
       </form>
+
+      <!-- NUEVA SECCIÓN: CONTROL FINANCIERO Y CARGA RÁPIDA -->
+      <div class="mt-8 pt-6 border-t border-gray-200">
+        <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4 text-emerald-600">3. Control Financiero y Pagos</h4>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          
+          <!-- Columna Izquierda: Historial -->
+          <div class="lg:col-span-3 bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col h-full shadow-sm">
+            <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
+              <span class="text-xs font-bold text-gray-600 uppercase">Historial del Alumno</span>
+            </div>
+            <div class="overflow-y-auto max-h-60">
+              <table class="w-full text-left whitespace-nowrap">
+                <tbody class="divide-y divide-gray-100">
+                  ${filasPagosHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Columna Derecha: Formulario de Carga -->
+          <div class="lg:col-span-2 bg-emerald-50/50 rounded-xl border border-emerald-100 p-5 shadow-sm">
+            <span class="text-xs font-bold text-emerald-800 uppercase mb-3 block">➕ Carga Rápida (Auto-Aprobado)</span>
+            <form id="formAdminPagoRapido" class="space-y-3">
+              <input type="hidden" id="pagoRapidoUserId" value="${alumno.user_id || ''}">
+              
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Mes a Cancelar</label>
+                  <input type="text" id="pagoRapidoMes" value="${mesSugeridoStr}" class="w-full px-2.5 py-1.5 border border-gray-300 rounded text-sm text-gray-900 font-bold focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Monto ($)</label>
+                  <input type="number" step="0.1" id="pagoRapidoMonto" value="70" class="w-full px-2.5 py-1.5 border border-gray-300 rounded text-sm text-gray-900 font-bold focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Método</label>
+                  <select id="pagoRapidoMetodo" class="w-full px-2.5 py-1.5 border border-gray-300 rounded text-sm text-gray-900 font-bold focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    <option value="EFECTIVO PISTA">Efectivo en Pista</option>
+                    <option value="PAGO MOVIL">Pago Móvil</option>
+                    <option value="TRANSFERENCIA">Transferencia</option>
+                    <option value="ZELLE">Zelle</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Referencia</label>
+                  <input type="text" id="pagoRapidoRef" value="PAGO EN PISTA" placeholder="Ej. 123456" class="w-full px-2.5 py-1.5 border border-gray-300 rounded text-sm text-gray-900 font-bold uppercase focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
+                </div>
+              </div>
+
+              <button type="submit" id="btnGuardarPagoRapido" class="w-full mt-2 bg-emerald-600 text-white font-bold px-4 py-2.5 rounded-md hover:bg-emerald-700 transition shadow-sm text-sm">
+                Cargar Pago
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     `;
+
 
     document.getElementById('formAdminEditarAtleta').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1181,6 +1320,70 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       }
     });
   };
+
+  // --- NUEVO: LÓGICA DE UX PARA AUTO-RELLENAR LA REFERENCIA ---
+    document.getElementById('pagoRapidoMetodo').addEventListener('change', (e) => {
+      const refInput = document.getElementById('pagoRapidoRef');
+      if (e.target.value === 'EFECTIVO PISTA') {
+        refInput.value = 'PAGO EN PISTA';
+      } else {
+        refInput.value = '';
+        refInput.focus();
+      }
+    });
+
+    // --- NUEVO: LÓGICA PARA ENVIAR EL PAGO RÁPIDO A SUPABASE ---
+    document.getElementById('formAdminPagoRapido').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (tasaActualDolar <= 0) {
+        alert("¡ATENCIÓN! Configura la Tasa del Día en la parte superior del panel antes de procesar un pago.");
+        document.getElementById('btnCerrarModalFicha').click();
+        document.getElementById('inputTasa').focus();
+        return;
+      }
+
+      const btn = document.getElementById('btnGuardarPagoRapido');
+      btn.textContent = 'Procesando...';
+      btn.disabled = true;
+
+      try {
+        const montoUsd = parseFloat(document.getElementById('pagoRapidoMonto').value);
+        const montoBs = (montoUsd * tasaActualDolar).toFixed(2);
+        
+        // Obtenemos el user_id del superadmin si el alumno no tiene uno vinculado
+        const authData = await supabase.auth.getUser();
+        const userIdAuth = document.getElementById('pagoRapidoUserId').value || authData.data.user.id;
+
+        const payload = {
+          alumno_id: alumnoId,
+          user_id: userIdAuth,
+          monto: montoUsd,
+          metodo_pago: document.getElementById('pagoRapidoMetodo').value,
+          referencia: document.getElementById('pagoRapidoRef').value.trim().toUpperCase(),
+          mes_correspondiente: document.getElementById('pagoRapidoMes').value.trim(),
+          estado: 'aprobado',
+          tasa_historica: tasaActualDolar,
+          monto_bs: montoBs,
+          comprobante_url: null // Al ser carga manual presencial, no se exige voucher
+        };
+
+        const { error } = await supabase.from('pagos').insert([payload]);
+        if (error) throw error;
+
+        alert("¡Pago procesado exitosamente! El alumno ahora está Al Día.");
+        
+        // Recargamos el sistema y abrimos la ficha de nuevo para ver el cambio instantáneo
+        await cargarDatosGlobales();
+        window.verFichaAtleta(alumnoId); 
+      } catch(err) {
+        console.error(err);
+        alert("Ocurrió un error al cargar el pago.");
+        btn.textContent = 'Cargar Pago';
+        btn.disabled = false;
+      }
+    });
+  
 
   window.alternarEstatusAtleta = async function(alumnoId, nuevoEstatus) {
     const accion = nuevoEstatus === 'inactivo' ? 'suspender a No Activos' : 'reactivar';
