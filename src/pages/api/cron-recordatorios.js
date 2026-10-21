@@ -8,13 +8,13 @@ export const config = {
 
 export async function GET({ request }) {
   // 1. Protección de seguridad
-  const authHeader = request.headers.get('authorization');
-  if (authHeader !== `Bearer ${import.meta.env.CRON_SECRET}`) {
-    return new Response(JSON.stringify({ error: 'No autorizado' }), { 
-      status: 401,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
+//  const authHeader = request.headers.get('authorization');
+//  if (authHeader !== `Bearer ${import.meta.env.CRON_SECRET}`) {
+//    return new Response(JSON.stringify({ error: 'No autorizado' }), { 
+//      status: 401,
+//      headers: { 'Content-Type': 'application/json' }
+//    });
+//  }
 
   const fechaActual = new Date();
   const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
