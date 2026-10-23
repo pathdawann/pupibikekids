@@ -1,0 +1,585 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Inscripción Pupi Race 7ma Edición | Pupi Bike Kids"
+  description="🏖️ Domingo 6 de Diciembre. Únete a la Pupi Race Estilo Playero. Categorías desde Balance hasta Open Master. ¡Inscríbete aquí!"
+  image="/pupirace.jpeg">
+  <nav class="bg-black text-white p-4 border-b-4 border-cyan-400">
+    <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
+      <a href="/" class="text-2xl font-black italic tracking-wider text-white transform -skew-x-6">
+        PUPIBIKE <span class="text-cyan-400">KIDS</span>
+      </a>
+      <a href="/" class="text-cyan-400 font-black italic uppercase text-xs border border-cyan-400 px-3 py-2 hover:bg-cyan-400 hover:text-black transition transform -skew-x-4">
+        ← Volver
+      </a>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-4 py-12 max-w-6xl relative min-h-[80vh]">
+    <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none"></div>
+
+    <!-- PANTALLA DE ÉXITO -->
+    <div id="pantallaExito" class="hidden flex-col items-center justify-center text-center py-20 animate-fade-in">
+      <div class="text-cyan-400 text-7xl mb-6">🏖️🏆</div>
+      <h1 class="text-5xl md:text-6xl font-black text-white uppercase italic transform -skew-x-6 mb-4">¡Inscripción <span class="text-lime-400">Exitosa!</span></h1>
+      <p class="text-xl text-zinc-300 font-medium mb-2">Atleta: <span id="exitoNombre" class="text-white font-black uppercase"></span></p>
+      <p class="text-xl text-zinc-300 font-medium mb-8">Categoría: <span id="exitoCategoria" class="text-cyan-400 font-black uppercase"></span></p>
+      <div class="bg-zinc-900 border-2 border-cyan-400 px-10 py-6 transform -skew-x-2 shadow-[8px_8px_0px_#06b6d4]">
+        <p class="text-2xl font-black italic text-white uppercase">"Nos vemos este Domingo 6 de Diciembre"</p>
+      </div>
+      <a href="/" class="mt-12 text-zinc-400 hover:text-white underline font-bold italic">Volver al inicio</a>
+    </div>
+
+    <!-- FORMULARIO DE REGISTRO -->
+    <div id="contenedorFormulario">
+      <div class="text-center mb-10">
+        <span class="bg-lime-400 text-black font-black uppercase italic text-xs md:text-sm px-4 py-1 transform -skew-x-6 inline-block mb-3 shadow-[3px_3px_0px_#06b6d4]">
+          7ma Edición - Estilo Playero 🏖️
+        </span>
+        <h1 class="text-4xl md:text-6xl font-black text-white uppercase italic transform -skew-x-6 mb-2">Pupi <span class="text-cyan-400">Race</span></h1>
+        <p class="text-zinc-300 italic text-lg font-bold">Domingo 6 de Diciembre</p>
+      </div>
+
+      <!-- Resumen de Beneficios: Kit y Premiación -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <div class="bg-zinc-900/90 border-l-4 border-cyan-400 p-6 shadow-md">
+          <h3 class="text-cyan-400 font-black italic uppercase text-lg mb-3">🎒 Kit de Inscripción Incluye:</h3>
+          <ul class="text-zinc-200 text-sm md:text-base font-medium space-y-1.5">
+            <li>✓ Tula oficial del evento</li>
+            <li>✓ Número de participación</li>
+            <li>✓ Obsequios de patrocinantes</li>
+          </ul>
+        </div>
+        <div class="bg-zinc-900/90 border-l-4 border-lime-400 p-6 shadow-md">
+          <h3 class="text-lime-400 font-black italic uppercase text-lg mb-3">🏅 Premiación Oficial:</h3>
+          <ul class="text-zinc-200 text-sm md:text-base font-medium space-y-1.5">
+            <li>✓ Medalla de participación para todos</li>
+            <li>✓ Podiums hasta los primeros 5 lugares con sus medallas</li>
+            <li>✓ Obsequios hasta los primeros 5 lugares</li>
+          </ul>
+        </div>
+      </div>
+
+      <form id="formPupiRace" class="bg-zinc-900 p-6 md:p-12 shadow-[8px_8px_0px_#06b6d4] border-2 border-cyan-400 flex flex-col gap-10 relative z-10">
+        
+        <!-- SECCIÓN 1: Datos del Corredor -->
+        <div>
+          <div class="bg-black inline-block px-8 py-3 transform -skew-x-6 shadow-[4px_4px_0px_#06b6d4] mb-8">
+            <h2 class="text-2xl font-black uppercase italic text-cyan-400">1. Datos del Corredor</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <label for="nombre" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Nombre</label>
+              <input type="text" id="nombre" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold text-base md:text-lg uppercase focus:border-cyan-400 focus:outline-none">
+            </div>
+            <div>
+              <label for="apellido" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Apellido</label>
+              <input type="text" id="apellido" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold text-base md:text-lg uppercase focus:border-cyan-400 focus:outline-none">
+            </div>
+            <div>
+              <label for="cedula" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">
+                Cédula <span class="text-zinc-400 font-normal lowercase italic text-xs md:text-sm">(Si no posee, agregar la del Representante)</span>
+              </label>
+              <input type="text" id="cedula" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold text-base md:text-lg uppercase focus:border-cyan-400 focus:outline-none">
+            </div>
+            <div>
+              <label for="fecha_nacimiento" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Fecha de Nacimiento</label>
+              <input type="date" id="fecha_nacimiento" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold text-base md:text-lg focus:border-cyan-400 focus:outline-none">
+            </div>
+            
+            <!-- Selector de Género -->
+            <div class="md:col-span-2">
+              <span class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Género del Corredor</span>
+              <div class="flex gap-6">
+                <input type="hidden" id="genero_atleta" required>
+                <button type="button" id="btnMasc" class="flex-1 px-6 py-4 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black text-base md:text-lg uppercase transition-all hover:border-zinc-500 focus:outline-none">
+                  MASCULINO
+                </button>
+                <button type="button" id="btnFem" class="flex-1 px-6 py-4 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black text-base md:text-lg uppercase transition-all hover:border-zinc-500 focus:outline-none">
+                  FEMENINO
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label for="email" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Correo Electrónico</label>
+              <input type="email" id="email" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold text-base md:text-lg lowercase focus:border-cyan-400 focus:outline-none">
+            </div>
+            <div>
+              <label for="telefono" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Teléfono</label>
+              <input type="text" id="telefono" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold text-base md:text-lg uppercase focus:border-cyan-400 focus:outline-none">
+            </div>
+            <div>
+              <label for="estado_res" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Estado de Residencia</label>
+              <input type="text" id="estado_res" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold text-base md:text-lg uppercase focus:border-cyan-400 focus:outline-none">
+            </div>
+            <div>
+              <label for="ciudad" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Ciudad</label>
+              <input type="text" id="ciudad" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold text-base md:text-lg uppercase focus:border-cyan-400 focus:outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- CÁLCULO Y SELECCIÓN DE CATEGORÍA -->
+        <div class="bg-zinc-950 p-6 border border-zinc-800 text-center transform -skew-x-2">
+          <p class="text-sm md:text-base font-black text-zinc-400 uppercase tracking-wider mb-2">Categoría Asignada (Año Calendario)</p>
+          <p id="categoriaDisplay" class="text-3xl md:text-4xl font-black italic uppercase text-cyan-400">Ingrese fecha y género</p>
+          
+          <!-- Selector adicional solo para mayores de 17 años (Juvenil / Sport / Open / Master) -->
+          <div id="contenedorSelectorMayores" class="hidden mt-6 max-w-md mx-auto text-left">
+            <label for="selectModalidadMayor" class="block text-xs font-black uppercase text-lime-400 mb-2 text-center">
+              ⚡ Selecciona tu Categoría de Competencia:
+            </label>
+            <select id="selectModalidadMayor" class="w-full px-4 py-3 bg-zinc-900 border-2 border-cyan-400 text-white font-black text-base uppercase focus:outline-none">
+              <!-- Opciones inyectadas dinámicamente según género -->
+            </select>
+          </div>
+
+          <input type="hidden" id="categoria_final" required>
+        </div>
+
+        <!-- SECCIÓN 2: Reporte de Pago -->
+        <div>
+          <div class="bg-black inline-block px-8 py-3 transform -skew-x-6 shadow-[4px_4px_0px_#06b6d4] mb-8">
+            <h2 class="text-2xl font-black uppercase italic text-cyan-400">2. Reporte de Pago</h2>
+          </div>
+
+          <!-- Datos Bancarios -->
+          <div class="bg-zinc-950 p-6 md:p-8 border-l-4 border-cyan-400 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-inner">
+            <div class="flex-1 w-full md:pr-6 md:border-r border-zinc-800">
+              <div class="mb-4 pb-4 border-b border-zinc-800">
+                <span class="block text-sm font-black uppercase text-zinc-500 tracking-wider mb-2">INVERSIÓN DE INSCRIPCIÓN</span>
+                <div class="flex items-center gap-3">
+                  <span id="montoBolivares" class="text-3xl font-black italic text-lime-400 tracking-tight leading-none">Calculando...</span>
+                  <span class="text-white font-bold text-xl bg-zinc-800/50 px-3 py-1.5 rounded-sm leading-none">( $30.00 )</span>
+                </div>
+                <span id="tasaDisplay" class="text-xs md:text-sm text-zinc-300 font-bold uppercase mt-3 block">TASA BCV: Cargando...</span>
+              </div>
+
+              <h3 class="text-white font-black italic uppercase mb-1 text-base md:text-lg">CUENTA OFICIAL DE LA ACADEMIA</h3>
+              <p id="avisoCopiado" class="text-xs text-zinc-400 font-medium transition-colors">Haz clic en los datos para copiarlos.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm w-full md:w-auto flex-1">
+              <button type="button" data-copy="0102" data-label="Banco" class="btn-copy-dato text-left bg-black p-4 border border-zinc-800 cursor-pointer hover:border-cyan-400 transition group focus:outline-none focus:border-cyan-400">
+                <span class="block text-xs text-zinc-400 font-black uppercase mb-1">Banco</span>
+                <span class="text-white font-bold text-base md:text-lg group-hover:text-cyan-400">Venezuela (0102)</span>
+              </button>
+              <button type="button" data-copy="04248781128" data-label="Teléfono" class="btn-copy-dato text-left bg-black p-4 border border-zinc-800 cursor-pointer hover:border-cyan-400 transition group focus:outline-none focus:border-cyan-400">
+                <span class="block text-xs text-zinc-400 font-black uppercase mb-1">Teléfono</span>
+                <span class="text-white font-bold text-base md:text-lg group-hover:text-cyan-400">0424-8781128</span>
+              </button>
+              <button type="button" data-copy="24469073" data-label="Cédula" class="btn-copy-dato text-left bg-black p-4 border border-zinc-800 cursor-pointer hover:border-cyan-400 transition group focus:outline-none focus:border-cyan-400">
+                <span class="block text-xs text-zinc-400 font-black uppercase mb-1">Cédula</span>
+                <span class="text-white font-bold text-base md:text-lg group-hover:text-cyan-400">24469073</span>
+              </button>
+              <div class="bg-black p-4 border border-zinc-800">
+                <span class="block text-xs text-zinc-400 font-black uppercase mb-1">Titular</span>
+                <span class="text-white font-bold text-base md:text-lg">Cesar Barrios</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <label for="metodo_pago" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Método de Pago</label>
+              <select id="metodo_pago" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold text-base md:text-lg focus:border-cyan-400 focus:outline-none">
+                <option value="Pago Movil">Pago Móvil</option>
+                <option value="Efectivo Pista">Efectivo en Pista / Divisas</option>
+              </select>
+            </div>
+            <div>
+              <label for="referencia" id="labelReferencia" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Número de Referencia</label>
+              <input type="text" id="referencia" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold text-base md:text-lg uppercase focus:border-cyan-400 focus:outline-none">
+            </div>
+            <div>
+              <label for="fecha_pago" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Fecha del Pago</label>
+              <input type="date" id="fecha_pago" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold text-base md:text-lg focus:border-cyan-400 focus:outline-none">
+            </div>
+            
+            <div id="contenedorCapture">
+              <label for="comprobante" id="labelCapture" class="block text-sm md:text-base font-black uppercase text-zinc-300 mb-2">Capture de Pago (Máx 5MB)</label>
+              <div class="relative w-full h-14 bg-zinc-950 border-2 border-dashed border-zinc-700 hover:border-cyan-400 transition flex items-center justify-center cursor-pointer group">
+                <input type="file" id="comprobante" required accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                <div class="text-center pointer-events-none flex items-center gap-3 px-2 truncate">
+                  <span class="text-2xl group-hover:text-cyan-400">📸</span>
+                  <span id="nombreArchivo" class="text-sm font-bold text-zinc-400 uppercase group-hover:text-cyan-400 truncate">Toca aquí para subir imagen</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 3: Exención de Responsabilidad -->
+        <div class="bg-zinc-950 p-6 border border-zinc-800 text-center">
+          <button type="button" id="btnAbrirModalTerminos" class="text-cyan-400 hover:text-cyan-300 font-black italic uppercase underline text-base mb-4 focus:outline-none">
+            📖 Leer y Aceptar Exención de Responsabilidad
+          </button>
+          <div class="flex items-center justify-center gap-3">
+            <input type="checkbox" id="checkTerminos" required disabled class="w-6 h-6 accent-cyan-400 cursor-not-allowed">
+            <label for="checkTerminos" class="text-zinc-300 font-bold text-base">Acepto los términos y condiciones de la competencia.</label>
+          </div>
+        </div>
+
+        <div id="mensajeError" class="hidden text-center bg-red-600 text-white font-black text-lg uppercase p-4 transform -skew-x-2"></div>
+
+        <button type="submit" id="btnProcesar" disabled class="bg-zinc-800 text-zinc-500 font-black italic uppercase text-2xl py-6 transition-all transform -skew-x-6 cursor-not-allowed mt-2 border-2 border-transparent">
+          Completar Inscripción
+        </button>
+      </form>
+    </div>
+
+    <!-- MODAL TÉRMINOS -->
+    <div id="modalTerminos" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-4">
+      <div class="bg-zinc-900 border-2 border-cyan-400 max-w-2xl w-full p-6 md:p-8 max-h-[90vh] flex flex-col transform -skew-x-2 shadow-[8px_8px_0px_#06b6d4]">
+        <h2 class="text-2xl font-black uppercase italic text-cyan-400 mb-4 tracking-wider">Exención de Responsabilidad</h2>
+        <div class="overflow-y-auto pr-4 mb-6 text-zinc-300 text-base space-y-4 font-medium flex-1">
+          <p>Al inscribirme en la Pupi Race - 7ma Edición Estilo Playero, declaro que participo de forma voluntaria y asumo todos los riesgos inherentes a la práctica del ciclismo competitivo.</p>
+          <p>Libero de toda responsabilidad legal, civil y penal a la Academia Pupi Bike Kids, sus organizadores, patrocinadores y autoridades competentes ante cualquier accidente, lesión o pérdida material que pudiera ocurrir durante el evento.</p>
+          <p>Confirmo que mis datos son correctos y que la categoría asignada corresponde a los reglamentos oficiales del evento.</p>
+        </div>
+        <button type="button" id="btnAceptarTerminos" class="bg-cyan-500 text-black font-black text-lg uppercase italic py-4 hover:bg-cyan-400 transition focus:outline-none shadow-[4px_4px_0px_#000]">
+          Sí, Acepto la Responsabilidad
+        </button>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script type="module">
+  import { supabase } from '../lib/supabase.js';
+
+  const COSTO_INSCRIPCION_USD = 30.00;
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const inputFechaPago = document.getElementById('fecha_pago');
+    if (inputFechaPago && !inputFechaPago.value) {
+      inputFechaPago.value = new Date().toISOString().split('T')[0];
+    }
+
+    try {
+      const { data: tasaConfig, error } = await supabase
+        .from('configuracion')
+        .select('valor')
+        .eq('clave', 'tasa_dolar')
+        .single();
+      
+      const tasaValor = parseFloat(tasaConfig?.valor || 0);
+      
+      if (tasaValor > 0 && !error) {
+        const montoBs = (COSTO_INSCRIPCION_USD * tasaValor).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('montoBolivares').textContent = `${montoBs} Bs.`;
+        document.getElementById('tasaDisplay').textContent = `TASA BCV: ${tasaValor.toLocaleString('es-VE')} Bs.`;
+      } else {
+        document.getElementById('montoBolivares').textContent = "Consultar al Admin";
+        document.getElementById('tasaDisplay').textContent = "TASA BCV NO DISPONIBLE";
+      }
+    } catch (e) {
+      console.error("Error cargando tasa:", e);
+      document.getElementById('montoBolivares').textContent = "Consultar al Admin";
+    }
+  });
+
+  // Copiar datos bancarios
+  const avisoCopiado = document.getElementById('avisoCopiado');
+  document.querySelectorAll('.btn-copy-dato').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const valor = btn.getAttribute('data-copy');
+      const etiqueta = btn.getAttribute('data-label');
+      navigator.clipboard.writeText(valor);
+      if (avisoCopiado) {
+        avisoCopiado.textContent = `✓ ¡${etiqueta} (${valor}) copiado al portapapeles!`;
+        avisoCopiado.className = "text-xs text-lime-400 font-black uppercase transition-colors";
+        setTimeout(() => {
+          avisoCopiado.textContent = "Haz clic en los datos para copiarlos.";
+          avisoCopiado.className = "text-xs text-zinc-400 font-medium transition-colors";
+        }, 3000);
+      }
+    });
+  });
+
+  const form = document.getElementById('formPupiRace');
+  const inputNacimiento = document.getElementById('fecha_nacimiento');
+  const displayCategoria = document.getElementById('categoriaDisplay');
+  const inputCategoriaFinal = document.getElementById('categoria_final');
+  const contenedorSelectorMayores = document.getElementById('contenedorSelectorMayores');
+  const selectModalidadMayor = document.getElementById('selectModalidadMayor');
+  
+  const inputGenero = document.getElementById('genero_atleta');
+  const btnMasc = document.getElementById('btnMasc');
+  const btnFem = document.getElementById('btnFem');
+
+  const selectMetodoPago = document.getElementById('metodo_pago');
+  const inputReferencia = document.getElementById('referencia');
+  const inputComprobante = document.getElementById('comprobante');
+  const labelCapture = document.getElementById('labelCapture');
+
+  const checkTerminos = document.getElementById('checkTerminos');
+  const btnProcesar = document.getElementById('btnProcesar');
+  const btnAbrirModal = document.getElementById('btnAbrirModalTerminos');
+  const btnAceptarTerminos = document.getElementById('btnAceptarTerminos');
+  const modalTerminos = document.getElementById('modalTerminos');
+
+  selectMetodoPago.addEventListener('change', (e) => {
+    if (e.target.value === 'Efectivo Pista') {
+      inputComprobante.required = false;
+      labelCapture.textContent = "Capture de Pago (Opcional en Efectivo)";
+      if (!inputReferencia.value) {
+        inputReferencia.value = "PAGO EN PISTA";
+      }
+    } else {
+      inputComprobante.required = true;
+      labelCapture.textContent = "Capture de Pago (Máx 5MB)";
+      if (inputReferencia.value === "PAGO EN PISTA") {
+        inputReferencia.value = "";
+      }
+    }
+  });
+
+  inputComprobante.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const fileName = file?.name || "Toca aquí para subir imagen";
+    document.getElementById('nombreArchivo').textContent = fileName;
+    document.getElementById('nombreArchivo').classList.add('text-cyan-400');
+  });
+
+  function seleccionarGenero(genero) {
+    inputGenero.value = genero;
+    
+    btnMasc.className = "flex-1 px-6 py-4 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black text-base md:text-lg uppercase transition-all hover:border-zinc-500 focus:outline-none";
+    btnFem.className = "flex-1 px-6 py-4 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black text-base md:text-lg uppercase transition-all hover:border-zinc-500 focus:outline-none";
+    
+    if (genero === 'Masculino') {
+      btnMasc.classList.add('border-cyan-400', 'text-cyan-400');
+      btnMasc.classList.remove('border-zinc-700', 'text-zinc-400');
+    } else {
+      btnFem.classList.add('border-cyan-400', 'text-cyan-400');
+      btnFem.classList.remove('border-zinc-700', 'text-zinc-400');
+    }
+    
+    calcularCategoria();
+  }
+
+  btnMasc.addEventListener('click', () => seleccionarGenero('Masculino'));
+  btnFem.addEventListener('click', () => seleccionarGenero('Femenino'));
+
+  function poblarOpcionesMayores(genero, edadCalendario) {
+    const valorPrevio = selectModalidadMayor.value;
+    selectModalidadMayor.innerHTML = '';
+
+    const opciones = [
+      { 
+        valor: `Sport Aficionado ${genero}`, 
+        texto: `Sport Aficionado ${genero} (+18 años)` 
+      },
+      { 
+        valor: `Open Experto ${genero}`, 
+        texto: `Open Experto ${genero} (+18 años)` 
+      }
+    ];
+
+    // Si tiene entre 30 y 75 años calendario, habilitamos Open Master
+    if (edadCalendario >= 30 && edadCalendario <= 75) {
+      opciones.push({
+        valor: `Open Master - ${genero}`,
+        texto: `Open Master (30 a 75 años)`
+      });
+    }
+
+    opciones.forEach(op => {
+      const opt = document.createElement('option');
+      opt.value = op.valor;
+      opt.textContent = op.texto;
+      selectModalidadMayor.appendChild(opt);
+    });
+
+    if (Array.from(selectModalidadMayor.options).some(o => o.value === valorPrevio)) {
+      selectModalidadMayor.value = valorPrevio;
+    }
+  }
+
+  function calcularEdadExactaEvento(fechaNacStr) {
+    // Calculamos la edad exacta cumplida al día del evento: 6 de Diciembre de 2026
+    const [anioNac, mesNac, diaNac] = fechaNacStr.split('-').map(Number);
+    const anioEvento = 2026;
+    const mesEvento = 12;
+    const diaEvento = 6;
+
+    let edadExacta = anioEvento - anioNac;
+    if (mesEvento < mesNac || (mesEvento === mesNac && diaEvento < diaNac)) {
+      edadExacta--;
+    }
+    return edadExacta;
+  }
+
+  function calcularCategoria() {
+    const fecha = inputNacimiento.value; // Formato "YYYY-MM-DD"
+    const genero = inputGenero.value;
+    
+    if (!fecha || !genero) {
+      displayCategoria.textContent = "Ingrese fecha y género";
+      contenedorSelectorMayores.classList.add('hidden');
+      inputCategoriaFinal.value = "";
+      return;
+    }
+
+    const anoNacimiento = parseInt(fecha.substring(0, 4), 10);
+    const anoEvento = 2026; 
+    const edadCalendario = anoEvento - anoNacimiento;
+    const edadExacta = calcularEdadExactaEvento(fecha);
+
+    // 1. Categorías Balance (Regidas por edad exacta cumplida para menores de 5 años calendario)
+    if (edadCalendario <= 4) {
+      contenedorSelectorMayores.classList.add('hidden');
+      const catBase = edadExacta <= 2 ? "Balance 1-2 años" : "Balance 3-4 años";
+      const catFinal = `${catBase} - ${genero}`;
+      displayCategoria.textContent = catFinal;
+      inputCategoriaFinal.value = catFinal;
+      return;
+    }
+
+    // 2. Categorías Infantiles hasta Juvenil (5 a 18 años por Año Calendario - Automáticas)
+    if (edadCalendario >= 5 && edadCalendario <= 18) {
+      contenedorSelectorMayores.classList.add('hidden');
+      let catBase = "";
+
+      if (edadCalendario >= 5 && edadCalendario <= 6) {
+        catBase = "5 y 6 años";
+      } else if (edadCalendario >= 7 && edadCalendario <= 8) {
+        catBase = "7 y 8 años";
+      } else if (edadCalendario >= 9 && edadCalendario <= 10) {
+        catBase = "9 y 10 años";
+      } else if (edadCalendario >= 11 && edadCalendario <= 12) {
+        catBase = "11 y 12 años";
+      } else if (edadCalendario >= 13 && edadCalendario <= 14) {
+        catBase = "13 y 14 años Infantil";
+      } else if (edadCalendario >= 15 && edadCalendario <= 16) {
+        catBase = "15 y 16 años (Prejuvenil)";
+      } else {
+        // 17 y 18 años
+        catBase = "Juvenil";
+      }
+
+      const catFinal = `${catBase} - ${genero}`;
+      displayCategoria.textContent = catFinal;
+      inputCategoriaFinal.value = catFinal;
+      return;
+    }
+
+    // 3. Mayores de 18 años (19 en adelante): elige entre Sport Aficionado, Open Experto y (si tiene 30-75) Open Master
+    contenedorSelectorMayores.classList.remove('hidden');
+    poblarOpcionesMayores(genero, edadCalendario);
+    const catElegida = selectModalidadMayor.value;
+    displayCategoria.textContent = catElegida;
+    inputCategoriaFinal.value = catElegida;
+  }
+
+  inputNacimiento.addEventListener('change', calcularCategoria);
+  selectModalidadMayor.addEventListener('change', () => {
+    displayCategoria.textContent = selectModalidadMayor.value;
+    inputCategoriaFinal.value = selectModalidadMayor.value;
+  });
+
+  btnAbrirModal.addEventListener('click', () => modalTerminos.classList.remove('hidden'));
+  
+  btnAceptarTerminos.addEventListener('click', () => {
+    modalTerminos.classList.add('hidden');
+    checkTerminos.checked = true;
+    checkTerminos.disabled = false;
+    
+    btnProcesar.disabled = false;
+    btnProcesar.className = "bg-cyan-500 text-black font-black italic uppercase text-2xl py-6 hover:bg-cyan-400 transition-all transform -skew-x-6 shadow-[6px_6px_0px_#a3e635] hover:translate-y-1 hover:shadow-[2px_2px_0px_#a3e635] mt-2 border-2 border-transparent cursor-pointer";
+  });
+
+  checkTerminos.addEventListener('change', (e) => {
+    if (!e.target.checked) {
+      btnProcesar.disabled = true;
+      btnProcesar.className = "bg-zinc-800 text-zinc-500 font-black italic uppercase text-2xl py-6 transition-all transform -skew-x-6 cursor-not-allowed mt-2 border-2 border-transparent";
+    }
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msgError = document.getElementById('mensajeError');
+    msgError.classList.add('hidden');
+
+    if (!inputGenero.value) {
+      msgError.textContent = "Por favor, seleccione el género del atleta.";
+      msgError.classList.remove('hidden');
+      return;
+    }
+
+    const categoriaSubir = inputCategoriaFinal.value;
+    const cedulaVal = document.getElementById('cedula').value.trim().toUpperCase();
+
+    btnProcesar.textContent = "PROCESANDO INSCRIPCIÓN...";
+    btnProcesar.disabled = true;
+
+    try {
+      const comprobanteFile = inputComprobante.files[0];
+      let comprobanteUrlFinal = "";
+
+      if (comprobanteFile) {
+        if (comprobanteFile.size > 5 * 1024 * 1024) {
+          throw new Error("La imagen del comprobante no debe superar los 5 MB.");
+        }
+
+        const fileExt = comprobanteFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+        const cedulaLimpia = cedulaVal.replace(/[^a-zA-Z0-9]/g, '') || 'atleta';
+        const fileName = `pupirace-${cedulaLimpia}-${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('comprobantes-eventos')
+          .upload(fileName, comprobanteFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('comprobantes-eventos')
+          .getPublicUrl(fileName);
+
+        comprobanteUrlFinal = publicUrlData.publicUrl;
+      }
+
+      const nombreVal = document.getElementById('nombre').value.trim().toUpperCase();
+      const apellidoVal = document.getElementById('apellido').value.trim().toUpperCase();
+      const generoSeleccionado = inputGenero.value;
+
+      const { error: dbError } = await supabase.from('inscripciones_pupirace').insert([{
+        nombre: nombreVal,
+        apellido: apellidoVal,
+        genero: generoSeleccionado,
+        cedula: cedulaVal,
+        fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
+        email: document.getElementById('email').value.trim().toLowerCase(),
+        telefono: document.getElementById('telefono').value.trim().toUpperCase(),
+        estado: document.getElementById('estado_res').value.trim().toUpperCase(),
+        ciudad: document.getElementById('ciudad').value.trim().toUpperCase(),
+        categoria: categoriaSubir,
+        metodo_pago: selectMetodoPago.value,
+        referencia: inputReferencia.value.trim().toUpperCase() || 'PAGO EN PISTA',
+        fecha_pago: document.getElementById('fecha_pago').value,
+        comprobante_url: comprobanteUrlFinal
+      }]);
+
+      if (dbError) throw dbError;
+
+      document.getElementById('contenedorFormulario').classList.add('hidden');
+      document.getElementById('pantallaExito').classList.remove('hidden');
+      document.getElementById('pantallaExito').classList.add('flex');
+      
+      document.getElementById('exitoNombre').textContent = `${nombreVal} ${apellidoVal}`;
+      document.getElementById('exitoCategoria').textContent = categoriaSubir;
+      window.scrollTo(0, 0);
+
+    } catch (error) {
+      console.error(error);
+      msgError.textContent = error.message || "Error al procesar la inscripción. Verifique los datos o intente nuevamente.";
+      msgError.classList.remove('hidden');
+      btnProcesar.textContent = "Completar Inscripción";
+      btnProcesar.disabled = false;
+    }
+  });
+</script>
