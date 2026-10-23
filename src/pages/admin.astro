@@ -1314,7 +1314,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
         btn.disabled = false;
       }
     });
-  };
+  
 
   // --- NUEVO: LÓGICA DE UX PARA AUTO-RELLENAR LA REFERENCIA ---
     document.getElementById('pagoRapidoMetodo').addEventListener('change', (e) => {
@@ -1379,6 +1379,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       }
     });
   
+  };
 
   window.alternarEstatusAtleta = async function(alumnoId, nuevoEstatus) {
     const accion = nuevoEstatus === 'inactivo' ? 'suspender a No Activos' : 'reactivar';
