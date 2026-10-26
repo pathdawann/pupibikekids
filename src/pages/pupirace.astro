@@ -28,6 +28,7 @@ import Layout from '../layouts/Layout.astro';
       <p class="text-xl text-zinc-300 font-medium mb-8">Categoría: <span id="exitoCategoria" class="text-cyan-400 font-black uppercase"></span></p>
       <div class="bg-zinc-900 border-2 border-cyan-400 px-10 py-6 transform -skew-x-2 shadow-[8px_8px_0px_#06b6d4]">
         <p class="text-2xl font-black italic text-white uppercase">"Nos vemos este Domingo 6 de Diciembre"</p>
+        <p class="text-sm text-cyan-400 mt-3 font-medium italic">Te hemos enviado un correo de confirmación con los detalles de tu registro.</p>
       </div>
       <a href="/" class="mt-12 text-zinc-400 hover:text-white underline font-bold italic">Volver al inicio</a>
     </div>
@@ -513,6 +514,8 @@ import Layout from '../layouts/Layout.astro';
 
     const categoriaSubir = inputCategoriaFinal.value;
     const cedulaVal = document.getElementById('cedula').value.trim().toUpperCase();
+    const nombreVal = document.getElementById('nombre').value.trim().toUpperCase();
+    const apellidoVal = document.getElementById('apellido').value.trim().toUpperCase();
 
     btnProcesar.textContent = "PROCESANDO INSCRIPCIÓN...";
     btnProcesar.disabled = true;
@@ -543,8 +546,6 @@ import Layout from '../layouts/Layout.astro';
         comprobanteUrlFinal = publicUrlData.publicUrl;
       }
 
-      const nombreVal = document.getElementById('nombre').value.trim().toUpperCase();
-      const apellidoVal = document.getElementById('apellido').value.trim().toUpperCase();
       const generoSeleccionado = inputGenero.value;
 
       const { error: dbError } = await supabase.from('inscripciones_pupirace').insert([{
@@ -565,6 +566,24 @@ import Layout from '../layouts/Layout.astro';
       }]);
 
       if (dbError) throw dbError;
+
+      // --- NUEVO: ENVIAR CORREO DE CONFIRMACIÓN AUTOMÁTICO ---
+      try {
+        await fetch('/api/correo-pupirace', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('email').value.trim().toLowerCase(),
+            nombre: nombreVal,
+            apellido: apellidoVal,
+            categoria: categoriaSubir,
+            referencia: inputReferencia.value.trim().toUpperCase() || 'PAGO EN PISTA'
+          })
+        });
+      } catch (mailError) {
+        console.warn("La inscripción se guardó, pero hubo un error enviando el correo:", mailError);
+      }
+      // --------------------------------------------------------
 
       document.getElementById('contenedorFormulario').classList.add('hidden');
       document.getElementById('pantallaExito').classList.remove('hidden');
