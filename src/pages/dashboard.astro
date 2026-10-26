@@ -190,7 +190,7 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
 
-   <!-- BLOQUE HORARIO SEMANAL DE CLASES (Planificación Detallada) -->
+   <!-- BLOQUE HORARIO SEMANAL DE CLASES (Planificación Detallada 7 Días) -->
     <section class="bg-zinc-900 p-6 md:p-8 shadow-[8px_8px_0px_#db2777] border-2 border-pink-500 mb-12">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 border-b border-zinc-800 pb-4">
         <div>
@@ -202,96 +202,9 @@ import Layout from '../layouts/Layout.astro';
         </span>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        
-        <!-- Lunes -->
-        <div class="bg-zinc-950 p-4 border-l-4 border-cyan-400 border-y border-r border-zinc-800 flex flex-col justify-between">
-          <div>
-            <span class="text-xs font-black uppercase text-cyan-400 tracking-wider block mb-3">Lunes</span>
-            <div class="space-y-3">
-              <div>
-                <span class="text-[10px] font-black text-black bg-cyan-400 px-1.5 py-0.5 uppercase">Citados</span>
-                <p class="text-[14px] text-zinc-300 mt-1.5 leading-snug"><strong class="text-white">📍 Pista Principal</strong><br>Clases personalizadas y nivelación.</p>
-              </div>
-            </div>
-          </div>
-          <span class="inline-block mt-4 text-xs font-mono font-black text-cyan-300 bg-cyan-950/40 border border-cyan-800 px-2.5 py-1 w-fit">
-            🕔 5:00 a 6:00 PM
-          </span>
-        </div>
-
-        <!-- Martes -->
-        <div class="bg-zinc-950 p-4 border-l-4 border-lime-400 border-y border-r border-zinc-800 flex flex-col justify-between">
-          <div>
-            <span class="text-xs font-black uppercase text-lime-400 tracking-wider block mb-3">Martes</span>
-            <div class="space-y-3">
-              <div>
-                <span class="text-[10px] font-black text-black bg-lime-400 px-1.5 py-0.5 uppercase">Balance / Básico</span>
-                <p class="text-[14px] text-zinc-300 mt-1.5 leading-snug"><strong class="text-white">📍 Frente al Hotel Las Olas</strong><br>Técnicas de manejo, control y dominio de la bici.</p>
-              </div>
-              <div>
-                <span class="text-[10px] font-black text-black bg-lime-400 px-1.5 py-0.5 uppercase">Int / Avz / Prosp</span>
-                <p class="text-[14px] text-zinc-300 mt-1.5 leading-snug"><strong class="text-white">📍 El Morro</strong><br>Reconocimiento PupiRace (Entreno base).</p>
-              </div>
-            </div>
-          </div>
-          <span class="inline-block mt-4 text-xs font-mono font-black text-lime-300 bg-lime-950/40 border border-lime-800 px-2.5 py-1 w-fit">
-            🕓 4:00 a 6:00 PM
-          </span>
-        </div>
-
-        <!-- Miércoles -->
-        <div class="bg-zinc-950 p-4 border-l-4 border-pink-500 border-y border-r border-zinc-800 flex flex-col justify-between">
-          <div>
-            <span class="text-xs font-black uppercase text-pink-400 tracking-wider block mb-3">Miércoles</span>
-            <div class="space-y-3">
-              <div>
-                <span class="text-[10px] font-black text-white bg-pink-500 px-1.5 py-0.5 uppercase">Acondicionamiento</span>
-                <p class="text-[14px] text-zinc-300 mt-1.5 leading-snug"><strong class="text-white">📍 Pista Principal</strong><br>Preparación física general con PupiBike.</p>
-              </div>
-            </div>
-          </div>
-          <span class="inline-block mt-4 text-xs font-mono font-black text-pink-300 bg-pink-950/40 border border-pink-800 px-2.5 py-1 w-fit">
-            🕔 5:00 a 6:00 PM
-          </span>
-        </div>
-
-        <!-- Jueves -->
-        <div class="bg-zinc-950 p-4 border-l-4 border-lime-400 border-y border-r border-zinc-800 flex flex-col justify-between">
-          <div>
-            <span class="text-xs font-black uppercase text-lime-400 tracking-wider block mb-3">Jueves</span>
-            <div class="space-y-3">
-              <div>
-                <span class="text-[10px] font-black text-black bg-lime-400 px-1.5 py-0.5 uppercase">Balance / Básico</span>
-                <p class="text-[14px] text-zinc-300 mt-1.5 leading-snug"><strong class="text-white">📍 Frente al Hotel Las Olas</strong><br>Equilibrio, curvas, uso de frenos y cambios.</p>
-              </div>
-              <div>
-                <span class="text-[10px] font-black text-black bg-lime-400 px-1.5 py-0.5 uppercase">Avz / Prospectos</span>
-                <p class="text-[14px] text-zinc-300 mt-1.5 leading-snug"><strong class="text-white">📍 El Morro</strong><br>Trabajos de subidas (Circuito PupiRace).</p>
-              </div>
-            </div>
-          </div>
-          <span class="inline-block mt-4 text-xs font-mono font-black text-lime-300 bg-lime-950/40 border border-lime-800 px-2.5 py-1 w-fit">
-            🕓 4:00 a 6:00 PM
-          </span>
-        </div>
-
-        <!-- Viernes -->
-        <div class="bg-zinc-950 p-4 border-l-4 border-lime-400 border-y border-r border-zinc-800 flex flex-col justify-between sm:col-span-2 lg:col-span-1">
-          <div>
-            <span class="text-xs font-black uppercase text-lime-400 tracking-wider block mb-3">Viernes</span>
-            <div class="space-y-3">
-              <div>
-                <span class="text-[10px] font-black text-black bg-lime-400 px-1.5 py-0.5 uppercase">Todos los niveles</span>
-                <p class="text-[14px] text-zinc-300 mt-1.5 leading-snug"><strong class="text-white">📍 El Morro</strong><br>Paseo familiar en bici o caminata (PupiRace 7ma Edición).</p>
-              </div>
-            </div>
-          </div>
-          <span class="inline-block mt-4 text-xs font-mono font-black text-lime-300 bg-lime-950/40 border border-lime-800 px-2.5 py-1 w-fit">
-            🕓 4:00 a 6:00 PM
-          </span>
-        </div>
-
+      <!-- Contenedor inyectado desde JavaScript -->
+      <div id="contenedorCalendarioSemanal" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <p class="text-zinc-500 italic text-sm">Cargando planificación...</p>
       </div>
     </section> 
 
@@ -713,9 +626,10 @@ import Layout from '../layouts/Layout.astro';
 
       currentUser = session.user;
 
-      const [{ data: alumno, error }, { data: tasaConfig }] = await Promise.all([
+      const [{ data: alumno, error }, { data: tasaConfig }, { data: agendaConfig }] = await Promise.all([
         supabase.from('alumnos').select('*').eq('user_id', currentUser.id).single(),
-        supabase.from('configuracion').select('valor').eq('clave', 'tasa_dolar').single()
+        supabase.from('configuracion').select('valor').eq('clave', 'tasa_dolar').single(),
+        supabase.from('configuracion').select('valor').eq('clave', 'planificacion_semanal').single()
       ]);
 
       if (error || !alumno) throw new Error("No se encontró la ficha del alumno.");
@@ -840,6 +754,80 @@ import Layout from '../layouts/Layout.astro';
         uiIcono.className = "w-11 h-11 bg-pink-600 rounded-full flex items-center justify-center text-white text-xl shadow-[0_0_15px_#db2777] animate-pulse flex-shrink-0";
         uiIcono.textContent = "!";
       }
+
+      // Renderizar el Calendario Semanal (7 Días)
+      let agendaText = {};
+      if (agendaConfig && agendaConfig.valor) {
+        agendaText = JSON.parse(agendaConfig.valor);
+      }
+
+      // Colores fieles al diseño original
+      const diasUI = [
+        { id: 'lunes', nombre: 'Lunes', cBorder: 'border-cyan-400', cTag: 'bg-cyan-400 text-black', cTime: 'text-cyan-300 bg-cyan-950/40 border-cyan-800' },
+        { id: 'martes', nombre: 'Martes', cBorder: 'border-lime-400', cTag: 'bg-lime-400 text-black', cTime: 'text-lime-300 bg-lime-950/40 border-lime-800' },
+        { id: 'miercoles', nombre: 'Miércoles', cBorder: 'border-pink-500', cTag: 'bg-pink-500 text-white', cTime: 'text-pink-300 bg-pink-950/40 border-pink-800' },
+        { id: 'jueves', nombre: 'Jueves', cBorder: 'border-lime-400', cTag: 'bg-lime-400 text-black', cTime: 'text-lime-300 bg-lime-950/40 border-lime-800' },
+        { id: 'viernes', nombre: 'Viernes', cBorder: 'border-lime-400', cTag: 'bg-lime-400 text-black', cTime: 'text-lime-300 bg-lime-950/40 border-lime-800' },
+        { id: 'sabado', nombre: 'Sábado', cBorder: 'border-purple-500', cTag: 'bg-purple-500 text-white', cTime: 'text-purple-300 bg-purple-950/40 border-purple-800' },
+        { id: 'domingo', nombre: 'Domingo', cBorder: 'border-orange-500', cTag: 'bg-orange-500 text-black', cTime: 'text-orange-300 bg-orange-950/40 border-orange-800' },
+      ];
+
+      let htmlCalendario = '';
+      diasUI.forEach(dia => {
+        const dataDia = agendaText[dia.id] || { activo: false };
+
+        if (!dataDia.activo) {
+          // Tarjeta de Día Libre
+          htmlCalendario += `
+            <div class="bg-zinc-950 p-4 border-l-4 ${dia.cBorder} border-y border-r border-zinc-800 flex flex-col justify-between opacity-60 hover:opacity-100 transition">
+              <div>
+                <span class="text-xs font-black uppercase ${dia.cBorder.replace('border-', 'text-')} tracking-wider block mb-3">${dia.nombre}</span>
+                <p class="text-[14px] text-zinc-500 font-medium italic mt-2">Día libre de actividades.</p>
+              </div>
+            </div>
+          `;
+        } else {
+          // Tarjeta Activa (Misma estructura HTML que el diseño original)
+          let actividadesHtml = '';
+          
+          if (dataDia.a1_lugar || dataDia.a1_desc) {
+             actividadesHtml += `
+                <div>
+                  ${dataDia.a1_tag ? `<span class="text-[10px] font-black ${dia.cTag} px-1.5 py-0.5 uppercase shadow-sm">${escaparHTML(dataDia.a1_tag)}</span>` : ''}
+                  <p class="text-[14px] text-zinc-300 mt-1.5 leading-snug">
+                    ${dataDia.a1_lugar ? `<strong class="text-white drop-shadow-sm">📍 ${escaparHTML(dataDia.a1_lugar)}</strong><br>` : ''}
+                    ${escaparHTML(dataDia.a1_desc)}
+                  </p>
+                </div>
+             `;
+          }
+          
+          if (dataDia.a2_lugar || dataDia.a2_desc) {
+             actividadesHtml += `
+                <div class="mt-4 pt-4 border-t border-zinc-800/60">
+                  ${dataDia.a2_tag ? `<span class="text-[10px] font-black ${dia.cTag} px-1.5 py-0.5 uppercase shadow-sm">${escaparHTML(dataDia.a2_tag)}</span>` : ''}
+                  <p class="text-[14px] text-zinc-300 mt-1.5 leading-snug">
+                    ${dataDia.a2_lugar ? `<strong class="text-white drop-shadow-sm">📍 ${escaparHTML(dataDia.a2_lugar)}</strong><br>` : ''}
+                    ${escaparHTML(dataDia.a2_desc)}
+                  </p>
+                </div>
+             `;
+          }
+
+          htmlCalendario += `
+            <div class="bg-zinc-950 p-4 border-l-4 ${dia.cBorder} border-y border-r border-zinc-800 flex flex-col justify-between shadow-[2px_2px_0px_rgba(0,0,0,0.5)]">
+              <div>
+                <span class="text-xs font-black uppercase ${dia.cBorder.replace('border-', 'text-')} tracking-wider block mb-3">${dia.nombre}</span>
+                <div class="space-y-1">
+                  ${actividadesHtml}
+                </div>
+              </div>
+              ${dataDia.horario ? `<span class="inline-block mt-4 text-xs font-mono font-black ${dia.cTime} border px-2.5 py-1 w-fit shadow-inner">🕔 ${escaparHTML(dataDia.horario)}</span>` : ''}
+            </div>
+          `;
+        }
+      });
+      document.getElementById('contenedorCalendarioSemanal').innerHTML = htmlCalendario;
 
       pantallaCarga.classList.add('hidden');
       dashboardContenido.classList.remove('hidden');

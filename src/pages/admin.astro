@@ -13,13 +13,13 @@ if (!user || error) {
 }
 
 // 3. Verificamos autorización administrativa y roles
-const correosAutorizados = ["pathdawann@gmail.com", "pupibikekids27@gmail.com"];
+const correosAutorizados = ["pathdawann@gmail.com", "pupibikekids27@gmail.com", "pupibikeweb@gmail.com"];
 if (!user.email || !correosAutorizados.includes(user.email)) {
   return Astro.redirect('/dashboard');
 }
 
 // Solo Patricia Mago tiene permisos de borrado permanente
-const esSuperAdmin = user.email === "pathdawann@gmail.com";
+const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pupibikeweb@gmail.com";
 ---
 
 <Layout title="Panel Administrativo | Pupi Bike Kids" noindex={true}>
@@ -52,26 +52,34 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           <h1 class="text-2xl font-bold text-gray-900">Centro de Control</h1>
           <p class="text-sm text-gray-500 mt-1">Gestión administrativa y financiera de la academia.</p>
         </div>
-        <div class="flex flex-wrap gap-2">
-          <!-- Reemplaza el enlace de /admin-cambibara por este: -->
-          <a href="/admin-pupirace" class="bg-cyan-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-cyan-700 shadow-sm transition flex items-center gap-2">
-            <span>🏖️</span> Panel Pupi Race
-          </a>
-          <a href="/admin-leads" class="bg-purple-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm transition flex items-center gap-2">
-            <span>📧</span> Ver Suscriptores (Leads)
-          </a>
-          <button id="btnRecordatorioPago" class="bg-yellow-50 border border-yellow-200 text-yellow-700 text-sm font-bold px-4 py-2 rounded-md hover:bg-yellow-100 shadow-sm transition flex items-center gap-2">
-            <span>🔔</span> Recordatorios Manuales
-          </button>
-          <button id="btnCorreoMasivo" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
-            <span>✉️</span> Enviar Correo (BCC)
-          </button>
-          <button id="btnExportarAlumnos" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
-            <span>👥</span> Backup Alumnos CSV
-          </button>
-          <button id="btnExportarPagos" class="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm transition flex items-center gap-2">
-            <span>💰</span> Backup Pagos CSV
-          </button>
+        
+        <!-- BOTONES ORGANIZADOS EN 2 FILAS -->
+        <div class="flex flex-col items-start md:items-end gap-3 w-full md:w-auto mt-2 md:mt-0">
+          <div class="flex flex-wrap items-center justify-start md:justify-end gap-2 w-full">
+            <button id="btnAbrirModalCalendario" class="bg-pink-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-pink-700 shadow-sm transition flex items-center gap-2">
+              <span>📅</span> Planificación Semanal
+            </button>
+            <a href="/admin-pupirace" class="bg-cyan-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-cyan-700 shadow-sm transition flex items-center gap-2">
+              <span>🏖️</span> Panel Pupi Race
+            </a>
+            <a href="/admin-leads" class="bg-purple-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm transition flex items-center gap-2">
+              <span>📧</span> Ver Suscriptores (Leads)
+            </a>
+          </div>
+          <div class="flex flex-wrap items-center justify-start md:justify-end gap-2 w-full">
+            <button id="btnRecordatorioPago" class="bg-yellow-50 border border-yellow-200 text-yellow-700 text-sm font-bold px-4 py-2 rounded-md hover:bg-yellow-100 shadow-sm transition flex items-center gap-2">
+              <span>🔔</span> Recordatorios Manuales
+            </button>
+            <button id="btnCorreoMasivo" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
+              <span>✉️</span> Enviar Correo (BCC)
+            </button>
+            <button id="btnExportarAlumnos" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
+              <span>👥</span> Backup Alumnos CSV
+            </button>
+            <button id="btnExportarPagos" class="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm transition flex items-center gap-2">
+              <span>💰</span> Backup Pagos CSV
+            </button>
+          </div>
         </div>
       </div>
 
@@ -309,6 +317,33 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       </div>
     </div>
 
+    <!-- MODAL PLANIFICACIÓN SEMANAL (7 DÍAS) -->
+    <div id="modalCalendario" class="fixed inset-0 bg-gray-900/60 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col relative">
+        <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <h2 class="text-lg font-bold text-gray-900">📅 Editar Planificación de la Semana</h2>
+          <button id="btnCerrarModalCalendario" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        
+        <!-- Pestañas de Días -->
+        <div class="px-6 pt-4 border-b border-gray-200 bg-white overflow-x-auto flex gap-1" id="tabsCalendario">
+          <!-- JS Inyecta las pestañas aquí -->
+        </div>
+
+        <div class="p-6 overflow-y-auto bg-gray-50 flex-1 relative" id="panelesCalendario">
+          <!-- JS Inyecta los formularios aquí -->
+        </div>
+
+        <div class="flex justify-end p-4 border-t border-gray-200 bg-white">
+          <button type="button" id="btnGuardarCalendario" class="bg-blue-600 text-white font-bold px-8 py-2.5 rounded-lg hover:bg-blue-700 transition shadow-sm">
+            💾 Guardar Calendario
+          </button>
+        </div>
+      </div>
+    </div>
+
   </main>
 </Layout>
 
@@ -323,6 +358,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
   
   let textoBuscarPago = '';
   let textoBuscarAlumno = '';
+  let agendaSemanal = {};
 
   const esSuperAdmin = document.getElementById('adminContenido')?.dataset.superadmin === 'true';
   const FOTO_DEFAULT = 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80';
@@ -1429,4 +1465,247 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       alert("Error al eliminar el atleta.");
     }
   };
+
+  // --- LÓGICA DEL CALENDARIO ESTRUCTURADO (7 DÍAS) ---
+  const modalCalendario = document.getElementById('modalCalendario');
+  const tabsContainer = document.getElementById('tabsCalendario');
+  const panelsContainer = document.getElementById('panelesCalendario');
+
+  // Actualizado para prevenir problemas con Tailwind Purge
+  const diasEstructura = [
+    { id: 'lunes', label: 'Lunes', colorText: 'text-blue-600' },
+    { id: 'martes', label: 'Martes', colorText: 'text-green-600' },
+    { id: 'miercoles', label: 'Miércoles', colorText: 'text-pink-600' },
+    { id: 'jueves', label: 'Jueves', colorText: 'text-green-600' },
+    { id: 'viernes', label: 'Viernes', colorText: 'text-green-600' },
+    { id: 'sabado', label: 'Sábado', colorText: 'text-purple-600' },
+    { id: 'domingo', label: 'Domingo', colorText: 'text-orange-600' }
+  ];
+
+  function construirFormularioCalendario() {
+    tabsContainer.innerHTML = '';
+    panelsContainer.innerHTML = '';
+
+    diasEstructura.forEach((dia, index) => {
+      // Tab Button
+      const btn = document.createElement('button');
+      btn.className = `tab-dia-btn px-4 py-2 text-sm font-bold border-b-2 whitespace-nowrap transition-colors focus:outline-none ${index === 0 ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`;
+      btn.textContent = dia.label;
+      btn.onclick = () => cambiarTabDia(dia.id);
+      tabsContainer.appendChild(btn);
+
+      // Panel Form
+      const panel = document.createElement('div');
+      panel.id = `panel-cal-${dia.id}`;
+      panel.className = `panel-dia-content ${index === 0 ? 'block' : 'hidden'}`;
+      panel.innerHTML = `
+        <div class="flex items-center gap-2 mb-5 p-3 bg-white rounded-lg border border-gray-200 shadow-sm">
+          <input type="checkbox" id="cal-${dia.id}-activo" class="w-5 h-5 accent-blue-600 cursor-pointer">
+          <label for="cal-${dia.id}-activo" class="text-sm font-bold text-gray-800 cursor-pointer">Hay actividad este día (Desmarca si es día libre)</label>
+        </div>
+        <div class="space-y-4">
+          
+          <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <h4 class="text-xs font-black ${dia.colorText} uppercase mb-3 border-b border-gray-100 pb-2">Actividad 1</h4>
+            
+            <div class="mb-4">
+              <label class="block text-[10px] font-bold text-gray-500 uppercase mb-2">Grupo / Nivel</label>
+              <div class="flex flex-wrap gap-4">
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a1 accent-blue-600 w-4 h-4" value="PROSP"> Prospectos</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a1 accent-blue-600 w-4 h-4" value="AVZ"> Avanzado</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a1 accent-blue-600 w-4 h-4" value="INT"> Intermedio</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a1 accent-blue-600 w-4 h-4" value="PRINC"> Principiante</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a1 accent-blue-600 w-4 h-4" value="ADULTOS"> Adultos</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a1 accent-blue-600 w-4 h-4" value="CITADOS"> Citados</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a1 accent-blue-600 w-4 h-4" value="FÍSICO"> Físico</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-blue-600 ml-2"><input type="checkbox" class="chk-todos-${dia.id}-a1 accent-blue-600 w-4 h-4" value="TODOS"> Todos</label>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Lugar</label>
+              <input type="text" id="cal-${dia.id}-a1-lugar" placeholder="Circuito PupiBike" class="w-full px-2.5 py-2 border border-gray-300 rounded text-sm focus:border-blue-500 focus:outline-none placeholder-gray-400">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Descripción</label>
+              <input type="text" id="cal-${dia.id}-a1-desc" placeholder="Detalles de la actividad, enfoque técnico, etc." class="w-full px-2.5 py-2 border border-gray-300 rounded text-sm focus:border-blue-500 focus:outline-none placeholder-gray-400">
+            </div>
+          </div>
+          
+          <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <h4 class="text-xs font-black text-gray-400 uppercase mb-3 border-b border-gray-100 pb-2">Actividad 2 (Opcional)</h4>
+            
+            <div class="mb-4">
+              <label class="block text-[10px] font-bold text-gray-500 uppercase mb-2">Grupo / Nivel</label>
+              <div class="flex flex-wrap gap-4">
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a2 accent-blue-600 w-4 h-4" value="PROSP"> Prospectos</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a2 accent-blue-600 w-4 h-4" value="AVZ"> Avanzado</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a2 accent-blue-600 w-4 h-4" value="INT"> Intermedio</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a2 accent-blue-600 w-4 h-4" value="PRINC"> Principiante</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a2 accent-blue-600 w-4 h-4" value="ADULTOS"> Adultos</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a2 accent-blue-600 w-4 h-4" value="CITADOS"> Citados</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-gray-700"><input type="checkbox" class="chk-${dia.id}-a2 accent-blue-600 w-4 h-4" value="FÍSICO"> Físico</label>
+                <label class="flex items-center gap-1.5 text-[11px] uppercase font-bold cursor-pointer text-blue-600 ml-2"><input type="checkbox" class="chk-todos-${dia.id}-a2 accent-blue-600 w-4 h-4" value="TODOS"> Todos</label>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Lugar</label>
+              <input type="text" id="cal-${dia.id}-a2-lugar" placeholder="Circuito PupiBike" class="w-full px-2.5 py-2 border border-gray-300 rounded text-sm focus:border-blue-500 focus:outline-none placeholder-gray-400">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Descripción</label>
+              <input type="text" id="cal-${dia.id}-a2-desc" placeholder="Detalles de la actividad, enfoque técnico, etc." class="w-full px-2.5 py-2 border border-gray-300 rounded text-sm focus:border-blue-500 focus:outline-none placeholder-gray-400">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-black text-gray-600 uppercase mb-1">Horario General (Aparece abajo)</label>
+            <input type="text" id="cal-${dia.id}-horario" placeholder="Ej: 5:00 a 6:00 PM" class="w-full px-3 py-2.5 border border-gray-300 rounded-md text-sm font-bold text-blue-800 focus:border-blue-500 focus:outline-none">
+          </div>
+        </div>
+      `;
+      panelsContainer.appendChild(panel);
+
+      function configurarCheckboxes(diaId, actNro) {
+        const chkTodas = document.querySelector(`.chk-todos-${diaId}-a${actNro}`);
+        const chksNiveles = document.querySelectorAll(`.chk-${diaId}-a${actNro}`);
+
+        chkTodas.addEventListener('change', (e) => {
+          chksNiveles.forEach(chk => chk.checked = e.target.checked);
+        });
+
+        chksNiveles.forEach(chk => {
+          chk.addEventListener('change', () => {
+            const todasMarcadas = Array.from(chksNiveles).every(c => c.checked);
+            chkTodas.checked = todasMarcadas;
+          });
+        });
+      }
+
+      configurarCheckboxes(dia.id, 1);
+      configurarCheckboxes(dia.id, 2);
+    });
+  }
+
+  function cambiarTabDia(idSeleccionado) {
+    document.querySelectorAll('.tab-dia-btn').forEach((btn, idx) => {
+      if (diasEstructura[idx].id === idSeleccionado) {
+        btn.className = 'tab-dia-btn px-4 py-2 text-sm font-bold border-b-2 whitespace-nowrap transition-colors focus:outline-none border-blue-600 text-blue-600 bg-blue-50/50';
+      } else {
+        btn.className = 'tab-dia-btn px-4 py-2 text-sm font-bold border-b-2 whitespace-nowrap transition-colors focus:outline-none border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50';
+      }
+    });
+    document.querySelectorAll('.panel-dia-content').forEach(panel => {
+      panel.classList.toggle('block', panel.id === `panel-cal-${idSeleccionado}`);
+      panel.classList.toggle('hidden', panel.id !== `panel-cal-${idSeleccionado}`);
+    });
+  }
+
+  async function cargarCalendario() {
+    construirFormularioCalendario();
+    try {
+      const { data } = await supabase.from('configuracion').select('valor').eq('clave', 'planificacion_semanal').single();
+      if (data && data.valor) {
+        let agendaSemanal = JSON.parse(data.valor);
+        diasEstructura.forEach(dia => {
+          const dat = agendaSemanal[dia.id] || { activo: false };
+          document.getElementById(`cal-${dia.id}-activo`).checked = dat.activo;
+          document.getElementById(`cal-${dia.id}-horario`).value = dat.horario || '';
+          document.getElementById(`cal-${dia.id}-a1-lugar`).value = dat.a1_lugar || '';
+          document.getElementById(`cal-${dia.id}-a1-desc`).value = dat.a1_desc || '';
+          document.getElementById(`cal-${dia.id}-a2-lugar`).value = dat.a2_lugar || '';
+          document.getElementById(`cal-${dia.id}-a2-desc`).value = dat.a2_desc || '';
+
+          // Lógica inversa para marcar los checkboxes correctos
+          ['a1', 'a2'].forEach(act => {
+            const tagStr = dat[`${act}_tag`] || '';
+            const chkTodas = document.querySelector(`.chk-todos-${dia.id}-${act}`);
+            const chksNiveles = document.querySelectorAll(`.chk-${dia.id}-${act}`);
+            
+            if (tagStr === 'TODOS LOS NIVELES' || tagStr === 'TODOS') {
+              chkTodas.checked = true;
+              chksNiveles.forEach(chk => chk.checked = true);
+            } else if (tagStr) {
+              const tagsArray = tagStr.split(' / ').map(t => t.trim());
+              chksNiveles.forEach(chk => {
+                if (tagsArray.includes(chk.value)) chk.checked = true;
+              });
+              chkTodas.checked = Array.from(chksNiveles).every(c => c.checked);
+            }
+          });
+        });
+      }
+    } catch (e) { console.warn("Sin calendario previo."); }
+  }
+
+  document.getElementById('btnAbrirModalCalendario')?.addEventListener('click', () => {
+    cargarCalendario();
+    modalCalendario.classList.remove('hidden');
+  });
+
+  document.getElementById('btnCerrarModalCalendario')?.addEventListener('click', () => {
+    modalCalendario.classList.add('hidden');
+  });
+
+  document.getElementById('btnGuardarCalendario')?.addEventListener('click', async () => {
+    const btn = document.getElementById('btnGuardarCalendario');
+    btn.textContent = 'Guardando...';
+    btn.disabled = true;
+
+    const nuevaAgenda = {};
+    diasEstructura.forEach(dia => {
+      // Contar cuántos checkboxes de niveles estándar están marcados
+      const chksA1 = document.querySelectorAll(`.chk-${dia.id}-a1:not([value="CITADOS"]):not([value="FÍSICO"]):not([value="TODOS"])`);
+      const a1ChecksEstandarMarcados = Array.from(chksA1).filter(c => c.checked).length;
+      
+      const allA1CheckedValues = Array.from(document.querySelectorAll(`.chk-${dia.id}-a1:checked`)).map(c => c.value);
+      let a1Tag = allA1CheckedValues.join(' / ');
+      // Si marcó los 5 niveles estándar, resumimos la etiqueta
+      if (a1ChecksEstandarMarcados === 5 && !allA1CheckedValues.includes("CITADOS") && !allA1CheckedValues.includes("FÍSICO")) {
+        a1Tag = 'TODOS LOS NIVELES';
+      } else if (a1ChecksEstandarMarcados === 5) {
+        // Si marcó todos + alguno extra, limpiamos un poco
+        a1Tag = ['TODOS LOS NIVELES', ...allA1CheckedValues.filter(v => v === "CITADOS" || v === "FÍSICO")].join(' / ');
+      }
+
+      const chksA2 = document.querySelectorAll(`.chk-${dia.id}-a2:not([value="CITADOS"]):not([value="FÍSICO"]):not([value="TODOS"])`);
+      const a2ChecksEstandarMarcados = Array.from(chksA2).filter(c => c.checked).length;
+      
+      const allA2CheckedValues = Array.from(document.querySelectorAll(`.chk-${dia.id}-a2:checked`)).map(c => c.value);
+      let a2Tag = allA2CheckedValues.join(' / ');
+      
+      if (a2ChecksEstandarMarcados === 5 && !allA2CheckedValues.includes("CITADOS") && !allA2CheckedValues.includes("FÍSICO")) {
+        a2Tag = 'TODOS LOS NIVELES';
+      } else if (a2ChecksEstandarMarcados === 5) {
+        a2Tag = ['TODOS LOS NIVELES', ...allA2CheckedValues.filter(v => v === "CITADOS" || v === "FÍSICO")].join(' / ');
+      }
+
+      nuevaAgenda[dia.id] = {
+        activo: document.getElementById(`cal-${dia.id}-activo`).checked,
+        horario: document.getElementById(`cal-${dia.id}-horario`).value.trim(),
+        a1_tag: a1Tag,
+        a1_lugar: document.getElementById(`cal-${dia.id}-a1-lugar`).value.trim(),
+        a1_desc: document.getElementById(`cal-${dia.id}-a1-desc`).value.trim(),
+        a2_tag: a2Tag,
+        a2_lugar: document.getElementById(`cal-${dia.id}-a2-lugar`).value.trim(),
+        a2_desc: document.getElementById(`cal-${dia.id}-a2-desc`).value.trim()
+      };
+    });
+
+    try {
+      const { error } = await supabase.from('configuracion')
+        .upsert({ clave: 'planificacion_semanal', valor: JSON.stringify(nuevaAgenda), updated_at: new Date() }, { onConflict: 'clave' });
+      
+      if (error) throw error;
+      alert("¡Calendario actualizado exitosamente para todos los alumnos!");
+      modalCalendario.classList.add('hidden');
+    } catch (err) {
+      alert("Error al guardar el calendario.");
+      console.error(err);
+    } finally {
+      btn.textContent = '💾 Guardar Calendario';
+      btn.disabled = false;
+    }
+  });
 </script>
