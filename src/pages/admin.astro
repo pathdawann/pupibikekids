@@ -1,4 +1,4 @@
----
+\---
 import Layout from '../layouts/Layout.astro';
 import { supabaseServer } from '../lib/supabase-server.js';
 
@@ -18,7 +18,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
   return Astro.redirect('/dashboard');
 }
 
-// Solo Patricia Mago tiene permisos de borrado permanente
+// Solo Patricia Mago y correo web tienen permisos de borrado permanente
 const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pupibikeweb@gmail.com";
 ---
 
@@ -63,21 +63,21 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pu
               <span>🏖️</span> Panel Pupi Race
             </a>
             <a href="/admin-leads" class="bg-purple-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm transition flex items-center gap-2">
-              <span>📧</span> Ver Suscriptores (Leads)
+              <span>📧</span> Ver Suscriptores
             </a>
           </div>
           <div class="flex flex-wrap items-center justify-start md:justify-end gap-2 w-full">
             <button id="btnRecordatorioPago" class="bg-yellow-50 border border-yellow-200 text-yellow-700 text-sm font-bold px-4 py-2 rounded-md hover:bg-yellow-100 shadow-sm transition flex items-center gap-2">
-              <span>🔔</span> Recordatorios Manuales
+              <span>🔔</span> Recordatorio de Pago
             </button>
             <button id="btnCorreoMasivo" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
-              <span>✉️</span> Enviar Correo (BCC)
+              <span>✉️</span> Enviar Novedades
             </button>
             <button id="btnExportarAlumnos" class="bg-white border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
-              <span>👥</span> Backup Alumnos CSV
+              <span>👥</span> Backup Alumnos
             </button>
             <button id="btnExportarPagos" class="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm transition flex items-center gap-2">
-              <span>💰</span> Backup Pagos CSV
+              <span>💰</span> Backup Pagos
             </button>
           </div>
         </div>
@@ -340,6 +340,45 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pu
           <button type="button" id="btnGuardarCalendario" class="bg-blue-600 text-white font-bold px-8 py-2.5 rounded-lg hover:bg-blue-700 transition shadow-sm">
             💾 Guardar Calendario
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL CORREO MASIVO CON IMAGEN -->
+    <div id="modalCorreoMasivo" class="fixed inset-0 bg-gray-900/60 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col relative">
+        <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900">✉️ Enviar Correo a Alumnos</h2>
+            <p class="text-xs text-gray-500">Se enviará como copia oculta (BCC) a todos los atletas activos.</p>
+          </div>
+          <button id="btnCerrarModalCorreo" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div class="p-6 bg-white">
+          <form id="formCorreoMasivo" class="space-y-4">
+            <div>
+              <label for="asuntoCorreo" class="block text-xs font-bold text-gray-700 uppercase mb-1">Asunto</label>
+              <input type="text" id="asuntoCorreo" required placeholder="Ej: Novedades de la semana" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400">
+            </div>
+            <div>
+              <label for="mensajeCorreo" class="block text-xs font-bold text-gray-700 uppercase mb-1">Mensaje (Admite múltiples párrafos)</label>
+              <textarea id="mensajeCorreo" required rows="5" placeholder="Escribe tu mensaje aquí..." class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400"></textarea>
+            </div>
+            <div>
+              <label for="adjuntoCorreo" class="block text-xs font-bold text-gray-700 uppercase mb-1">Adjuntar Imagen (Opcional, Máx 3MB)</label>
+              <input type="file" id="adjuntoCorreo" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:outline-none file:mr-4 file:py-1.5 file:px-4 file:border-0 file:text-xs file:font-black file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+            </div>
+            
+            <div id="estadoEnvioCorreo" class="hidden text-sm font-bold text-center p-2 rounded"></div>
+            
+            <div class="flex justify-end pt-2">
+              <button type="submit" id="btnEnviarCorreoMasivo" class="bg-blue-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-blue-700 transition shadow-sm flex items-center gap-2">
+                <span>🚀</span> Enviar a todos
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -1011,10 +1050,97 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pu
     window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${emails}&su=${asunto}&body=${cuerpo}`, '_blank');
   });
 
+  // --- NUEVA LÓGICA DE CORREO MASIVO EN MODAL ---
+  const modalCorreoMasivo = document.getElementById('modalCorreoMasivo');
+  
   document.getElementById('btnCorreoMasivo')?.addEventListener('click', () => {
-    const emails = cacheAlumnos.map(a => a.email).filter(Boolean).join(',');
-    if (!emails) return alert("No hay correos registrados.");
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${emails}&su=Academia%20PupiBike%20Kids`, '_blank');
+    modalCorreoMasivo.classList.remove('hidden');
+  });
+
+  document.getElementById('btnCerrarModalCorreo')?.addEventListener('click', () => {
+    modalCorreoMasivo.classList.add('hidden');
+  });
+
+  document.getElementById('formCorreoMasivo')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btn = document.getElementById('btnEnviarCorreoMasivo');
+    const estadoEnvio = document.getElementById('estadoEnvioCorreo');
+    const asunto = document.getElementById('asuntoCorreo').value.trim();
+    const mensaje = document.getElementById('mensajeCorreo').value.trim();
+    const file = document.getElementById('adjuntoCorreo').files[0];
+
+    // Filtrar correos de alumnos activos
+    const alumnosActivos = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo');
+    const emails = [...new Set(alumnosActivos.map(a => a.email).filter(Boolean))];
+
+    if (emails.length === 0) {
+      alert("No hay alumnos activos con un correo registrado.");
+      return;
+    }
+
+    let attachment = null;
+    if (file) {
+      if (file.size > 3 * 1024 * 1024) {
+        alert("La imagen no debe superar los 3 MB.");
+        return;
+      }
+      
+      try {
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (evt) => resolve(evt.target.result.split(',')[1]);
+          reader.onerror = (err) => reject(err);
+          reader.readAsDataURL(file);
+        });
+        
+        attachment = {
+          filename: file.name,
+          content: base64
+        };
+      } catch (err) {
+        alert("Hubo un error al leer la imagen.");
+        return;
+      }
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span> Enviando...';
+    estadoEnvio.className = "text-sm font-bold text-center p-2 rounded bg-blue-50 text-blue-700 mt-3 block";
+    estadoEnvio.textContent = `Enviando a ${emails.length} alumnos...`;
+
+    try {
+      const res = await fetch('/api/correo-masivo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subject: asunto,
+          message: mensaje,
+          bccList: emails,
+          attachment: attachment
+        })
+      });
+
+      if (!res.ok) throw new Error("Error en el servidor al enviar correos");
+
+      estadoEnvio.className = "text-sm font-bold text-center p-2 rounded bg-green-50 text-green-700 mt-3 block";
+      estadoEnvio.textContent = "¡Correos enviados exitosamente!";
+      
+      setTimeout(() => {
+        modalCorreoMasivo.classList.add('hidden');
+        document.getElementById('formCorreoMasivo').reset();
+        estadoEnvio.classList.add('hidden');
+        btn.innerHTML = '<span>🚀</span> Enviar a todos';
+        btn.disabled = false;
+      }, 2500);
+
+    } catch (error) {
+      console.error(error);
+      estadoEnvio.className = "text-sm font-bold text-center p-2 rounded bg-red-50 text-red-700 mt-3 block";
+      estadoEnvio.textContent = "Ocurrió un error al enviar. Revisa la consola.";
+      btn.innerHTML = '<span>🚀</span> Enviar a todos';
+      btn.disabled = false;
+    }
   });
 
   document.getElementById('btnAdminLogout')?.addEventListener('click', async () => {
