@@ -40,7 +40,7 @@ export async function POST({ request }) {
 
           <p style="font-size: 16px; color: #e4e4e7;">
             <strong>📅 Fecha del evento:</strong> Domingo 6 de Diciembre<br>
-            <strong>📍 Sede:</strong> Circuito PupiBike (Sector Óvalo)
+            <strong>📍 Sede:</strong> Nos vemos en la Playa
           </p>
           <p style="font-size: 16px; color: #e4e4e7; margin-top: 20px;">¡Prepárate para darlo todo en la pista y crear grandes historias!</p>
         </div>
