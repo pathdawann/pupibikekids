@@ -1,0 +1,461 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { supabaseServer } from '../lib/supabase-server.js';
+
+const supabase = supabaseServer(Astro);
+const { data: { user }, error } = await supabase.auth.getUser();
+
+if (!user || error) {
+  return Astro.redirect('/login');
+}
+
+const correosAutorizados = ["pathdawann@gmail.com", "pupibikekids27@gmail.com", "pupibikeweb@gmail.com"];
+if (!user.email || !correosAutorizados.includes(user.email)) {
+  return Astro.redirect('/dashboard');
+}
+---
+
+<Layout title="Cierre Contable | Pupi Bike Admin" noindex={true}>
+  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="container mx-auto px-4 lg:px-8 max-w-[96%] flex justify-between items-center h-16">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+          <span class="text-white font-black text-sm italic">PK</span>
+        </div>
+        <a href="/admin" class="text-xl font-black italic tracking-tight text-gray-900">
+          PUPIBIKE<span class="text-emerald-600">FINANZAS</span>
+        </a>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/admin" class="text-sm font-bold text-gray-500 hover:text-emerald-600 transition">← Volver al Admin</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="bg-gray-50 min-h-screen pb-12">
+    <div class="container mx-auto px-4 lg:px-8 py-8 max-w-[96%]">
+      
+      <!-- Encabezado y Filtro -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Cierre Contable Mensual</h1>
+          <p class="text-sm text-gray-500 mt-1">Verifica los ingresos de la academia y eventos agrupados por mes.</p>
+        </div>
+        <div class="flex items-center gap-3 w-full md:w-auto bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
+          <span class="text-sm font-bold text-gray-700 uppercase pl-2">Mes de Cierre:</span>
+          <select id="selectorMes" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm font-bold rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+            <option value="">Cargando meses...</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- KPI Cards (Fila 1: Resumen General) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex flex-col justify-center relative overflow-hidden">
+          <div class="absolute -right-6 -top-6 text-emerald-50 opacity-50 text-9xl">💰</div>
+          <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 relative z-10">Ingreso Total General</p>
+          <p id="uiTotalGeneral" class="text-4xl font-black text-emerald-600 tracking-tight relative z-10">$0.00</p>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex flex-col justify-center">
+          <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Total Academia (Mensualidades)</p>
+          <p id="uiTotalAcademia" class="text-3xl font-black text-blue-600 tracking-tight">$0.00</p>
+          <p id="uiConteoAcademia" class="text-xs font-bold text-gray-400 mt-1">0 pagos aprobados</p>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex flex-col justify-center">
+          <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Total Eventos (Pupi Race)</p>
+          <p id="uiTotalEventos" class="text-3xl font-black text-pink-600 tracking-tight">$0.00</p>
+          <p id="uiConteoEventos" class="text-xs font-bold text-gray-400 mt-1">0 inscripciones registradas</p>
+        </div>
+      </div>
+
+      <!-- KPI Cards (Fila 2: Análisis Financiero Profundo) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 mb-6">
+        
+        <!-- 1. Arqueo -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm xl:col-span-2">
+          <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Arqueo de Caja (Distribución)</p>
+          <div class="flex flex-col gap-2 text-sm font-medium text-gray-600">
+            <div class="flex justify-between items-center"><span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Pago Móvil</span> <span id="uiArqueoPM" class="font-bold text-gray-900">$0.00</span></div>
+            <div class="flex justify-between items-center"><span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Efectivo / Divisas</span> <span id="uiArqueoEfvo" class="font-bold text-gray-900">$0.00</span></div>
+            <div class="flex justify-between items-center"><span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-purple-500"></span> Transf. Nac / Zelle</span> <span id="uiArqueoTransf" class="font-bold text-gray-900">$0.00</span></div>
+          </div>
+        </div>
+
+        <!-- 2. Conceptos -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm xl:col-span-2">
+          <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Desglose de Conceptos (Academia)</p>
+          <div class="flex flex-col gap-2 text-sm font-medium text-gray-600">
+            <div class="flex justify-between items-center"><span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Mensualidades Regulares</span> <span id="uiConceptoMen" class="font-bold text-gray-900">$0.00</span></div>
+            <div class="flex justify-between items-center"><span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-pink-500"></span> Nuevas Inscripciones</span> <span id="uiConceptoIns" class="font-bold text-gray-900">$0.00</span></div>
+            <div class="flex justify-between items-center"><span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-orange-500"></span> Abonos / Otros</span> <span id="uiConceptoAbono" class="font-bold text-gray-900">$0.00</span></div>
+          </div>
+        </div>
+
+        <!-- 3. Morosidad (Compacto) -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm xl:col-span-1">
+          <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Morosidad</p>
+          <div class="flex justify-between items-end mb-2">
+            <span class="text-sm font-bold text-gray-500">Solventes:</span>
+            <span id="uiSolventes" class="text-lg font-black text-emerald-600">0</span>
+          </div>
+          <div class="flex justify-between items-end mb-3 border-b border-gray-100 pb-3">
+            <span class="text-sm font-bold text-gray-500">Con Deuda:</span>
+            <span id="uiMorosos" class="text-lg font-black text-red-500">0</span>
+          </div>
+          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Cuentas por Cobrar</p>
+          <p id="uiCXC" class="text-xl font-black text-gray-900">$0.00</p>
+        </div>
+      </div>
+
+      <!-- KPI Cards (Fila 3: Evolución y Tasa) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- 4. Evolución -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Evolución de Ingresos</p>
+            <p id="uiEvolucionText" class="text-3xl font-black text-gray-900 tracking-tight">--%</p>
+          </div>
+          <div id="uiEvolucionBadge" class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm font-bold">Sin mes previo</div>
+        </div>
+
+        <!-- 5. Tasa -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Tasa Promedio Mensual</p>
+            <p id="uiTasaPromedio" class="text-3xl font-black text-gray-900 tracking-tight">0.00 <span class="text-base text-gray-400">Bs/$</span></p>
+          </div>
+          <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-xl">🇻🇪</div>
+        </div>
+      </div>
+
+      <!-- Tablas Detalladas -->
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        
+        <!-- Tabla Academia -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div class="border-b border-gray-200 px-6 py-4 bg-blue-50/50 flex justify-between items-center">
+            <h2 class="text-sm font-black text-blue-800 uppercase tracking-wide">Desglose Academia</h2>
+            <span class="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded">Aprobados</span>
+          </div>
+          <div class="overflow-y-auto max-h-[500px]">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-gray-50 border-b border-gray-200 text-gray-500 font-bold sticky top-0">
+                <tr>
+                  <th class="px-4 py-3">Atleta / Fecha</th>
+                  <th class="px-4 py-3">Concepto</th>
+                  <th class="px-4 py-3 text-right">Monto</th>
+                </tr>
+              </thead>
+              <tbody id="tablaAcademia" class="divide-y divide-gray-100 text-gray-700">
+                <!-- Inyectado por JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tabla Eventos -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div class="border-b border-gray-200 px-6 py-4 bg-pink-50/50 flex justify-between items-center">
+            <h2 class="text-sm font-black text-pink-800 uppercase tracking-wide">Desglose Eventos</h2>
+            <span class="text-xs font-bold text-pink-600 bg-pink-100 px-2 py-1 rounded">Pupi Race ($30)</span>
+          </div>
+          <div class="overflow-y-auto max-h-[500px]">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-gray-50 border-b border-gray-200 text-gray-500 font-bold sticky top-0">
+                <tr>
+                  <th class="px-4 py-3">Participante / Fecha</th>
+                  <th class="px-4 py-3">Categoría</th>
+                  <th class="px-4 py-3 text-right">Monto</th>
+                </tr>
+              </thead>
+              <tbody id="tablaEventos" class="divide-y divide-gray-100 text-gray-700">
+                <!-- Inyectado por JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script type="module">
+  import { supabase } from '../lib/supabase.js';
+
+  let todosLosPagos = [];
+  let todasLasInscripciones = [];
+  let alumnosCache = [];
+  let mesesDisponibles = [];
+
+  const MESES_NOMBRES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const COSTO_PUPIRACE = 30.00;
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      // Cargamos Pagos Aprobados, Inscripciones a Eventos y Directorio de Alumnos (incluyendo estatus para la morosidad)
+      const [{ data: pagos }, { data: eventos }, { data: alumnos }] = await Promise.all([
+        supabase.from('pagos').select('*').eq('estado', 'aprobado'),
+        supabase.from('inscripciones_pupirace').select('*'),
+        supabase.from('alumnos').select('id, nombre, cedula, estatus')
+      ]);
+
+      todosLosPagos = pagos || [];
+      todasLasInscripciones = eventos || [];
+      alumnosCache = alumnos || [];
+
+      extraerMesesDisponibles();
+    } catch (error) {
+      console.error("Error cargando contabilidad:", error);
+    }
+  });
+
+  function extraerMesesDisponibles() {
+    const setMeses = new Set();
+
+    todosLosPagos.forEach(p => {
+      if (p.mes_correspondiente) setMeses.add(p.mes_correspondiente);
+    });
+
+    todasLasInscripciones.forEach(i => {
+      const fechaObj = new Date(i.created_at);
+      const mesStr = `${MESES_NOMBRES[fechaObj.getMonth()]} ${fechaObj.getFullYear()}`;
+      setMeses.add(mesStr);
+    });
+
+    mesesDisponibles = Array.from(setMeses).sort((a, b) => {
+      const [mesA, anoA] = a.split(' ');
+      const [mesB, anoB] = b.split(' ');
+      const dateA = new Date(`${anoA}-${MESES_NOMBRES.indexOf(mesA) + 1}-01`);
+      const dateB = new Date(`${anoB}-${MESES_NOMBRES.indexOf(mesB) + 1}-01`);
+      return dateB - dateA;
+    });
+
+    const select = document.getElementById('selectorMes');
+    select.innerHTML = '';
+
+    if (mesesDisponibles.length === 0) {
+      select.innerHTML = '<option value="">No hay registros financieros</option>';
+      return;
+    }
+
+    mesesDisponibles.forEach(mes => {
+      const opt = document.createElement('option');
+      opt.value = mes;
+      opt.textContent = mes;
+      select.appendChild(opt);
+    });
+
+    const hoy = new Date();
+    const mesActualStr = `${MESES_NOMBRES[hoy.getMonth()]} ${hoy.getFullYear()}`;
+    if (mesesDisponibles.includes(mesActualStr)) {
+      select.value = mesActualStr;
+    }
+
+    select.addEventListener('change', (e) => procesarMes(e.target.value));
+    
+    procesarMes(select.value);
+  }
+
+  function procesarMes(mesObjetivo) {
+    if (!mesObjetivo) return;
+
+    // --- FILTRAR MES ACTUAL ---
+    const pagosMes = todosLosPagos.filter(p => p.mes_correspondiente === mesObjetivo);
+    const totalAcademia = pagosMes.reduce((acc, curr) => acc + Number(curr.monto || 0), 0);
+
+    const inscripcionesMes = todasLasInscripciones.filter(i => {
+      const fechaObj = new Date(i.created_at);
+      const mesStr = `${MESES_NOMBRES[fechaObj.getMonth()]} ${fechaObj.getFullYear()}`;
+      return mesStr === mesObjetivo;
+    });
+    
+    const totalEventos = inscripcionesMes.length * COSTO_PUPIRACE;
+    const totalActual = totalAcademia + totalEventos;
+
+    // --- 1. ARQUEO DE CAJA ---
+    let arqueoPM = 0, arqueoEfvo = 0, arqueoTransf = 0;
+    pagosMes.forEach(p => {
+      const met = (p.metodo_pago || '').toLowerCase();
+      if (met.includes('pago movil')) arqueoPM += Number(p.monto);
+      else if (met.includes('efectivo')) arqueoEfvo += Number(p.monto);
+      else arqueoTransf += Number(p.monto);
+    });
+    inscripcionesMes.forEach(i => {
+      const met = (i.metodo_pago || '').toLowerCase();
+      if (met.includes('pago movil')) arqueoPM += COSTO_PUPIRACE;
+      else if (met.includes('efectivo')) arqueoEfvo += COSTO_PUPIRACE;
+      else arqueoTransf += COSTO_PUPIRACE;
+    });
+
+    document.getElementById('uiArqueoPM').textContent = `$${arqueoPM.toFixed(2)}`;
+    document.getElementById('uiArqueoEfvo').textContent = `$${arqueoEfvo.toFixed(2)}`;
+    document.getElementById('uiArqueoTransf').textContent = `$${arqueoTransf.toFixed(2)}`;
+
+    // --- 2. DESGLOSE DE CONCEPTOS (ACADEMIA) ---
+    let ingMensualidad = 0, ingInscripcion = 0, ingOtros = 0;
+    pagosMes.forEach(p => {
+      const met = (p.metodo_pago || '').toLowerCase();
+      const montoPagado = Number(p.monto);
+      
+      if (met.includes('inscripcion + mensualidad')) {
+        ingInscripcion += 30;
+        ingMensualidad += (montoPagado - 30);
+      } else if (met.includes('inscripcion')) {
+        ingInscripcion += montoPagado;
+      } else if (met.includes('mensualidad')) {
+        ingMensualidad += montoPagado;
+      } else {
+        ingOtros += montoPagado;
+      }
+    });
+
+    document.getElementById('uiConceptoMen').textContent = `$${ingMensualidad.toFixed(2)}`;
+    document.getElementById('uiConceptoIns').textContent = `$${ingInscripcion.toFixed(2)}`;
+    document.getElementById('uiConceptoAbono').textContent = `$${ingOtros.toFixed(2)}`;
+
+    // --- 3. ÍNDICE DE MOROSIDAD ---
+    const pagadoresUnicosIds = new Set(pagosMes.map(p => p.alumno_id));
+    const totalAlumnosActivos = alumnosCache.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo').length;
+    
+    const solventes = pagadoresUnicosIds.size;
+    const morosos = Math.max(0, totalAlumnosActivos - solventes);
+    const cxcEstimado = morosos * 70; // Estimación basada en cuota regular
+
+    document.getElementById('uiSolventes').textContent = solventes;
+    document.getElementById('uiMorosos').textContent = morosos;
+    document.getElementById('uiCXC').textContent = `$${cxcEstimado.toFixed(2)}`;
+
+    // --- 4. EVOLUCIÓN (CRECIMIENTO % VS MES ANTERIOR) ---
+    const indexActual = mesesDisponibles.indexOf(mesObjetivo);
+    const badgeEvol = document.getElementById('uiEvolucionBadge');
+    const textEvol = document.getElementById('uiEvolucionText');
+
+    if (indexActual >= 0 && indexActual < mesesDisponibles.length - 1) {
+      const mesAnt = mesesDisponibles[indexActual + 1]; // El mes anterior está en la siguiente posición (orden descendente)
+      
+      const pagosAnt = todosLosPagos.filter(p => p.mes_correspondiente === mesAnt);
+      const totalAcademiaAnt = pagosAnt.reduce((acc, curr) => acc + Number(curr.monto || 0), 0);
+      
+      const inscAnt = todasLasInscripciones.filter(i => {
+        const f = new Date(i.created_at);
+        return `${MESES_NOMBRES[f.getMonth()]} ${f.getFullYear()}` === mesAnt;
+      });
+      const totalEventosAnt = inscAnt.length * COSTO_PUPIRACE;
+      
+      const totalMesAnterior = totalAcademiaAnt + totalEventosAnt;
+
+      if (totalMesAnterior > 0) {
+        const variacion = ((totalActual - totalMesAnterior) / totalMesAnterior) * 100;
+        textEvol.textContent = `${variacion > 0 ? '+' : ''}${variacion.toFixed(1)}%`;
+        
+        if (variacion > 0) {
+          textEvol.className = "text-3xl font-black text-emerald-600 tracking-tight";
+          badgeEvol.className = "px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-sm font-bold";
+          badgeEvol.textContent = `↗️ Crecimiento vs ${mesAnt.split(' ')[0]}`;
+        } else if (variacion < 0) {
+          textEvol.className = "text-3xl font-black text-red-600 tracking-tight";
+          badgeEvol.className = "px-3 py-1 rounded-full bg-red-50 text-red-700 text-sm font-bold";
+          badgeEvol.textContent = `↘️ Descenso vs ${mesAnt.split(' ')[0]}`;
+        } else {
+          textEvol.className = "text-3xl font-black text-gray-600 tracking-tight";
+          badgeEvol.className = "px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm font-bold";
+          badgeEvol.textContent = `➡️ Igual que ${mesAnt.split(' ')[0]}`;
+        }
+      } else {
+        textEvol.textContent = "100%";
+        textEvol.className = "text-3xl font-black text-emerald-600 tracking-tight";
+        badgeEvol.className = "px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-sm font-bold";
+        badgeEvol.textContent = `↗️ Ingreso nuevo vs ${mesAnt.split(' ')[0]}`;
+      }
+    } else {
+      textEvol.textContent = "--%";
+      textEvol.className = "text-3xl font-black text-gray-400 tracking-tight";
+      badgeEvol.className = "px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-sm font-bold";
+      badgeEvol.textContent = "Sin datos de mes previo";
+    }
+
+    // --- 5. TASA PROMEDIO MENSUAL ---
+    const tasasValidas = pagosMes.map(p => Number(p.tasa_historica)).filter(t => t > 0);
+    const tasaPromedio = tasasValidas.length > 0 
+      ? (tasasValidas.reduce((a, b) => a + b, 0) / tasasValidas.length) 
+      : 0;
+    
+    document.getElementById('uiTasaPromedio').innerHTML = `${tasaPromedio > 0 ? tasaPromedio.toFixed(2) : '--'} <span class="text-base text-gray-400">Bs/$</span>`;
+
+    // --- ACTUALIZAR KPIs PRINCIPALES ---
+    document.getElementById('uiTotalAcademia').textContent = `$${totalAcademia.toFixed(2)}`;
+    document.getElementById('uiConteoAcademia').textContent = `${pagosMes.length} pagos recibidos`;
+    document.getElementById('uiTotalEventos').textContent = `$${totalEventos.toFixed(2)}`;
+    document.getElementById('uiConteoEventos').textContent = `${inscripcionesMes.length} inscripciones`;
+    document.getElementById('uiTotalGeneral').textContent = `$${totalActual.toFixed(2)}`;
+
+    // --- RENDERIZAR TABLAS ---
+    renderizarTablaAcademia(pagosMes);
+    renderizarTablaEventos(inscripcionesMes, COSTO_PUPIRACE);
+  }
+
+  function renderizarTablaAcademia(pagos) {
+    const tbody = document.getElementById('tablaAcademia');
+    tbody.innerHTML = '';
+
+    if (pagos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3" class="px-4 py-8 text-center text-gray-400 font-medium">Sin ingresos este mes.</td></tr>`;
+      return;
+    }
+
+    pagos.forEach(p => {
+      const atleta = alumnosCache.find(a => a.id === p.alumno_id);
+      const nombreAtleta = atleta ? atleta.nombre : 'Atleta Desconocido';
+      const fechaPago = new Date(p.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+      
+      tbody.innerHTML += `
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-4 py-3">
+            <div class="font-bold text-gray-900 uppercase">${nombreAtleta}</div>
+            <div class="text-xs text-gray-500">${fechaPago}</div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="text-sm text-gray-700">${p.metodo_pago}</div>
+            <div class="text-xs font-mono text-gray-400">Ref: ${p.referencia}</div>
+          </td>
+          <td class="px-4 py-3 text-right">
+            <div class="font-black text-blue-600">$${Number(p.monto).toFixed(2)}</div>
+            ${p.monto_bs ? `<div class="text-[10px] text-gray-400">${Number(p.monto_bs).toLocaleString('es-VE')} Bs</div>` : ''}
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  function renderizarTablaEventos(inscripciones, costoFijo) {
+    const tbody = document.getElementById('tablaEventos');
+    tbody.innerHTML = '';
+
+    if (inscripciones.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3" class="px-4 py-8 text-center text-gray-400 font-medium">Sin registros este mes.</td></tr>`;
+      return;
+    }
+
+    inscripciones.forEach(i => {
+      const fechaIns = new Date(i.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+      
+      tbody.innerHTML += `
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-4 py-3">
+            <div class="font-bold text-gray-900 uppercase">${i.nombre} ${i.apellido}</div>
+            <div class="text-xs text-gray-500">${fechaIns} | Ref: <span class="font-mono">${i.referencia}</span></div>
+          </td>
+          <td class="px-4 py-3">
+            <span class="inline-block bg-pink-50 text-pink-700 border border-pink-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${i.categoria}</span>
+          </td>
+          <td class="px-4 py-3 text-right">
+            <div class="font-black text-pink-600">$${costoFijo.toFixed(2)}</div>
+          </td>
+        </tr>
+      `;
+    });
+  }
+</script>
