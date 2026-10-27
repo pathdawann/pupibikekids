@@ -434,7 +434,18 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pu
       if (tasaData) {
         tasaActualDolar = parseFloat(tasaData.valor);
         document.getElementById('inputTasa').value = tasaActualDolar;
-        const fechaUpd = new Date(tasaData.updated_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
+        
+        // Asegurar formato UTC y forzar zona horaria de Venezuela
+        const fechaUTC = tasaData.updated_at.endsWith('Z') ? tasaData.updated_at : `${tasaData.updated_at}Z`;
+        const fechaUpd = new Date(fechaUTC).toLocaleString('es-VE', { 
+          timeZone: 'America/Caracas',
+          day: '2-digit', 
+          month: 'short', 
+          hour: '2-digit', 
+          minute:'2-digit',
+          hour12: true
+        });
+        
         document.getElementById('fechaTasa').textContent = `Act. ${fechaUpd}`;
       }
 
