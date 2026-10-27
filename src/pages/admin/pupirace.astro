@@ -1,64 +1,44 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { supabaseServer } from '../lib/supabase-server.js';
+import Layout from '../../layouts/Layout.astro';
+import { supabaseServer } from '../../lib/supabase-server.js';
+import { esUsuarioAutorizado, tienePermisosSuperAdmin } from '../../utils/seguridad.js';
+import AdminNav from '../../components/AdminNav.astro';
 
-// 1. Inicializamos cliente de servidor
+// 1. Inicializamos cliente de servidor y verificamos sesión
 const supabase = supabaseServer(Astro);
-
-// 2. Verificamos que exista una sesión activa
 const { data: { user }, error } = await supabase.auth.getUser();
 
 if (!user || error) {
   return Astro.redirect('/login');
 }
 
-// 3. Verificamos autorización administrativa y roles
-const correosAutorizados = ["pathdawann@gmail.com", "pupibikekids27@gmail.com"];
-if (!user.email || !correosAutorizados.includes(user.email)) {
+// 2. Verificamos autorización centralizada
+if (!esUsuarioAutorizado(user.email)) {
   return Astro.redirect('/dashboard');
 }
 
-// Solo Patricia Mago tiene permisos de borrado permanente
-const esSuperAdmin = user.email === "pathdawann@gmail.com";
+// 3. Verificamos si es Super Administradora
+const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 ---
 
-<Layout title="Admin - Cambibara Race | Pupi Bike Kids" noindex={true}>
-  <!-- Navegación Corporativa (Idéntica al Admin Principal) -->
-  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-    <div class="container mx-auto px-4 lg:px-8 max-w-[96%] flex justify-between items-center h-16">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-          <span class="text-white font-black text-sm italic">CR</span>
-        </div>
-        <a href="/admin-cambibara" class="text-xl font-black italic tracking-tight text-gray-900">
-          CAMBIBARA <span class="text-green-600">RACE</span>
-        </a>
-      </div>
-      <div class="flex items-center gap-4">
-        <a href="/admin" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition">Panel Principal</a>
-        <button id="btnAdminLogout" class="text-sm font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-1.5 rounded-md transition">
-          Cerrar Sesión
-        </button>
-      </div>
-    </div>
-  </nav>
+<Layout title="Admin - Pupi Race | Pupi Bike Kids" noindex={true}>
+  
+  <AdminNav titulo="PUPI RACE" color="cyan" volverAdmin={true} />
 
-  <main id="adminCambibaraContenido" data-superadmin={esSuperAdmin ? "true" : "false"} class="bg-gray-50 min-h-screen pb-12">
+  <main id="adminPupiRaceContenido" data-superadmin={esSuperAdmin ? "true" : "false"} class="bg-gray-50 min-h-screen pb-12">
     <div class="container mx-auto px-4 lg:px-8 py-8 max-w-[96%]">
       
       <!-- Encabezado y Acciones Globales -->
-      <!-- Encabezado y Acciones Globales -->
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-          <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Panel Administrativo</h1>
-          <p class="text-sm md:text-base text-gray-500 mt-1">Control Operativo la Carrera.</p>
+          <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Panel Pupi Race (7ma Edición)</h1>
+          <p class="text-sm md:text-base text-gray-500 mt-1">Domingo 6 de Diciembre - Estilo Playero 🏖️</p>
         </div>
-        <!-- Optimización Móvil: flex-col en móviles, botones w-full -->
         <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
           <button id="btnCopiarDatosPago" class="w-full sm:w-auto justify-center bg-white border border-gray-300 text-gray-700 text-sm md:text-base font-bold px-4 py-2.5 rounded-md hover:bg-gray-50 shadow-sm transition flex items-center gap-2">
             <span>📋</span> Copiar Datos Bancarios
           </button>
-          <button id="btnExportarExcel" class="w-full sm:w-auto justify-center bg-green-600 text-white text-sm md:text-base font-bold px-4 py-2.5 rounded-md hover:bg-green-700 shadow-sm transition flex items-center gap-2">
+          <button id="btnExportarExcel" class="w-full sm:w-auto justify-center bg-cyan-600 text-white text-sm md:text-base font-bold px-4 py-2.5 rounded-md hover:bg-cyan-700 shadow-sm transition flex items-center gap-2">
             <span>📥</span> Exportar a Excel
           </button>
         </div>
@@ -71,13 +51,13 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
             <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Inscripciones</p>
             <p id="uiTotalAtletas" class="text-3xl font-black text-gray-900">0</p>
           </div>
-          <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center text-xl">🏁</div>
+          <div class="w-12 h-12 bg-cyan-50 text-cyan-600 rounded-full flex items-center justify-center text-xl">🏖️</div>
         </div>
 
         <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
           <div>
-            <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Recaudación</p>
-            <p id="uiTotalDinero" class="text-3xl font-black text-green-600">$0</p>
+            <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Recaudación ($30 c/u)</p>
+            <p id="uiTotalDinero" class="text-3xl font-black text-emerald-600">$0</p>
           </div>
           <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center text-xl">💵</div>
         </div>
@@ -106,21 +86,25 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
           
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full md:w-auto">
             <label for="filtroCategoria" class="text-sm font-bold text-gray-500 uppercase">Categoría:</label>
-            <select id="filtroCategoria" class="w-full sm:w-auto bg-white border border-gray-300 text-gray-900 text-sm md:text-base rounded-md px-4 py-2 focus:ring-green-500 focus:border-green-500 outline-none">
-              <!-- (Tus opciones <option> se mantienen igual) -->
+            <select id="filtroCategoria" class="w-full sm:w-auto bg-white border border-gray-300 text-gray-900 text-sm md:text-base rounded-md px-4 py-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none">
               <option value="TODAS">Todas las Categorías</option>
-              <option value="Balance">Balance</option>
-              <option value="5 y 6 años">5 y 6 años</option>
-              <option value="7 y 8 años">7 y 8 años</option>
-              <option value="9 y 10 años">9 y 10 años</option>
-              <option value="11 y 12 años">11 y 12 años</option>
-              <option value="13 y 14 años">13 y 14 años</option>
-              <option value="15 y 16 años">15 y 16 años</option>
-              <option value="Open">Open</option>
+              <option value="Balance 1-2 años">Balance 1-2 años</option>
+              <option value="Balance 3-4 años">Balance 3-4 años</option>
+              <option value="5 y 6 años">Aprendiz - 5 y 6 años</option>
+              <option value="7 y 8 años">Aprendiz - 7 y 8 años</option>
+              <option value="9 y 10 años">Aprendiz - 9 y 10 años</option>
+              <option value="11 y 12 años">Aprendiz - 11 y 12 años</option>
+              <option value="13 y 14 años Infantil">Infantil - 13 y 14 años</option>
+              <option value="15 y 16 años (Prejuvenil)">Prejuvenil - 15 y 16 años</option>
+              <option value="Juvenil">Juvenil - 17-18 años</option>
+              <option value="Sport Aficionado Masculino">Sport Aficionado Masculino</option>
+              <option value="Sport Aficionado Femenino">Sport Aficionado Femenino</option>
+              <option value="Open Experto Masculino">Open Experto Masculino</option>
+              <option value="Open Experto Femenino">Open Experto Femenino</option>
+              <option value="Open Master">Open Master</option>
             </select>
           </div>
         </div>
-        <!-- (El resto de tu tabla se mantiene igual) -->
         
         <div class="overflow-x-auto">
           <table class="w-full text-left text-base whitespace-normal md:whitespace-nowrap">
@@ -128,7 +112,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
               <tr>
                 <th class="px-6 py-3">Fecha</th>
                 <th class="px-6 py-3">Nombre y Apellido</th>
-                <th class="px-6 py-3">Categoría / Género</th>
+                <th class="px-6 py-3">Categoría</th>
                 <th class="px-6 py-3">Contacto</th>
                 <th class="px-6 py-3">Referencia</th>
                 <th class="px-6 py-3 text-center">Capture</th>
@@ -150,7 +134,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     <div id="modalInscrito" class="fixed inset-0 bg-gray-900/60 z-100 hidden flex items-center justify-center backdrop-blur-sm p-4">
       <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col relative">
         <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gray-50">
-          <h2 class="text-lg font-bold text-gray-900">Editar Inscripción</h2>
+          <h2 class="text-lg font-bold text-gray-900">Editar Inscripción - Pupi Race</h2>
           <button id="btnCerrarModal" aria-label="Cerrar" class="text-gray-400 hover:text-gray-600 focus:outline-none">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
@@ -163,50 +147,50 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label for="editNombre" class="block text-base font-bold text-gray-700 mb-1 uppercase">Nombre</label>
-                <input type="text" id="editNombre" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <input type="text" id="editNombre" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
               </div>
               <div>
                 <label for="editApellido" class="block text-base font-bold text-gray-700 mb-1 uppercase">Apellido</label>
-                <input type="text" id="editApellido" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <input type="text" id="editApellido" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
               </div>
               <div>
                 <label for="editCedula" class="block text-base font-bold text-gray-700 mb-1 uppercase">Cédula</label>
-                <input type="text" id="editCedula" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <input type="text" id="editCedula" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
               </div>
               <div>
                 <label for="editFechaNac" class="block text-base font-bold text-gray-700 mb-1 uppercase">Fecha Nacimiento</label>
-                <input type="date" id="editFechaNac" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <input type="date" id="editFechaNac" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
               </div>
               <div>
                 <label for="editGenero" class="block text-base font-bold text-gray-700 mb-1 uppercase">Género</label>
-                <select id="editGenero" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <select id="editGenero" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
                   <option value="Masculino">Masculino</option>
                   <option value="Femenino">Femenino</option>
                 </select>
               </div>
               <div>
                 <label for="editCategoria" class="block text-base font-bold text-gray-700 mb-1 uppercase">Categoría</label>
-                <input type="text" id="editCategoria" required readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm text-green-600 font-bold uppercase cursor-not-allowed">
+                <input type="text" id="editCategoria" required class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm text-cyan-700 font-bold uppercase focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
               </div>
               <div>
                 <label for="editEmail" class="block text-base font-bold text-gray-700 mb-1 uppercase">Correo Electrónico</label>
-                <input type="email" id="editEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <input type="email" id="editEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
               </div>
               <div>
                 <label for="editTelefono" class="block text-base font-bold text-gray-700 mb-1 uppercase">Teléfono</label>
-                <input type="text" id="editTelefono" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <input type="text" id="editTelefono" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
               </div>
               <div>
                 <label for="editEstado" class="block text-base font-bold text-gray-700 mb-1 uppercase">Estado</label>
-                <input type="text" id="editEstado" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <input type="text" id="editEstado" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
               </div>
               <div>
                 <label for="editCiudad" class="block text-base font-bold text-gray-700 mb-1 uppercase">Ciudad</label>
-                <input type="text" id="editCiudad" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <input type="text" id="editCiudad" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
               </div>
               <div>
                 <label for="editMetodoPago" class="block text-base font-bold text-gray-700 mb-1 uppercase">Método de Pago</label>
-                <select id="editMetodoPago" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <select id="editMetodoPago" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 font-medium focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
                   <option value="Pago Movil">Pago Móvil</option>
                   <option value="Transferencia">Transferencia Nacional</option>
                   <option value="Efectivo Pista">Efectivo en Pista</option>
@@ -214,12 +198,12 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
               </div>
               <div>
                 <label for="editReferencia" class="block text-base font-bold text-gray-700 mb-1 uppercase">Referencia</label>
-                <input type="text" id="editReferencia" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <input type="text" id="editReferencia" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 uppercase font-medium focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
               </div>
             </div>
 
             <div class="flex justify-end pt-4 border-t border-gray-200">
-              <button type="submit" class="bg-green-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-green-700 transition shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none">
+              <button type="submit" class="bg-cyan-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-cyan-700 transition shadow-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none">
                 💾 Guardar Cambios
               </button>
             </div>
@@ -233,7 +217,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 text-center border border-gray-200">
         <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4 text-red-600 text-xl">⚠️</div>
         <h3 class="text-xl font-bold text-gray-900 mb-2">¿Eliminar Inscripción?</h3>
-        <p class="text-sm text-gray-500 mb-6">Esta acción eliminará permanentemente al atleta seleccionado de la base de datos.</p>
+        <p class="text-sm text-gray-500 mb-6">Esta acción eliminará permanentemente al atleta seleccionado de la base de datos de la Pupi Race.</p>
         <div class="flex justify-center gap-3">
           <button id="btnCancelarEliminar" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
           <button id="btnConfirmarEliminar" class="px-5 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-sm">Sí, Eliminar</button>
@@ -245,13 +229,13 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
 </Layout>
 
 <script type="module">
-  import { supabase } from '../lib/supabase.js';
+  // Ajuste de ruta para Supabase por el cambio a la carpeta /admin/
+  import { supabase } from '../../lib/supabase.js';
 
   let listaInscritos = [];
   let idParaEliminar = null;
 
-  // Verificamos si la usuaria actual es la Super Administradora
-  const esSuperAdmin = document.getElementById('adminCambibaraContenido')?.dataset.superadmin === 'true';
+  const esSuperAdmin = document.getElementById('adminPupiRaceContenido')?.dataset.superadmin === 'true';
 
   function escaparHTML(texto) {
     if (!texto) return '';
@@ -265,7 +249,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
 
   async function cargarInscritos() {
     const { data, error } = await supabase
-      .from('inscripciones_cambibara')
+      .from('inscripciones_pupirace')
       .select('*')
       .order('created_at', { ascending: false });
 
@@ -281,7 +265,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
 
   function actualizarMetricas(datos) {
     const totalAtletas = datos.length;
-    const totalDinero = totalAtletas * 8.00;
+    const totalDinero = totalAtletas * 30.00;
     const masculinos = datos.filter(d => d.genero === 'Masculino').length;
     const femeninos = datos.filter(d => d.genero === 'Femenino').length;
     const pagoMovil = datos.filter(d => d.metodo_pago === 'Pago Movil').length;
@@ -320,39 +304,28 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     datos.forEach(item => {
       const fecha = new Date(item.created_at).toLocaleDateString('es-VE');
       const tr = document.createElement('tr');
-      
-      // 1. Asignamos la clase al TR (diseño de tarjeta móvil vs fila de tabla PC)
       tr.className = "border-b border-gray-200 flex flex-col md:table-row p-6 md:p-0 gap-4 md:gap-0 hover:bg-gray-50 transition";
       
-      // 2. Declaramos las variables auxiliares UNA SOLA VEZ
       const urlSegura = item.comprobante_url ? escaparHTML(item.comprobante_url) : '';
       const botonEliminarHtml = esSuperAdmin 
         ? `<button data-id="${escaparHTML(item.id)}" class="btn-eliminar text-red-600 hover:text-red-800 font-bold text-sm uppercase px-4 py-2 md:px-0 md:py-0 md:bg-transparent bg-red-50 md:underline rounded-md w-full md:w-auto text-center border border-red-100 md:border-0 transition">Eliminar</button>` 
         : '';
       const colorMetodo = item.metodo_pago === 'Efectivo Pista' ? 'bg-yellow-100 text-yellow-800' : 'bg-emerald-100 text-emerald-800';
 
-      // 3. Insertamos el HTML
       tr.innerHTML = `
-        <!-- Fecha -->
         <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
           <div class="flex justify-between md:block items-center pb-3 md:pb-0 border-b border-gray-100 md:border-0">
             <span class="text-xs font-bold text-gray-400 uppercase md:hidden">Fecha Registro</span>
             <span class="text-gray-500 text-sm md:text-base font-medium">${escaparHTML(fecha)}</span>
           </div>
         </td>
-
-        <!-- Nombre y Cédula -->
         <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
           <div class="text-xl md:text-base font-black text-gray-900 uppercase leading-tight">${escaparHTML(item.nombre)} ${escaparHTML(item.apellido)}</div>
           <div class="text-sm text-gray-500 mt-1">${escaparHTML(item.cedula)}</div>
         </td>
-
-        <!-- Categoría -->
         <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
-          <span class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase">${escaparHTML(item.categoria)}</span>
+          <span class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-bold bg-cyan-50 text-cyan-800 border border-cyan-200 uppercase">${escaparHTML(item.categoria)}</span>
         </td>
-
-        <!-- Contacto -->
         <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
            <div class="flex md:block items-start gap-3">
               <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20 pt-1">Contacto:</span>
@@ -362,8 +335,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
               </div>
            </div>
         </td>
-
-        <!-- Pago y Referencia -->
         <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
            <div class="flex md:block items-start gap-3">
               <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20 pt-1">Pago:</span>
@@ -373,8 +344,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
               </div>
            </div>
         </td>
-
-        <!-- Capture -->
         <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle md:text-center">
           <div class="flex md:block items-center gap-3">
               <span class="text-xs font-bold text-gray-400 uppercase md:hidden w-20">Capture:</span>
@@ -383,8 +352,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
               </div>
           </div>
         </td>
-
-        <!-- Acciones -->
         <td class="block md:table-cell px-0 pt-4 pb-0 md:px-6 md:py-4 md:align-middle md:text-center mt-2 md:mt-0 border-t border-gray-100 md:border-0">
           <div class="flex items-center justify-between md:justify-center gap-3">
             <button data-id="${escaparHTML(item.id)}" class="btn-editar text-blue-600 hover:text-blue-800 font-bold text-sm uppercase px-4 py-2 md:px-0 md:py-0 md:bg-transparent bg-blue-50 md:underline rounded-md w-full md:w-auto text-center border border-blue-100 md:border-0 transition">Editar</button>
@@ -407,50 +374,10 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     }
   }
 
-  function calcularCategoriaModal() {
-    const fecha = document.getElementById('editFechaNac').value;
-    const genero = document.getElementById('editGenero').value;
-    const inputCat = document.getElementById('editCategoria');
-
-    if (!fecha || !genero) {
-      inputCat.value = "";
-      return;
-    }
-
-    const anoNacimiento = parseInt(fecha.substring(0, 4), 10);
-    const anoEvento = 2026; 
-    const edadCalendario = anoEvento - anoNacimiento;
-
-    let catBase = "";
-
-    if (edadCalendario <= 4) {
-      catBase = "Balance";
-    } else if (edadCalendario >= 5 && edadCalendario <= 6) {
-      catBase = "5 y 6 años";
-    } else if (edadCalendario >= 7 && edadCalendario <= 8) {
-      catBase = "7 y 8 años";
-    } else if (edadCalendario >= 9 && edadCalendario <= 10) {
-      catBase = "9 y 10 años";
-    } else if (edadCalendario >= 11 && edadCalendario <= 12) {
-      catBase = "11 y 12 años";
-    } else if (edadCalendario >= 13 && edadCalendario <= 14) {
-      catBase = "13 y 14 años";
-    } else if (edadCalendario >= 15 && edadCalendario <= 16) {
-      catBase = "15 y 16 años";
-    } else {
-      catBase = "Open";
-    }
-
-    inputCat.value = `${catBase} ${genero}`;
-  }
-
-  document.getElementById('editFechaNac').addEventListener('change', calcularCategoriaModal);
-  document.getElementById('editGenero').addEventListener('change', calcularCategoriaModal);
-
   document.getElementById('filtroCategoria').addEventListener('change', aplicarFiltroActual);
 
   document.getElementById('btnCopiarDatosPago').addEventListener('click', () => {
-    const textoPago = `💳 *DATOS DE PAGO - CAMBIBARA RACE*\n\nBanco: Venezuela (0102)\nTeléfono: 0424-8781128\nCédula: 24469073\nTitular: Cesar Barrios\nMonto: $8.00 USD (Pago Móvil a tasa BCV)\n\n¡Envía tu capture y reporte de pago para confirmar tu inscripción!`;
+    const textoPago = `💳 *DATOS DE PAGO - PUPI RACE (7MA EDICIÓN)*\n\nBanco: Venezuela (0102)\nTeléfono: 0424-8781128\nCédula: 24469073\nTitular: Cesar Barrios\nMonto: $30.00 USD (Pago Móvil a tasa BCV)\n\n¡Envía tu capture y reporte de pago para confirmar tu inscripción!`;
     navigator.clipboard.writeText(textoPago);
     alert("¡Datos de pago copiados al portapapeles listos para enviar por WhatsApp!");
   });
@@ -501,7 +428,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
       referencia: document.getElementById('editReferencia').value.trim().toUpperCase()
     };
 
-    const { error } = await supabase.from('inscripciones_cambibara').update(payload).eq('id', id);
+    const { error } = await supabase.from('inscripciones_pupirace').update(payload).eq('id', id);
     if (error) {
       alert("Error al actualizar: " + error.message);
     } else {
@@ -532,7 +459,7 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     if (!esSuperAdmin || !idParaEliminar) return;
 
     const { error } = await supabase
-      .from('inscripciones_cambibara')
+      .from('inscripciones_pupirace')
       .delete()
       .match({ id: idParaEliminar });
 
@@ -574,16 +501,10 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com";
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `Inscritos_Cambibara_Race_${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `Inscritos_Pupi_Race_${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  });
-
-  // Logout Admin
-  document.getElementById('btnAdminLogout')?.addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/login';
   });
 
   cargarInscritos();

@@ -1,47 +1,29 @@
-\---
-import Layout from '../layouts/Layout.astro';
-import { supabaseServer } from '../lib/supabase-server.js';
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabaseServer } from '../../lib/supabase-server.js';
+import { esUsuarioAutorizado, tienePermisosSuperAdmin } from '../../utils/seguridad.js';
+import AdminNav from '../../components/AdminNav.astro';
 
-// 1. Inicializamos cliente de servidor
+// 1. Inicializamos cliente de servidor y verificamos sesión
 const supabase = supabaseServer(Astro);
-
-// 2. Verificamos la autenticidad
 const { data: { user }, error } = await supabase.auth.getUser();
 
 if (!user || error) {
   return Astro.redirect('/login');
 }
 
-// 3. Verificamos autorización administrativa y roles
-const correosAutorizados = ["pathdawann@gmail.com", "pupibikekids27@gmail.com", "pupibikeweb@gmail.com"];
-if (!user.email || !correosAutorizados.includes(user.email)) {
+// 2. Verificamos autorización centralizada
+if (!esUsuarioAutorizado(user.email)) {
   return Astro.redirect('/dashboard');
 }
 
-// Solo Patricia Mago y correo web tienen permisos de borrado permanente
-const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pupibikeweb@gmail.com";
+// 3. Verificamos si es Super Administradora
+const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 ---
 
 <Layout title="Panel Administrativo | Pupi Bike Kids" noindex={true}>
-  <!-- Navegación Corporativa con ancho al 96% -->
-  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-    <div class="container mx-auto px-4 lg:px-8 max-w-[96%] flex justify-between items-center h-16">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-          <span class="text-white font-black text-sm italic">PK</span>
-        </div>
-        <a href="/admin" class="text-xl font-black italic tracking-tight text-gray-900">
-          PUPIBIKE<span class="text-blue-600">ADMIN</span>
-        </a>
-      </div>
-      <div class="flex items-center gap-4">
-        <a href="/dashboard" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition">Vista Atleta</a>
-        <button id="btnAdminLogout" class="text-sm font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-1.5 rounded-md transition">
-          Cerrar Sesión
-        </button>
-      </div>
-    </div>
-  </nav>
+  <!-- Inyección limpia del componente Navbar extraído -->
+  <AdminNav titulo="ADMIN" color="blue" />
 
   <main id="adminContenido" data-superadmin={esSuperAdmin ? "true" : "false"} class="bg-gray-50 min-h-screen pb-12">
     <div class="container mx-auto px-4 lg:px-8 py-8 max-w-[96%]">
@@ -53,19 +35,18 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pu
           <p class="text-sm text-gray-500 mt-1">Gestión administrativa y financiera de la academia.</p>
         </div>
         
-        <!-- BOTONES ORGANIZADOS EN 2 FILAS -->
+        <!-- BOTONES ORGANIZADOS EN 2 FILAS CON URLS ESTRUCTURADAS -->
         <div class="flex flex-col items-start md:items-end gap-3 w-full md:w-auto mt-2 md:mt-0">
           <div class="flex flex-wrap items-center justify-start md:justify-end gap-2 w-full">
             <button id="btnAbrirModalCalendario" class="bg-pink-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-pink-700 shadow-sm transition flex items-center gap-2">
               <span>📅</span> Planificación Semanal
             </button>
-            <a href="/admin-pupirace" class="bg-cyan-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-cyan-700 shadow-sm transition flex items-center gap-2">
+            <a href="/admin/pupirace" class="bg-cyan-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-cyan-700 shadow-sm transition flex items-center gap-2">
               <span>🏖️</span> Panel Pupi Race
             </a>
-            <a href="/admin-finanzas" class="bg-emerald-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-emerald-700 shadow-sm transition flex items-center gap-2">
+            <a href="/admin/finanzas" class="bg-emerald-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-emerald-700 shadow-sm transition flex items-center gap-2">
               <span>📊</span> Cierre Contable
             </a>
-            
           </div>
           <div class="flex flex-wrap items-center justify-start md:justify-end gap-2 w-full">
             <button id="btnRecordatorioPago" class="bg-yellow-50 border border-yellow-200 text-yellow-700 text-sm font-bold px-4 py-2 rounded-md hover:bg-yellow-100 shadow-sm transition flex items-center gap-2">
@@ -80,10 +61,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pu
             <button id="btnExportarPagos" class="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm transition flex items-center gap-2">
               <span>💰</span> Backup Pagos
             </button>
-            <!-- <a href="/admin-leads" class="bg-purple-600 text-white text-sm font-bold px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm transition flex items-center gap-2">
-              <span>📧</span> Ver Suscriptores
-            </a> -->
-            
           </div>
         </div>
       </div>
@@ -392,7 +369,8 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pu
 </Layout>
 
 <script type="module">
-  import { supabase } from '../lib/supabase.js';
+  // Ajuste de ruta para supabase al movernos dentro de /admin/
+  import { supabase } from '../../lib/supabase.js';
 
   let cacheAlumnos = [];
   let cachePagos = [];
@@ -991,7 +969,14 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pu
       tasaActualDolar = nuevoValor;
       msg.textContent = "Tasa actualizada correctamente.";
       msg.className = "text-xs font-medium mt-3 text-center text-green-600 block";
-      document.getElementById('fechaTasa').textContent = `Act. ${now.toLocaleDateString('es-ES', { hour: '2-digit', minute:'2-digit' })}`;
+      
+      const horaVE = now.toLocaleString('es-VE', { 
+        timeZone: 'America/Caracas', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: true 
+      });
+      document.getElementById('fechaTasa').textContent = `Act. ${horaVE}`;
     } catch (err) {
       msg.textContent = "Error al conectar.";
       msg.className = "text-xs font-medium mt-3 text-center text-red-500 block";
@@ -1157,11 +1142,6 @@ const esSuperAdmin = user.email === "pathdawann@gmail.com" || user.email === "pu
       btn.innerHTML = '<span>🚀</span> Enviar a todos';
       btn.disabled = false;
     }
-  });
-
-  document.getElementById('btnAdminLogout')?.addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/login';
   });
 
   // --- GESTIÓN COMPLETA DEL ATLETA ---

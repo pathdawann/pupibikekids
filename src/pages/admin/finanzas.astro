@@ -1,7 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { supabaseServer } from '../lib/supabase-server.js';
+import Layout from '../../layouts/Layout.astro';
+import { supabaseServer } from '../../lib/supabase-server.js';
+import { esUsuarioAutorizado } from '../../utils/seguridad.js';
+import AdminNav from '../../components/AdminNav.astro';
 
+// 1. Inicializamos cliente de servidor y verificamos sesión
 const supabase = supabaseServer(Astro);
 const { data: { user }, error } = await supabase.auth.getUser();
 
@@ -9,34 +12,21 @@ if (!user || error) {
   return Astro.redirect('/login');
 }
 
-const correosAutorizados = ["pathdawann@gmail.com", "pupibikekids27@gmail.com", "pupibikeweb@gmail.com"];
-if (!user.email || !correosAutorizados.includes(user.email)) {
+// 2. Verificamos autorización centralizada
+if (!esUsuarioAutorizado(user.email)) {
   return Astro.redirect('/dashboard');
 }
 ---
 
 <Layout title="Cierre Contable | Pupi Bike Admin" noindex={true}>
-  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-    <div class="container mx-auto px-4 lg:px-8 max-w-[96%] flex justify-between items-center h-16">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
-          <span class="text-white font-black text-sm italic">PK</span>
-        </div>
-        <a href="/admin" class="text-xl font-black italic tracking-tight text-gray-900">
-          PUPIBIKE<span class="text-emerald-600">FINANZAS</span>
-        </a>
-      </div>
-      <div class="flex items-center gap-4">
-        <a href="/admin" class="text-sm font-bold text-gray-500 hover:text-emerald-600 transition">← Volver al Admin</a>
-      </div>
-    </div>
-  </nav>
-
   <main class="bg-gray-50 min-h-screen pb-12">
     <div class="container mx-auto px-4 lg:px-8 py-8 max-w-[96%]">
       
+      <!-- Inyección limpia del componente Navbar -->
+      <AdminNav titulo="FINANZAS" color="emerald" volverAdmin={true} />
+      
       <!-- Encabezado y Filtro -->
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 mt-6">
         <div>
           <h1 class="text-2xl font-bold text-gray-900">Cierre Contable Mensual</h1>
           <p class="text-sm text-gray-500 mt-1">Verifica los ingresos de la academia y eventos agrupados por mes.</p>
@@ -183,7 +173,8 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
 </Layout>
 
 <script type="module">
-  import { supabase } from '../lib/supabase.js';
+  // Ajuste de ruta para Supabase por el cambio a la carpeta /admin/
+  import { supabase } from '../../lib/supabase.js';
 
   let todosLosPagos = [];
   let todasLasInscripciones = [];
@@ -195,7 +186,6 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
 
   document.addEventListener('DOMContentLoaded', async () => {
     try {
-      // Cargamos Pagos Aprobados, Inscripciones a Eventos y Directorio de Alumnos (incluyendo estatus para la morosidad)
       const [{ data: pagos }, { data: eventos }, { data: alumnos }] = await Promise.all([
         supabase.from('pagos').select('*').eq('estado', 'aprobado'),
         supabase.from('inscripciones_pupirace').select('*'),
@@ -334,7 +324,7 @@ if (!user.email || !correosAutorizados.includes(user.email)) {
     const textEvol = document.getElementById('uiEvolucionText');
 
     if (indexActual >= 0 && indexActual < mesesDisponibles.length - 1) {
-      const mesAnt = mesesDisponibles[indexActual + 1]; // El mes anterior está en la siguiente posición (orden descendente)
+      const mesAnt = mesesDisponibles[indexActual + 1]; 
       
       const pagosAnt = todosLosPagos.filter(p => p.mes_correspondiente === mesAnt);
       const totalAcademiaAnt = pagosAnt.reduce((acc, curr) => acc + Number(curr.monto || 0), 0);
