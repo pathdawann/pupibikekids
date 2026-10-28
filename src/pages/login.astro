@@ -154,11 +154,11 @@ import Layout from '../layouts/Layout.astro';
 
       if (error) throw error;
 
-      // Lista de correos administradores
-      const correosAdmin = ["pathdawann@gmail.com", "pupibikekids27@gmail.com"];
+      // Lista de correos administradores centralizada (Recomendado mover a BD a futuro)
+      const correosAdmin = ["pathdawann@gmail.com", "pupibikekids27@gmail.com", "pupibikeweb@gmail.com"];
 
       if (data.user?.email && correosAdmin.includes(data.user.email)) {
-        window.location.href = '/admin';
+        window.location.href = '/admin'; // Redirección correcta a la nueva carpeta
       } else {
         window.location.href = '/dashboard';
       }

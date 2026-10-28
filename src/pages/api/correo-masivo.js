@@ -1,11 +1,20 @@
 import nodemailer from 'nodemailer';
+import { supabaseServer } from '../../lib/supabase-server.js';
+import { esUsuarioAutorizado } from '../../utils/seguridad.js';
 
 export const prerender = false;
 
-export async function POST({ request }) {
+export async function POST(context) {
   try {
-    const body = await request.json();
-    // Ahora recibimos el "attachment" desde admin.astro
+    // 1. Verificación de Seguridad (Autenticación + Autorización)
+    const supabase = supabaseServer(context);
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user || !esUsuarioAutorizado(user.email)) {
+      return new Response(JSON.stringify({ error: 'Acceso denegado. Se requiere nivel de administrador.' }), { status: 403 });
+    }
+
+    const body = await context.request.json();
     const { subject, message, bccList, attachment } = body;
 
     if (!bccList || bccList.length === 0) {
@@ -35,7 +44,6 @@ export async function POST({ request }) {
       </div>
     `;
 
-    // Preparamos las opciones del correo
     const mailOptions = {
       from: `"Academia PupiBike Kids" <${import.meta.env.EMAIL_USER}>`,
       to: import.meta.env.EMAIL_USER, 
@@ -45,15 +53,12 @@ export async function POST({ request }) {
       html: htmlBody
     };
 
-    // Si viene un adjunto, lo añadimos
     if (attachment) {
-      mailOptions.attachments = [
-        {
-          filename: attachment.filename,
-          content: attachment.content,
-          encoding: 'base64'
-        }
-      ];
+      mailOptions.attachments = [{
+        filename: attachment.filename,
+        content: attachment.content,
+        encoding: 'base64'
+      }];
     }
 
     await transporter.sendMail(mailOptions);

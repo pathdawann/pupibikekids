@@ -23,6 +23,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 
 <Layout title="Admin - Pupi Race | Pupi Bike Kids" noindex={true}>
   
+  <!-- Inyección limpia del componente Navbar con color cyan y botón de volver -->
   <AdminNav titulo="PUPI RACE" color="cyan" volverAdmin={true} />
 
   <main id="adminPupiRaceContenido" data-superadmin={esSuperAdmin ? "true" : "false"} class="bg-gray-50 min-h-screen pb-12">
@@ -170,7 +171,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
               </div>
               <div>
                 <label for="editCategoria" class="block text-base font-bold text-gray-700 mb-1 uppercase">Categoría</label>
-                <input type="text" id="editCategoria" required class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm text-cyan-700 font-bold uppercase focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                <input type="text" id="editCategoria" required readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm text-cyan-700 font-bold uppercase cursor-not-allowed">
               </div>
               <div>
                 <label for="editEmail" class="block text-base font-bold text-gray-700 mb-1 uppercase">Correo Electrónico</label>
@@ -229,23 +230,14 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 </Layout>
 
 <script type="module">
-  // Ajuste de ruta para Supabase por el cambio a la carpeta /admin/
+  // Importaciones optimizadas
   import { supabase } from '../../lib/supabase.js';
+  import { escaparHTML } from '../../utils/formatters.js';
 
   let listaInscritos = [];
   let idParaEliminar = null;
 
   const esSuperAdmin = document.getElementById('adminPupiRaceContenido')?.dataset.superadmin === 'true';
-
-  function escaparHTML(texto) {
-    if (!texto) return '';
-    return String(texto)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
 
   async function cargarInscritos() {
     const { data, error } = await supabase
@@ -408,6 +400,46 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 
     modal.classList.remove('hidden');
   }
+
+  function calcularCategoriaModal() {
+    const fecha = document.getElementById('editFechaNac').value;
+    const genero = document.getElementById('editGenero').value;
+    const inputCat = document.getElementById('editCategoria');
+
+    if (!fecha || !genero) {
+      inputCat.value = "";
+      return;
+    }
+
+    const anoNacimiento = parseInt(fecha.substring(0, 4), 10);
+    const anoEvento = 2026; 
+    const edadCalendario = anoEvento - anoNacimiento;
+
+    let catBase = "";
+
+    if (edadCalendario <= 4) {
+      catBase = "Balance";
+    } else if (edadCalendario >= 5 && edadCalendario <= 6) {
+      catBase = "5 y 6 años";
+    } else if (edadCalendario >= 7 && edadCalendario <= 8) {
+      catBase = "7 y 8 años";
+    } else if (edadCalendario >= 9 && edadCalendario <= 10) {
+      catBase = "9 y 10 años";
+    } else if (edadCalendario >= 11 && edadCalendario <= 12) {
+      catBase = "11 y 12 años";
+    } else if (edadCalendario >= 13 && edadCalendario <= 14) {
+      catBase = "13 y 14 años";
+    } else if (edadCalendario >= 15 && edadCalendario <= 16) {
+      catBase = "15 y 16 años";
+    } else {
+      catBase = "Open";
+    }
+
+    inputCat.value = `${catBase} ${genero}`;
+  }
+
+  document.getElementById('editFechaNac').addEventListener('change', calcularCategoriaModal);
+  document.getElementById('editGenero').addEventListener('change', calcularCategoriaModal);
 
   formInscrito.addEventListener('submit', async (e) => {
     e.preventDefault();

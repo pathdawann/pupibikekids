@@ -225,23 +225,15 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 </Layout>
 
 <script type="module">
-  // Ajuste de ruta para Supabase
+  // Rutas y utilidades optimizadas
   import { supabase } from '../../lib/supabase.js';
+  import { escaparHTML } from '../../utils/formatters.js';
 
   let listaInscritos = [];
   let idParaEliminar = null;
 
+  // Verificamos si la usuaria actual es la Super Administradora
   const esSuperAdmin = document.getElementById('adminCambibaraContenido')?.dataset.superadmin === 'true';
-
-  function escaparHTML(texto) {
-    if (!texto) return '';
-    return String(texto)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
 
   async function cargarInscritos() {
     const { data, error } = await supabase
@@ -301,14 +293,17 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
       const fecha = new Date(item.created_at).toLocaleDateString('es-VE');
       const tr = document.createElement('tr');
       
+      // 1. Asignamos la clase al TR (diseño de tarjeta móvil vs fila de tabla PC)
       tr.className = "border-b border-gray-200 flex flex-col md:table-row p-6 md:p-0 gap-4 md:gap-0 hover:bg-gray-50 transition";
       
+      // 2. Declaramos las variables auxiliares UNA SOLA VEZ
       const urlSegura = item.comprobante_url ? escaparHTML(item.comprobante_url) : '';
       const botonEliminarHtml = esSuperAdmin 
         ? `<button data-id="${escaparHTML(item.id)}" class="btn-eliminar text-red-600 hover:text-red-800 font-bold text-sm uppercase px-4 py-2 md:px-0 md:py-0 md:bg-transparent bg-red-50 md:underline rounded-md w-full md:w-auto text-center border border-red-100 md:border-0 transition">Eliminar</button>` 
         : '';
       const colorMetodo = item.metodo_pago === 'Efectivo Pista' ? 'bg-yellow-100 text-yellow-800' : 'bg-emerald-100 text-emerald-800';
 
+      // 3. Insertamos el HTML
       tr.innerHTML = `
         <!-- Fecha -->
         <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">

@@ -2,9 +2,17 @@ import nodemailer from 'nodemailer';
 
 export const prerender = false;
 
-export async function POST({ request }) {
+export async function POST(context) {
   try {
-    const body = await request.json();
+    // Protección básica: Validar el origen de la petición
+    const origin = context.request.headers.get('origin');
+    const dominiosPermitidos = ['https://www.pupibikekids.com', 'https://pupibikekids.com', 'http://localhost:4321'];
+    
+    if (!dominiosPermitidos.includes(origin)) {
+      return new Response(JSON.stringify({ error: 'Origen no autorizado' }), { status: 403 });
+    }
+
+    const body = await context.request.json();
     const { email, nombre, apellido, categoria, referencia } = body;
 
     if (!email) {

@@ -173,8 +173,9 @@ if (!esUsuarioAutorizado(user.email)) {
 </Layout>
 
 <script type="module">
-  // Ajuste de ruta para Supabase por el cambio a la carpeta /admin/
+  // Ajuste de rutas y utilidades extraídas
   import { supabase } from '../../lib/supabase.js';
+  import { escaparHTML } from '../../utils/formatters.js';
 
   let todosLosPagos = [];
   let todasLasInscripciones = [];
@@ -404,12 +405,12 @@ if (!esUsuarioAutorizado(user.email)) {
       tbody.innerHTML += `
         <tr class="hover:bg-gray-50 transition">
           <td class="px-4 py-3">
-            <div class="font-bold text-gray-900 uppercase">${nombreAtleta}</div>
-            <div class="text-xs text-gray-500">${fechaPago}</div>
+            <div class="font-bold text-gray-900 uppercase">${escaparHTML(nombreAtleta)}</div>
+            <div class="text-xs text-gray-500">${escaparHTML(fechaPago)}</div>
           </td>
           <td class="px-4 py-3">
-            <div class="text-sm text-gray-700">${p.metodo_pago}</div>
-            <div class="text-xs font-mono text-gray-400">Ref: ${p.referencia}</div>
+            <div class="text-sm text-gray-700">${escaparHTML(p.metodo_pago)}</div>
+            <div class="text-xs font-mono text-gray-400">Ref: ${escaparHTML(p.referencia)}</div>
           </td>
           <td class="px-4 py-3 text-right">
             <div class="font-black text-blue-600">$${Number(p.monto).toFixed(2)}</div>
@@ -435,11 +436,11 @@ if (!esUsuarioAutorizado(user.email)) {
       tbody.innerHTML += `
         <tr class="hover:bg-gray-50 transition">
           <td class="px-4 py-3">
-            <div class="font-bold text-gray-900 uppercase">${i.nombre} ${i.apellido}</div>
-            <div class="text-xs text-gray-500">${fechaIns} | Ref: <span class="font-mono">${i.referencia}</span></div>
+            <div class="font-bold text-gray-900 uppercase">${escaparHTML(i.nombre)} ${escaparHTML(i.apellido)}</div>
+            <div class="text-xs text-gray-500">${escaparHTML(fechaIns)} | Ref: <span class="font-mono">${escaparHTML(i.referencia)}</span></div>
           </td>
           <td class="px-4 py-3">
-            <span class="inline-block bg-pink-50 text-pink-700 border border-pink-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${i.categoria}</span>
+            <span class="inline-block bg-pink-50 text-pink-700 border border-pink-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${escaparHTML(i.categoria)}</span>
           </td>
           <td class="px-4 py-3 text-right">
             <div class="font-black text-pink-600">$${costoFijo.toFixed(2)}</div>

@@ -86,21 +86,12 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 </Layout>
 
 <script type="module">
-  // Ajuste de ruta para Supabase por el cambio a la carpeta /admin/
+  // Ajuste de ruta para Supabase y utilidades
   import { supabase } from '../../lib/supabase.js';
+  import { escaparHTML } from '../../utils/formatters.js';
 
   let cacheLeads = [];
   const esSuperAdmin = document.getElementById('adminLeadsContenido')?.dataset.superadmin === 'true';
-
-  function escaparHTML(texto) {
-    if (!texto) return '';
-    return String(texto)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
 
   async function cargarLeads() {
     const { data, error } = await supabase
