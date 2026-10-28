@@ -3,7 +3,7 @@
 // Lista global de correos con acceso al panel administrativo
 export const CORREOS_AUTORIZADOS = [
   "pathdawann@gmail.com", 
-  "pupibikekids27@gmail.com", 
+  "cesarpupibike@gmail.com", 
   "pupibikeweb@gmail.com"
 ];
 
@@ -13,7 +13,6 @@ export const CORREOS_SUPERADMIN = [
   "pupibikeweb@gmail.com"
 ];
 
-// Funciones de validación para usar en cualquier archivo
 export function esUsuarioAutorizado(email) {
   return email ? CORREOS_AUTORIZADOS.includes(email) : false;
 }
