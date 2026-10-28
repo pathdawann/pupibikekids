@@ -186,7 +186,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
         </div>
       </div>
 
-      <!-- SECCIÓN: Directorio Total de Atletas CON BUSCADOR Y 5 NIVELES -->
+      <!-- SECCIÓN: Directorio Total de Atletas CON BUSCADOR Y PESTAÑA DE MOROSOS -->
       <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-12">
         <div class="border-b border-gray-200 px-6 py-4 flex flex-col xl:flex-row justify-between items-center gap-4 bg-gray-50">
           <div>
@@ -205,8 +205,14 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
               >
             </div>
 
-            <div class="flex flex-wrap bg-gray-100 p-1 rounded-lg border border-gray-200 w-full sm:w-auto justify-center">
+            <div class="flex flex-wrap bg-gray-100 p-1 rounded-lg border border-gray-200 w-full sm:w-auto justify-center gap-1">
               <button onclick="window.filtrarDirectorio('TODOS')" id="filtro-TODOS" class="filtro-btn active px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Todos</button>
+              
+              <!-- PESTAÑA MOROSOS AGREGADA DIRECTAMENTE AL DIRECTORIO -->
+              <button onclick="window.filtrarDirectorio('MOROSOS')" id="filtro-MOROSOS" class="filtro-btn px-2.5 py-1.5 text-xs font-bold rounded-md text-red-600 hover:text-red-800 flex items-center gap-1">
+                ⚠️ Morosos <span id="badgeDirectorioMorosos" class="bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full text-[10px] leading-none">0</span>
+              </button>
+
               <button onclick="window.filtrarDirectorio('PROSPECTO')" id="filtro-PROSPECTO" class="filtro-btn px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Prospectos</button>
               <button onclick="window.filtrarDirectorio('AVANZADO')" id="filtro-AVANZADO" class="filtro-btn px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Avanzado</button>
               <button onclick="window.filtrarDirectorio('INTERMEDIO')" id="filtro-INTERMEDIO" class="filtro-btn px-2.5 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Intermedio</button>
@@ -238,20 +244,27 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     </div>
 
     <style>
-      /* Transición suave para todos los botones al hacer clic */
       .filtro-btn, .filtro-pago-btn {
         transition: all 0.3s ease;
       }
 
-      /* Estilo para el botón SELECCIONADO (Azul PupiBike Admin) */
       .filtro-btn.active, .filtro-pago-btn.active {
-        background-color: #2563eb !important; /* Fondo Azul (blue-600) */
-        color: #ffffff !important; /* Texto Blanco */
-        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3) !important; /* Sombra suave azulada */
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3) !important;
       }
 
-      /* Ajuste dinámico: Si el botón de "Pendientes" está activo, 
-         el circulito con el número cambia a blanco para que contraste perfecto */
+      .filtro-btn.active#filtro-MOROSOS {
+        background-color: #dc2626 !important; /* Rojo vibrante cuando esté activo */
+        color: #ffffff !important;
+        box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.3) !important;
+      }
+
+      .filtro-btn.active#filtro-MOROSOS #badgeDirectorioMorosos {
+        background-color: #ffffff !important;
+        color: #dc2626 !important;
+      }
+
       .filtro-pago-btn.active #badgePagosPendientes {
         background-color: #ffffff !important;
         color: #2563eb !important;
@@ -259,7 +272,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     </style>
 
     <!-- MODAL CONFIRMAR PAGO -->
-    <div id="modalConfirmarPago" class="fixed inset-0 bg-gray-900/50 z-100 hidden flex items-center justify-center backdrop-blur-sm p-4">
+    <div id="modalConfirmarPago" class="fixed inset-0 bg-gray-900/50 z-[120] hidden flex items-center justify-center backdrop-blur-sm p-4">
       <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 text-center border border-gray-200">
         <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4 text-green-600 text-xl">✓</div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">Aprobar Pago</h2>
@@ -272,7 +285,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     </div>
 
     <!-- MODAL DESHACER PAGO -->
-    <div id="modalRevertirPago" class="fixed inset-0 bg-gray-900/50 z-100 hidden flex items-center justify-center backdrop-blur-sm p-4">
+    <div id="modalRevertirPago" class="fixed inset-0 bg-gray-900/50 z-[120] hidden flex items-center justify-center backdrop-blur-sm p-4">
       <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 text-center border border-gray-200">
         <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mx-auto mb-4 text-yellow-600 text-xl">⚠️</div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">Revertir a Revisión</h2>
@@ -284,8 +297,8 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
       </div>
     </div>
 
-    <!-- MODAL EDICIÓN Y GESTIÓN TOTAL DEL ATLETA -->
-    <div id="modalFichaAtleta" class="fixed inset-0 bg-gray-900/60 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+    <!-- MODAL EDICIÓN Y GESTIÓN TOTAL DEL ATLETA (Z-Index alto para abrirse encima del recordatorio) -->
+    <div id="modalFichaAtleta" class="fixed inset-0 bg-gray-900/60 z-[110] hidden flex items-center justify-center backdrop-blur-sm p-4">
       <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col relative">
         <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gray-50">
           <h2 class="text-lg font-bold text-gray-900">Gestión de Atleta</h2>
@@ -309,14 +322,8 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
           </button>
         </div>
         
-        <!-- Pestañas de Días -->
-        <div class="px-6 pt-4 border-b border-gray-200 bg-white overflow-x-auto flex gap-1" id="tabsCalendario">
-          <!-- JS Inyecta las pestañas aquí -->
-        </div>
-
-        <div class="p-6 overflow-y-auto bg-gray-50 flex-1 relative" id="panelesCalendario">
-          <!-- JS Inyecta los formularios aquí -->
-        </div>
+        <div class="px-6 pt-4 border-b border-gray-200 bg-white overflow-x-auto flex gap-1" id="tabsCalendario"></div>
+        <div class="p-6 overflow-y-auto bg-gray-50 flex-1 relative" id="panelesCalendario"></div>
 
         <div class="flex justify-end p-4 border-t border-gray-200 bg-white">
           <button type="button" id="btnGuardarCalendario" class="bg-blue-600 text-white font-bold px-8 py-2.5 rounded-lg hover:bg-blue-700 transition shadow-sm">
@@ -365,6 +372,80 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
       </div>
     </div>
 
+    <!-- MODAL RECORDATORIO DE PAGO CON LISTA DE ATLETAS (VER/EDITAR/ELIMINAR) -->
+    <div id="modalRecordatorioPago" class="fixed inset-0 bg-gray-900/60 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col relative max-h-[92vh]">
+        <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-amber-50 flex-shrink-0">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <span>🔔</span> Enviar Recordatorio de Mensualidad
+            </h2>
+            <p class="text-xs text-amber-800" id="subtituloRecordatorio">
+              Cargando atletas pendientes...
+            </p>
+          </div>
+          <button id="btnCerrarModalRecordatorio" class="text-gray-400 hover:text-gray-600 focus:outline-none" aria-label="Cerrar modal">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+
+        <div class="p-6 bg-white overflow-y-auto flex-1 space-y-6">
+          
+          <!-- LISTA INTERACTIVA DE ATLETAS MOROSOS -->
+          <div class="border border-amber-200 bg-amber-50/40 rounded-xl p-4">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-3 border-b border-amber-200/80 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-black text-gray-900 uppercase tracking-wide">
+                  📋 Atletas con Pago Pendiente (<span id="conteoMorososNumero">0</span>)
+                </span>
+                <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+                  Mes en curso
+                </span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button type="button" id="btnToggleTodosMorosos" class="text-xs font-bold text-amber-700 hover:text-amber-900 underline focus:outline-none">
+                  Desmarcar todos
+                </button>
+              </div>
+            </div>
+
+            <!-- Contenedor scrollable con las fichas individuales -->
+            <div id="listaMorososDetallada" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+              <!-- JS inyecta atletas morosos aquí -->
+            </div>
+            
+            <p class="text-[11px] text-gray-500 italic mt-2.5">
+              💡 Puedes desmarcar atletas para excluirlos de este correo, presionar <strong>"Ficha"</strong> para registrar su pago o editar sus datos, o <strong>"Eliminar"</strong> para remover atletas inactivos.
+            </p>
+          </div>
+
+          <!-- FORMULARIO DE ENVÍO -->
+          <form id="formRecordatorioPago" class="space-y-4">
+            <div>
+              <label for="asuntoRecordatorio" class="block text-xs font-bold text-gray-700 uppercase mb-1">Asunto</label>
+              <input type="text" id="asuntoRecordatorio" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            </div>
+            <div>
+              <label for="mensajeRecordatorio" class="block text-xs font-bold text-gray-700 uppercase mb-1">Mensaje para Atletas Pendientes</label>
+              <textarea id="mensajeRecordatorio" required rows="5" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
+            </div>
+            <div>
+              <label for="adjuntoRecordatorio" class="block text-xs font-bold text-gray-700 uppercase mb-1">Adjuntar Imagen (Opcional, Ej: Datos de Pago)</label>
+              <input type="file" id="adjuntoRecordatorio" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:outline-none file:mr-4 file:py-1.5 file:px-4 file:border-0 file:text-xs file:font-black file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 cursor-pointer">
+            </div>
+            
+            <div id="estadoEnvioRecordatorio" class="hidden text-sm font-bold text-center p-2 rounded"></div>
+            
+            <div class="flex justify-end pt-2 border-t border-gray-100">
+              <button type="submit" id="btnEnviarRecordatorio" class="bg-amber-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-amber-700 transition shadow-sm flex items-center gap-2">
+                <span>🚀</span> Enviar Recordatorio (<span id="conteoSeleccionadosBoton">0</span>)
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
   </main>
 </Layout>
 
@@ -386,6 +467,13 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
   const esSuperAdmin = document.getElementById('adminContenido')?.dataset.superadmin === 'true';
   const FOTO_DEFAULT = 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=80';
 
+  // Referencias a modales principales
+  const modalRecordatorio = document.getElementById('modalRecordatorioPago');
+  const btnAbrirRecordatorio = document.getElementById('btnRecordatorioPago');
+  const btnCerrarRecordatorio = document.getElementById('btnCerrarModalRecordatorio');
+  const formRecordatorio = document.getElementById('formRecordatorioPago');
+  const btnToggleTodos = document.getElementById('btnToggleTodosMorosos');
+
   document.addEventListener('DOMContentLoaded', async () => {
     try {
       const { data: tasaData } = await supabase.from('configuracion').select('valor, updated_at').eq('clave', 'tasa_dolar').single();
@@ -394,7 +482,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
         tasaActualDolar = parseFloat(tasaData.valor);
         document.getElementById('inputTasa').value = tasaActualDolar;
         
-        // Asegurar formato UTC y forzar zona horaria de Venezuela
+        // Formato UTC con zona horaria de Venezuela
         const fechaUTC = tasaData.updated_at.endsWith('Z') ? tasaData.updated_at : `${tasaData.updated_at}Z`;
         const fechaUpd = new Date(fechaUTC).toLocaleString('es-VE', { 
           timeZone: 'America/Caracas',
@@ -436,6 +524,25 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     renderizarMetricas();
     renderizarPagos();
     renderizarDirectorio();
+
+    // Si el modal de recordatorio está abierto, refresca su lista en tiempo real
+    if (modalRecordatorio && !modalRecordatorio.classList.contains('hidden')) {
+      actualizarListaMorososModal();
+    }
+  }
+
+  // Helper para obtener atletas morosos activos del mes actual
+  function obtenerMorososActivos() {
+    const fechaActual = new Date();
+    const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
+
+    const alumnosActivos = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo');
+    return alumnosActivos.filter(alumno => {
+      const pagosAlumno = cachePagos.filter(p => p.alumno_id === alumno.id);
+      const pagoMes = pagosAlumno.find(p => p.mes_correspondiente === mesActualStr);
+      return !pagoMes || pagoMes.estado !== 'aprobado';
+    });
   }
 
   function renderizarMetricas() {
@@ -460,7 +567,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     const pagosRevision = cachePagos.filter(p => p.estado === 'revision').length;
 
     contenedor.innerHTML = `
-      <!-- 1. Matrícula Total -->
       <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Matrícula Total</p>
@@ -470,7 +576,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
         <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl shadow-sm">🎓</div>
       </div>
 
-      <!-- 2. Distribución de Niveles (Legible y con Badges) -->
       <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex flex-col justify-between">
         <div class="flex items-center justify-between mb-2">
           <p class="text-sm font-bold text-gray-500 uppercase tracking-wide">Distribución Niveles</p>
@@ -495,7 +600,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
         </div>
       </div>
 
-      <!-- 3. Ingresos del Mes -->
       <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Ingresos (${mesesNombres[fechaActual.getMonth()]})</p>
@@ -505,7 +609,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
         <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-3xl shadow-sm">💵</div>
       </div>
 
-      <!-- 4. Pagos en Revisión -->
       <div class="bg-white rounded-xl border ${pagosRevision > 0 ? 'border-orange-300 bg-orange-50/40' : 'border-gray-200'} p-5 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-sm font-bold ${pagosRevision > 0 ? 'text-orange-700' : 'text-gray-500'} uppercase tracking-wide mb-1">Pagos en Revisión</p>
@@ -603,7 +706,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 
       tbody.innerHTML += `
         <tr class="border-b border-gray-200 flex flex-col md:table-row p-5 md:p-0 gap-3 md:gap-0 hover:bg-gray-50 transition relative">
-          <!-- Fecha -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
             <div class="flex justify-between md:block items-center pb-2 md:pb-0 border-b border-gray-100 md:border-0">
               <span class="text-sm font-bold text-gray-400 uppercase md:hidden">Fecha Registro</span>
@@ -611,13 +713,11 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
             </div>
           </td>
 
-          <!-- Atleta y Cédula -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
             <div class="text-base font-black text-gray-900 uppercase leading-tight">${escaparHTML(nombreAtleta)}</div>
             <div class="text-base text-gray-500 mt-0.5">${escaparHTML(cedulaAtleta)}</div>
           </td>
 
-          <!-- Referencia y Método -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
             <div class="flex md:block items-start gap-3">
                <span class="text-sm font-bold text-gray-400 uppercase md:hidden w-16 pt-1">Pago:</span>
@@ -628,7 +728,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
             </div>
           </td>
 
-          <!-- Montos -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle text-left md:text-right">
              <div class="flex md:block items-center justify-between gap-3">
                 <span class="text-sm font-bold text-gray-400 uppercase md:hidden">Monto USD:</span>
@@ -642,7 +741,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
              </div>
           </td>
 
-          <!-- Mes y Capture -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle text-left md:text-center">
              <div class="flex md:block items-center justify-between gap-3">
                 <span class="text-sm font-bold text-gray-400 uppercase md:hidden">Mes Pagado:</span>
@@ -656,7 +754,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
             </div>
           </td>
 
-          <!-- Estado y Acciones -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle text-left md:text-center">
              <div class="flex md:block items-center justify-between gap-3">
                 <span class="text-sm font-bold text-gray-400 uppercase md:hidden">Estado:</span>
@@ -674,7 +771,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     });
   }
 
-  // Lógica de Tabs del Directorio
+  // Lógica de Tabs del Directorio con Soporte para "MOROSOS"
   window.filtrarDirectorio = function(filtro) {
     filtroActual = filtro;
     document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
@@ -686,10 +783,16 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     const tbody = document.getElementById('tablaDirectorioAtletas');
     tbody.innerHTML = '';
 
+    const morososActivos = obtenerMorososActivos();
+    const badgeMorosos = document.getElementById('badgeDirectorioMorosos');
+    if (badgeMorosos) badgeMorosos.textContent = morososActivos.length;
+
     let lista = cacheAlumnos;
 
     if (filtroActual === 'INACTIVO') {
       lista = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() === 'inactivo');
+    } else if (filtroActual === 'MOROSOS') {
+      lista = morososActivos;
     } else if (filtroActual !== 'TODOS') {
       lista = cacheAlumnos.filter(a => (a.nivel || '').toUpperCase() === filtroActual && (a.estatus || 'activo').toLowerCase() !== 'inactivo');
     } else {
@@ -712,7 +815,10 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     }
 
     if (lista.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">No se encontraron atletas con ese criterio.</td></tr>`;
+      const msgVacio = filtroActual === 'MOROSOS' 
+        ? '¡Excelente! No hay atletas con pagos pendientes este mes.' 
+        : 'No se encontraron atletas con ese criterio.';
+      tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-sm font-medium text-gray-500">${msgVacio}</td></tr>`;
       return;
     }
 
@@ -763,12 +869,17 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
       const idAlumnoSeguro = escaparHTML(alumno.id);
       const fotoSegura = alumno.foto_url ? escaparHTML(alumno.foto_url) : FOTO_DEFAULT;
 
+      const btnEliminarDirectorioHtml = esSuperAdmin
+        ? `<button onclick="window.eliminarAtletaDefinitivo('${idAlumnoSeguro}')" class="w-full md:w-auto flex justify-center items-center gap-1 px-3 py-1.5 md:p-1.5 text-red-600 md:text-gray-400 bg-red-50 md:bg-transparent hover:text-red-600 hover:bg-red-50 rounded transition font-bold text-xs" title="Eliminar atleta">
+             <span class="md:hidden">🗑️ Eliminar</span>
+             <svg class="w-5 h-5 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+           </button>`
+        : '';
+
       tbody.innerHTML += `
         <tr class="border-b border-gray-200 flex flex-col md:table-row p-6 md:p-0 gap-4 md:gap-0 hover:bg-gray-50 transition relative">
-          <!-- Alumno -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
             <div class="flex items-center gap-3">
-              <!-- Aumentamos el tamaño de la foto en escritorio a w-10 h-10 -->
               <div class="w-14 h-14 md:w-10 md:h-10 rounded-full bg-gray-200 overflow-hidden border border-gray-300 flex-shrink-0 shadow-sm">
                  <img src="${fotoSegura}" alt="${escaparHTML(alumno.nombre)}" class="w-full h-full object-cover" onerror="this.src='${FOTO_DEFAULT}'">
               </div>
@@ -782,7 +893,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
             </div>
           </td>
 
-          <!-- Contacto -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle">
              <div class="flex md:block items-start gap-3 mt-1 md:mt-0">
                 <span class="text-sm font-bold text-gray-400 uppercase md:hidden w-20 pt-0.5">Contacto:</span>
@@ -793,7 +903,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
              </div>
           </td>
 
-          <!-- Nivel -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle md:text-center">
              <div class="flex md:block items-center gap-3">
                 <span class="text-sm font-bold text-gray-400 uppercase md:hidden w-20">Nivel:</span>
@@ -801,7 +910,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
              </div>
           </td>
 
-          <!-- Solvencia -->
           <td class="block md:table-cell px-0 py-0 md:px-6 md:py-4 md:align-middle md:text-center">
              <div class="flex md:block items-center gap-3">
                 <span class="text-sm font-bold text-gray-400 uppercase md:hidden w-20">Solvencia:</span>
@@ -809,11 +917,11 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
              </div>
           </td>
 
-          <!-- Acciones -->
           <td class="block md:table-cell px-0 pt-4 pb-0 md:px-6 md:py-4 md:align-middle md:text-center mt-2 md:mt-0 border-t border-gray-100 md:border-0">
-            <div class="flex flex-col sm:flex-row items-center justify-between md:justify-center gap-4">
+            <div class="flex flex-col sm:flex-row items-center justify-between md:justify-center gap-3">
               <button onclick="window.verFichaAtleta('${idAlumnoSeguro}')" class="w-full md:w-auto text-center bg-blue-50 md:bg-transparent text-blue-600 hover:text-blue-800 border border-blue-100 md:border-transparent rounded-md px-4 py-2 md:p-0 text-sm font-bold transition focus:outline-none">Ficha Completa</button>
               ${btnWp}
+              ${btnEliminarDirectorioHtml}
             </div>
           </td>
         </tr>
@@ -1004,35 +1112,210 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     link.click();
   }
 
-  document.getElementById('btnRecordatorioPago')?.addEventListener('click', () => {
+  // --- GESTIÓN Y MODAL DE RECORDATORIO DE PAGO ---
+  function actualizarListaMorososModal() {
+    const morosos = obtenerMorososActivos();
+    const contenedorLista = document.getElementById('listaMorososDetallada');
+    const badgeNumero = document.getElementById('conteoMorososNumero');
     const fechaActual = new Date();
     const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     const mesActualStr = `${mesesNombres[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
 
-    // 1. Alumnos activos
-    const alumnosActivos = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo');
+    if (badgeNumero) badgeNumero.textContent = morosos.length;
 
-    // 2. Filtrar morosos (sin pago o en revisión)
-    const morosos = alumnosActivos.filter(alumno => {
-      const pagosAlumno = cachePagos.filter(p => p.alumno_id === alumno.id);
-      const pagoMes = pagosAlumno.find(p => p.mes_correspondiente === mesActualStr);
-      return !pagoMes || pagoMes.estado !== 'aprobado';
-    });
-
-    const emails = morosos.map(a => a.email).filter(Boolean).join(',');
-
-    if (!emails) {
-      return alert("¡Excelentes noticias! Todos los atletas están al día.");
+    if (morosos.length === 0) {
+      modalRecordatorio?.classList.add('hidden');
+      alert("¡Excelentes noticias! Todos los atletas activos están al día.");
+      return;
     }
 
-    // 3. Plantilla
-    const asunto = encodeURIComponent(`Recordatorio Amistoso de Mensualidad - ${mesActualStr} 🚴‍♂️`);
-    const cuerpo = encodeURIComponent(`¡Hola familia PupiBike! 🚴‍♀️🚴‍♂️\n\nEsperamos que se encuentren muy bien y listos para seguir pedaleando con energía.\n\nLes escribimos para notificarles que aún no hemos registrado en nuestro sistema su mensualidad correspondiente al mes de ${mesActualStr}.\n\nSabemos que el día a día puede ser ajetreado. Si ya realizaron su pago o transferencia, por favor omitan este mensaje o envíennos el comprobante por WhatsApp para actualizar la ficha del atleta de inmediato.\n\n¡Gracias por ser parte de nuestra academia y por su apoyo constante!\n\nAtentamente,\nEl equipo de Pupi Bike Kids.`);
+    document.getElementById('subtituloRecordatorio').textContent = 
+      `Se enviará como copia oculta (BCC) a los atletas seleccionados con pago pendiente de ${mesActualStr}.`;
 
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${emails}&su=${asunto}&body=${cuerpo}`, '_blank');
+    document.getElementById('asuntoRecordatorio').value = 
+      `Recordatorio de Mensualidad - ${mesActualStr} 🚴‍♂️`;
+      
+    document.getElementById('mensajeRecordatorio').value = 
+`¡Hola familia PupiBike! 🚴‍♀️🚴‍♂️
+
+Esperamos que se encuentren muy bien y listos para seguir pedaleando con energía.
+
+Les escribimos para notificarles que aún no hemos registrado en nuestro sistema su mensualidad correspondiente al mes de ${mesActualStr}.
+
+Sabemos que el día a día puede ser ajetreado. Si ya realizaron su pago o transferencia, por favor omitan este mensaje o envíennos el comprobante por WhatsApp para actualizar la ficha del atleta de inmediato.
+
+¡Gracias por ser parte de nuestra academia y por su apoyo constante!
+
+Atentamente,
+El equipo de Pupi Bike Kids.`;
+
+    contenedorLista.innerHTML = '';
+    morosos.forEach(alumno => {
+      const idSeguro = escaparHTML(alumno.id);
+      const emailSeguro = escaparHTML(alumno.email || '');
+      const nombreSeguro = escaparHTML(alumno.nombre || 'Atleta');
+      const nivelSeguro = escaparHTML(alumno.nivel || 'N/A');
+      const telefonoSeguro = escaparHTML(alumno.telefono || 'Sin teléfono');
+      const fotoSegura = alumno.foto_url ? escaparHTML(alumno.foto_url) : FOTO_DEFAULT;
+
+      let colorNivel = 'bg-gray-100 text-gray-700';
+      const nUpper = nivelSeguro.toUpperCase();
+      if (nUpper === 'PROSPECTO') colorNivel = 'bg-amber-100 text-amber-800';
+      else if (nUpper === 'AVANZADO') colorNivel = 'bg-blue-100 text-blue-800';
+      else if (nUpper === 'INTERMEDIO') colorNivel = 'bg-green-100 text-green-800';
+      else if (nUpper === 'ADULTOS') colorNivel = 'bg-purple-100 text-purple-800';
+
+      const btnEliminarHtml = esSuperAdmin 
+        ? `<button type="button" onclick="window.eliminarAtletaDefinitivo('${idSeguro}')" class="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition" title="Eliminar atleta">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+           </button>`
+        : '';
+
+      contenedorLista.innerHTML += `
+        <div class="flex items-center justify-between p-2.5 bg-white rounded-lg border border-gray-200 hover:border-amber-300 transition gap-3" id="item-moroso-${idSeguro}">
+          <div class="flex items-center gap-2.5 min-w-0 flex-1">
+            <input type="checkbox" class="chk-moroso-envio w-4 h-4 accent-amber-600 cursor-pointer flex-shrink-0" data-email="${emailSeguro}" ${emailSeguro ? 'checked' : 'disabled'} title="${emailSeguro ? 'Incluir en el correo' : 'Sin correo registrado'}">
+            <div class="w-8 h-8 rounded-full bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200 shadow-xs">
+              <img src="${fotoSegura}" class="w-full h-full object-cover" onerror="this.src='${FOTO_DEFAULT}'">
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-xs font-bold text-gray-900 uppercase truncate">${nombreSeguro}</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${colorNivel}">${nivelSeguro}</span>
+              </div>
+              <p class="text-[11px] text-gray-500 font-mono truncate">${emailSeguro || '<span class="text-red-500 font-bold">Sin correo</span>'} · ${telefonoSeguro}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            <button type="button" onclick="window.verFichaAtleta('${idSeguro}')" class="px-2.5 py-1 text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded transition" title="Ver ficha completa y editar">
+              ✏️ Ficha
+            </button>
+            ${btnEliminarHtml}
+          </div>
+        </div>
+      `;
+    });
+
+    actualizarContadorSeleccionados();
+
+    document.querySelectorAll('.chk-moroso-envio').forEach(chk => {
+      chk.addEventListener('change', actualizarContadorSeleccionados);
+    });
+  }
+
+  function actualizarContadorSeleccionados() {
+    const chks = document.querySelectorAll('.chk-moroso-envio:checked');
+    const totalDisponibles = document.querySelectorAll('.chk-moroso-envio:not(:disabled)').length;
+    const botonBadge = document.getElementById('conteoSeleccionadosBoton');
+    if (botonBadge) botonBadge.textContent = chks.length;
+
+    if (btnToggleTodos) {
+      btnToggleTodos.textContent = chks.length === totalDisponibles ? "Desmarcar todos" : "Seleccionar todos";
+    }
+  }
+
+  btnToggleTodos?.addEventListener('click', () => {
+    const chks = document.querySelectorAll('.chk-moroso-envio:not(:disabled)');
+    const estanTodosMarcados = Array.from(chks).every(c => c.checked);
+    chks.forEach(c => c.checked = !estanTodosMarcados);
+    actualizarContadorSeleccionados();
   });
 
-  // --- NUEVA LÓGICA DE CORREO MASIVO EN MODAL ---
+  btnAbrirRecordatorio?.addEventListener('click', () => {
+    actualizarListaMorososModal();
+    document.getElementById('estadoEnvioRecordatorio')?.classList.add('hidden');
+    modalRecordatorio?.classList.remove('hidden');
+  });
+
+  btnCerrarRecordatorio?.addEventListener('click', () => {
+    modalRecordatorio?.classList.add('hidden');
+  });
+
+  formRecordatorio?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const btn = document.getElementById('btnEnviarRecordatorio');
+    const estadoEnvio = document.getElementById('estadoEnvioRecordatorio');
+    const asunto = document.getElementById('asuntoRecordatorio').value.trim();
+    const mensaje = document.getElementById('mensajeRecordatorio').value.trim();
+    const file = document.getElementById('adjuntoRecordatorio').files[0];
+    
+    // Convierte automáticamente el primer renglón en negrita para el correo
+    const mensajeConFormato = mensaje.replace(/^(.*?)(\n|$)/, '<strong>$1</strong>$2');
+
+    const checkboxesMarcados = document.querySelectorAll('.chk-moroso-envio:checked');
+    const emailsSeleccionados = [...new Set(Array.from(checkboxesMarcados).map(c => c.dataset.email).filter(Boolean))];
+
+    if (emailsSeleccionados.length === 0) {
+      alert("Por favor selecciona al menos un atleta con correo electrónico para enviar el recordatorio.");
+      return;
+    }
+
+    let attachment = null;
+    if (file) {
+      if (file.size > 3 * 1024 * 1024) {
+        alert("La imagen no debe superar los 3 MB.");
+        return;
+      }
+
+      try {
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (evt) => resolve(evt.target.result.split(',')[1]);
+          reader.onerror = (err) => reject(err);
+          reader.readAsDataURL(file);
+        });
+
+        attachment = {
+          filename: file.name,
+          content: base64
+        };
+      } catch (err) {
+        alert("Hubo un error al leer la imagen adjunta.");
+        return;
+      }
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span> Enviando...';
+    estadoEnvio.className = "text-sm font-bold text-center p-2 rounded bg-amber-50 text-amber-800 mt-3 block";
+    estadoEnvio.textContent = `Enviando a ${emailsSeleccionados.length} atleta(s)...`;
+
+    try {
+      const res = await fetch('/api/correo-masivo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subject: asunto,
+          message: mensajeConFormato, // Corrección: enviamos el mensaje formateado con negrita
+          bccList: emailsSeleccionados,
+          attachment: attachment
+        })
+      });
+
+      if (!res.ok) throw new Error("Error en el servidor al enviar correos");
+
+      estadoEnvio.className = "text-sm font-bold text-center p-2 rounded bg-green-50 text-green-700 mt-3 block";
+      estadoEnvio.textContent = "¡Recordatorios enviados exitosamente!";
+
+      setTimeout(() => {
+        modalRecordatorio?.classList.add('hidden');
+        formRecordatorio.reset();
+        estadoEnvio.classList.add('hidden');
+        btn.innerHTML = '<span>🚀</span> Enviar Recordatorio';
+        btn.disabled = false;
+      }, 2500);
+
+    } catch (error) {
+      console.error(error);
+      estadoEnvio.className = "text-sm font-bold text-center p-2 rounded bg-red-50 text-red-700 mt-3 block";
+      estadoEnvio.textContent = "Ocurrió un error al enviar. Revisa la consola.";
+      btn.innerHTML = '<span>🚀</span> Enviar Recordatorio';
+      btn.disabled = false;
+    }
+  });
+
+  // --- LÓGICA DE CORREO MASIVO EN MODAL ---
   const modalCorreoMasivo = document.getElementById('modalCorreoMasivo');
   
   document.getElementById('btnCorreoMasivo')?.addEventListener('click', () => {
@@ -1052,7 +1335,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     const mensaje = document.getElementById('mensajeCorreo').value.trim();
     const file = document.getElementById('adjuntoCorreo').files[0];
 
-    // Filtrar correos de alumnos activos
     const alumnosActivos = cacheAlumnos.filter(a => (a.estatus || 'activo').toLowerCase() !== 'inactivo');
     const emails = [...new Set(alumnosActivos.map(a => a.email).filter(Boolean))];
 
@@ -1127,7 +1409,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 
   // --- GESTIÓN COMPLETA DEL ATLETA ---
   const modalFicha = document.getElementById('modalFichaAtleta');
-  document.getElementById('btnCerrarModalFicha').addEventListener('click', () => modalFicha.classList.add('hidden'));
+  document.getElementById('btnCerrarModalFicha')?.addEventListener('click', () => modalFicha.classList.add('hidden'));
 
   window.verFichaAtleta = function(alumnoId) {
     const alumno = cacheAlumnos.find(a => String(a.id) === String(alumnoId));
@@ -1150,7 +1432,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 
     const cont = document.getElementById('contenidoFichaAtleta');
     
-    // --- LÓGICA PARA HISTORIAL DE PAGOS DEL ALUMNO ---
+    // Historial de pagos del alumno
     const pagosAlumno = cachePagos.filter(p => p.alumno_id === alumno.id);
     let filasPagosHtml = '';
     
@@ -1178,7 +1460,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     const mesesNom = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     const mesSugeridoStr = `${mesesNom[fechaAct.getMonth()]} ${fechaAct.getFullYear()}`;
 
-    // --- INYECCIÓN HTML (FICHA + PAGOS) ---
     cont.innerHTML = `
       <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-200">
         <div class="flex items-center gap-4">
@@ -1325,13 +1606,11 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
         </div>
       </form>
 
-      <!-- NUEVA SECCIÓN: CONTROL FINANCIERO Y CARGA RÁPIDA -->
+      <!-- CONTROL FINANCIERO Y CARGA RÁPIDA -->
       <div class="mt-8 pt-6 border-t border-gray-200">
         <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4 text-emerald-600">3. Control Financiero y Pagos</h4>
         
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          
-          <!-- Columna Izquierda: Historial -->
           <div class="lg:col-span-3 bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col h-full shadow-sm">
             <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
               <span class="text-xs font-bold text-gray-600 uppercase">Historial del Alumno</span>
@@ -1345,7 +1624,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
             </div>
           </div>
 
-          <!-- Columna Derecha: Formulario de Carga -->
           <div class="lg:col-span-2 bg-emerald-50/50 rounded-xl border border-emerald-100 p-5 shadow-sm">
             <span class="text-xs font-bold text-emerald-800 uppercase mb-3 block">➕ Carga Rápida (Auto-Aprobado)</span>
             <form id="formAdminPagoRapido" class="space-y-3">
@@ -1386,7 +1664,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
         </div>
       </div>
     `;
-
 
     document.getElementById('formAdminEditarAtleta').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1454,9 +1731,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
         btn.disabled = false;
       }
     });
-  
 
-  // --- NUEVO: LÓGICA DE UX PARA AUTO-RELLENAR LA REFERENCIA ---
     document.getElementById('pagoRapidoMetodo').addEventListener('change', (e) => {
       const refInput = document.getElementById('pagoRapidoRef');
       if (e.target.value === 'EFECTIVO PISTA') {
@@ -1467,7 +1742,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
       }
     });
 
-    // --- NUEVO: LÓGICA PARA ENVIAR EL PAGO RÁPIDO A SUPABASE ---
     document.getElementById('formAdminPagoRapido').addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -1486,7 +1760,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
         const montoUsd = parseFloat(document.getElementById('pagoRapidoMonto').value);
         const montoBs = (montoUsd * tasaActualDolar).toFixed(2);
         
-        // Obtenemos el user_id del superadmin si el alumno no tiene uno vinculado
         const authData = await supabase.auth.getUser();
         const userIdAuth = document.getElementById('pagoRapidoUserId').value || authData.data.user.id;
 
@@ -1500,7 +1773,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
           estado: 'aprobado',
           tasa_historica: tasaActualDolar,
           monto_bs: montoBs,
-          comprobante_url: null // Al ser carga manual presencial, no se exige voucher
+          comprobante_url: null
         };
 
         const { error } = await supabase.from('pagos').insert([payload]);
@@ -1508,7 +1781,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 
         alert("¡Pago procesado exitosamente! El alumno ahora está Al Día.");
         
-        // Recargamos el sistema y abrimos la ficha de nuevo para ver el cambio instantáneo
         await cargarDatosGlobales();
         window.verFichaAtleta(alumnoId); 
       } catch(err) {
@@ -1518,7 +1790,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
         btn.disabled = false;
       }
     });
-  
   };
 
   window.alternarEstatusAtleta = async function(alumnoId, nuevoEstatus) {
@@ -1561,7 +1832,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
       if (error) throw error;
 
       alert(`El atleta ${nombre} ha sido eliminado del sistema.`);
-      modalFicha.classList.add('hidden');
+      modalFicha?.classList.add('hidden');
       await cargarDatosGlobales();
     } catch (err) {
       console.error(err);
@@ -1574,7 +1845,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
   const tabsContainer = document.getElementById('tabsCalendario');
   const panelsContainer = document.getElementById('panelesCalendario');
 
-  // Actualizado para prevenir problemas con Tailwind Purge
   const diasEstructura = [
     { id: 'lunes', label: 'Lunes', colorText: 'text-blue-600' },
     { id: 'martes', label: 'Martes', colorText: 'text-green-600' },
@@ -1590,14 +1860,12 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
     panelsContainer.innerHTML = '';
 
     diasEstructura.forEach((dia, index) => {
-      // Tab Button
       const btn = document.createElement('button');
       btn.className = `tab-dia-btn px-4 py-2 text-sm font-bold border-b-2 whitespace-nowrap transition-colors focus:outline-none ${index === 0 ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`;
       btn.textContent = dia.label;
       btn.onclick = () => cambiarTabDia(dia.id);
       tabsContainer.appendChild(btn);
 
-      // Panel Form
       const panel = document.createElement('div');
       panel.id = `panel-cal-${dia.id}`;
       panel.className = `panel-dia-content ${index === 0 ? 'block' : 'hidden'}`;
@@ -1607,7 +1875,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
           <label for="cal-${dia.id}-activo" class="text-sm font-bold text-gray-800 cursor-pointer">Hay actividad este día (Desmarca si es día libre)</label>
         </div>
         <div class="space-y-4">
-          
           <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
             <h4 class="text-xs font-black ${dia.colorText} uppercase mb-3 border-b border-gray-100 pb-2">Actividad 1</h4>
             
@@ -1720,7 +1987,6 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
           document.getElementById(`cal-${dia.id}-a2-lugar`).value = dat.a2_lugar || '';
           document.getElementById(`cal-${dia.id}-a2-desc`).value = dat.a2_desc || '';
 
-          // Lógica inversa para marcar los checkboxes correctos
           ['a1', 'a2'].forEach(act => {
             const tagStr = dat[`${act}_tag`] || '';
             const chkTodas = document.querySelector(`.chk-todos-${dia.id}-${act}`);
@@ -1758,17 +2024,14 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
 
     const nuevaAgenda = {};
     diasEstructura.forEach(dia => {
-      // Contar cuántos checkboxes de niveles estándar están marcados
       const chksA1 = document.querySelectorAll(`.chk-${dia.id}-a1:not([value="CITADOS"]):not([value="FÍSICO"]):not([value="TODOS"])`);
       const a1ChecksEstandarMarcados = Array.from(chksA1).filter(c => c.checked).length;
       
       const allA1CheckedValues = Array.from(document.querySelectorAll(`.chk-${dia.id}-a1:checked`)).map(c => c.value);
       let a1Tag = allA1CheckedValues.join(' / ');
-      // Si marcó los 5 niveles estándar, resumimos la etiqueta
       if (a1ChecksEstandarMarcados === 5 && !allA1CheckedValues.includes("CITADOS") && !allA1CheckedValues.includes("FÍSICO")) {
         a1Tag = 'TODOS LOS NIVELES';
       } else if (a1ChecksEstandarMarcados === 5) {
-        // Si marcó todos + alguno extra, limpiamos un poco
         a1Tag = ['TODOS LOS NIVELES', ...allA1CheckedValues.filter(v => v === "CITADOS" || v === "FÍSICO")].join(' / ');
       }
 
