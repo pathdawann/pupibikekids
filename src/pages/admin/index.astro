@@ -479,8 +479,8 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
       const { data: tasaData } = await supabase.from('configuracion').select('valor, updated_at').eq('clave', 'tasa_dolar').single();
       
       if (tasaData) {
-        tasaActualDolar = parseFloat(tasaData.valor);
-        document.getElementById('inputTasa').value = tasaActualDolar;
+        tasaActualDolar = parseFloat(Number(tasaData.valor).toFixed(2));
+        document.getElementById('inputTasa').value = tasaActualDolar.toFixed(2);
         
         // Formato UTC con zona horaria de Venezuela
         const fechaUTC = tasaData.updated_at.endsWith('Z') ? tasaData.updated_at : `${tasaData.updated_at}Z`;
@@ -1044,8 +1044,7 @@ const esSuperAdmin = tienePermisosSuperAdmin(user.email);
   document.getElementById('formTasa').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnGuardarTasa');
-    const nuevoValor = parseFloat(document.getElementById('inputTasa').value);
-    const msg = document.getElementById('mensajeTasa');
+    const nuevoValor = parseFloat(parseFloat(document.getElementById('inputTasa').value).toFixed(2));    const msg = document.getElementById('mensajeTasa');
     btn.disabled = true;
 
     try {

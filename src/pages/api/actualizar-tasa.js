@@ -18,24 +18,27 @@ export async function GET({ request }) {
       throw new Error('No se pudo obtener la tasa de DolarAPI');
     }
 
+    // Convertimos a 2 decimales estándar
+    const tasaDosDecimales = Number(data.promedio).toFixed(2);
+
     // 3. Conectamos a Supabase con privilegios administrativos
     const supabase = createClient(
       import.meta.env.PUBLIC_SUPABASE_URL,
       import.meta.env.SUPABASE_SERVICE_KEY
     );
 
-    // 4. Guardamos la nueva tasa
+    // 4. Guardamos la nueva tasa formateada
     const { error } = await supabase
       .from('configuracion')
       .upsert({ 
         clave: 'tasa_dolar', 
-        valor: String(data.promedio), 
+        valor: tasaDosDecimales, 
         updated_at: new Date() 
       }, { onConflict: 'clave' });
 
     if (error) throw error;
 
-    return new Response(JSON.stringify({ success: true, tasa: data.promedio }), { 
+    return new Response(JSON.stringify({ success: true, tasa: tasaDosDecimales }), { 
       status: 200, 
       headers: { 'Content-Type': 'application/json' } 
     });
